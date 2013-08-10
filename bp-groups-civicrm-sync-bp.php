@@ -475,6 +475,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		// init return
 		$user_group_status = false;
 		
+		// the following functionality is modified code from the BP Groupblog plugin
 		// Get the current user's group status. 
 		// For efficiency, we try first to look at the current group object
 		if ( isset( $bp->groups->current_group->id ) && $group_id == $bp->groups->current_group->id ) {
