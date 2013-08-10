@@ -1,4 +1,6 @@
-bp-groups-civicrm-sync
-======================
+BuddyPress Groups CiviCRM Sync
+==============================
 
-BP Groups CiviCRM Sync is a port of the Drupal civicrm_og_sync module for WordPress that enables synchronisation between BuddyPress Groups and CiviCRM.
+BuddyPress Groups CiviCRM Sync provides synchronisation between CiviCRM and BuddyPress Groups in a similar way to the Drupal *Organic Groups CiviCRM* module.
+
+**Please note:** this module is at a very early stage of development. If you would like to be involved, please leave a message on the issue queue.
