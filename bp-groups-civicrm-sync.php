@@ -247,7 +247,7 @@ class BP_Groups_CiviCRM_Sync {
 	
 	
 	/**
-	 * @description: enqueue any styles and scripts needed by our admin page
+	 * @description: update options supplied by our admin page
 	 * @return nothing
 	 */
 	public function update_options() {
@@ -284,8 +284,8 @@ class BP_Groups_CiviCRM_Sync {
 	 */
 	public function admin_form() {
 	
-		// only allow network admins through
-		if( ! is_super_admin() ) {
+		// we must be network admin in multisite
+		if ( is_multisite() AND !is_super_admin() ) {
 			
 			// disallow
 			wp_die( __( 'You do not have permission to access this page.', 'bp-groups-civicrm-sync' ) );
