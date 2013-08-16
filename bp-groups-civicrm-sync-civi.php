@@ -167,9 +167,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// get all groups with no parent ID (get ALL for now)
 		$all_groups = civicrm_api( 'group', 'get', $params );
 		
+		/*
 		print_r( array(
 			'all' => $all_groups 
 		) ); die();
+		*/
 		
 		// if we got some...
 		if ( 
