@@ -590,9 +590,16 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			);
 			
 			// remove Civi plugin filters
-			remove_filter( 'user_register', array( civi_wp(), 'update_user' ) );
-			remove_filter( 'profile_update', array( civi_wp(), 'update_user' ) );
+			remove_action( 'user_register', array( civi_wp(), 'update_user' ) );
+			remove_action( 'profile_update', array( civi_wp(), 'update_user' ) );
 			
+			// remove CiviCRM WordPress Profile Sync filters
+			global $civicrm_wp_profile_sync;
+			if ( is_object( $civicrm_wp_profile_sync ) ) {
+				remove_action( 'user_register', array( $civicrm_wp_profile_sync, 'wordpress_contact_updated' ), 100 );
+				remove_action( 'profile_update', array( $civicrm_wp_profile_sync, 'wordpress_contact_updated' ), 100 );
+			}
+		
 			// create the user
 			$user_id = wp_insert_user( array(
 			

@@ -167,6 +167,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// get all groups with no parent ID (get ALL for now)
 		$all_groups = civicrm_api( 'group', 'get', $params );
 		
+		print_r( array(
+			'all' => $all_groups 
+		) ); die();
+		
 		// if we got some...
 		if ( 
 		
@@ -180,7 +184,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			foreach( $all_groups['values'] AS $group ) {
 				
 				// when there is no parent...
-				if ( $group['parents'] == '' ) {
+				if ( isset( $group['parents'] ) AND $group['parents'] == '' ) {
 				
 					// set BP group to empty, which triggers assignment to meta group
 					$bp_parent_id = 0;
@@ -199,6 +203,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			
 			}
 			
+		} else {
+		
+			// debug
+			print_r( array(
+				'method' => 'assign_groups_to_meta_group',
+				'all_groups' => $all_groups,
+			) ); die();
+		
 		}
 		
 	}
@@ -476,9 +488,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			
 			}
 			
-			die();
-			
 		}
+		
+		// assign to meta group
+		$this->assign_groups_to_meta_group();
 		
 	}
 	
@@ -503,11 +516,19 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// set flag so that we don't act on the 'groups_create_group' action
 		$this->do_not_sync = true;
 		
+		// remove hooks
+		remove_action( 'groups_create_group', array( $this->bp, 'create_civi_group' ), 100 );
+		remove_action( 'groups_details_updated', array( $this->bp, 'update_civi_group_details' ), 100 );
+		
 		// sanitise title by stripping suffix
 		$bp_group_title = array_shift( explode( ': Administrator', $civi_group->title ) );
 		
 		// create the BuddyPress group
 		$bp_group_id = $this->bp->create_group( $bp_group_title, $civi_group->description );
+		
+		// re-add hooks
+		add_action( 'groups_create_group', array( $this->bp, 'create_civi_group' ), 100, 3 );
+		add_action( 'groups_details_updated', array( $this->bp, 'update_civi_group_details' ), 100, 1 );
 		
 		
 		
@@ -534,7 +555,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		
 		
 		// get the non-ACL Civi group ID
-		$civi_group_id = $this->civi->get_group_id(
+		$civi_group_id = $this->get_group_id(
 		
 			str_replace( 'OG Sync Group ACL', 'OG Sync Group', $source )
 			
@@ -583,7 +604,18 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// use Civi API to create the group (will update if ID is set)
 		$acl_group = civicrm_api( 'group', 'create', $acl_group_params );
 		
+		// error check
+		if ( $acl_group['is_error'] == '1' ) {
 		
+			// debug
+			print_r( array(
+				'method' => 'convert_og_group_to_bp_group',
+				'acl_group' => $acl_group,
+			) ); die();
+		
+		}
+		
+
 		
 		// define Civi group
 		$group_params = array(
@@ -596,6 +628,17 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		
 		// use Civi API to create the group (will update if ID is set)
 		$civi_group = civicrm_api( 'group', 'create', $group_params );
+		
+		// error check
+		if ( $civi_group['is_error'] == '1' ) {
+		
+			// debug
+			print_r( array(
+				'method' => 'convert_og_group_to_bp_group',
+				'civi_group' => $civi_group,
+			) ); die();
+		
+		}
 		
 	}
 	
