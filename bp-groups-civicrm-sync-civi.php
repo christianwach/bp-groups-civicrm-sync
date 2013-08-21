@@ -126,7 +126,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		
 		
 		// assign groups with no parent to the meta group
-		$this->assign_groups_to_meta_group();
+		//$this->assign_groups_to_meta_group();
 		
 		
 		
@@ -161,7 +161,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// define get "all with no parent" params
 		$params = array(
 			'version' => 3,
-			'parents' => null, // how do we get "HAS NO PARENTS"?
+			// define stupidly high limit, because API defaults to 25
+			'options' => array( 
+				'limit' => '10000',
+			),
 		);
 		
 		// get all groups with no parent ID (get ALL for now)
@@ -186,8 +189,19 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			foreach( $all_groups['values'] AS $group ) {
 				
 				// when there is no parent...
-				if ( isset( $group['parents'] ) AND $group['parents'] == '' ) {
+				if ( 
+					isset( $group['parents'] ) 
+					AND 
+					(
+						is_null( $group['parents'] )
+						OR
+						$group['parents'] == ''
+					)
+				) {
 				
+					// init transaction
+					//$transaction = new CRM_Core_Transaction();
+		
 					// set BP group to empty, which triggers assignment to meta group
 					$bp_parent_id = 0;
 					
@@ -201,6 +215,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 						$this->create_civi_group_nesting( $group['id'], $bp_parent_id, $source = 'acl' );
 					}
 				
+					// do the database transaction
+					//$transaction->commit();
+		
 				}
 			
 			}
@@ -221,7 +238,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	/**
 	 * @description: get source (our unique code) for our meta group
-	 * @return nothing
+	 * @return string
 	 */
 	public function get_meta_group_source() {
 	
@@ -234,12 +251,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		
 	/**
 	 * @description: construct name for CiviCRM group
+	 * @param int $bp_group_id the BuddyPress group ID
 	 * @return string
 	 */
-	public function get_group_sync_name( $group_id ) {
+	public function get_group_sync_name( $bp_group_id ) {
 	
 		// construct name, based on OG schema
-		return 'BP Sync Group :'.$group_id.':';
+		return 'BP Sync Group :'.$bp_group_id.':';
 		
 	}
 	
@@ -247,12 +265,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	/**
 	 * @description: construct name for CiviCRM ACL group
+	 * @param int $bp_group_id the BuddyPress group ID
 	 * @return string
 	 */
-	public function get_acl_group_sync_name( $group_id ) {
+	public function get_acl_group_sync_name( $bp_group_id ) {
 	
 		// construct name, based on OG schema
-		return 'BP Sync Group ACL :'.$group_id.':';
+		return 'BP Sync Group ACL :'.$bp_group_id.':';
 		
 	}
 	
@@ -281,6 +300,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	/**
 	 * @description: register directories that CiviCRM searches for php and template files
 	 * @param object $config the CiviCRM config object
+	 * @return nothing
 	 */
 	public function register_directories( &$config ) {
 		
@@ -316,6 +336,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @description: enable a BP group to be created from pre-existing Civi/Drupal/OG groups
 	 * @param string $formName the CiviCRM form name
 	 * @param object $form the CiviCRM form object
+	 * @return nothing
 	 */
 	public function civi_group_form_options( $formName, &$form ) {
 		
@@ -370,6 +391,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @description: create a BP group based on pre-existing Civi/Drupal/OG group
 	 * @param string $formName the CiviCRM form name
 	 * @param object $form the CiviCRM form object
+	 * @return nothing
 	 */
 	public function civi_group_form_process( $formName, &$form ) {
 		
@@ -467,11 +489,26 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		
 		// define get all groups params
 		$params = array(
+		
+			// v3, of course
 			'version' => 3,
+			
+			// define stupidly high limit, because API defaults to 25
+			'options' => array( 
+				'limit' => '10000',
+			),
+			
 		);
 		
 		// get all groups with no parent ID (get ALL for now)
 		$all_groups = civicrm_api( 'group', 'get', $params );
+		
+		/*
+		print_r( array(
+			'method' => 'convert_og_groups_to_bp_groups',
+			'all_groups' => $all_groups,
+		) ); die();
+		*/
 		
 		// if we got some...
 		if (
@@ -514,6 +551,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		
 		// is this an OG administrator group?
 		if ( strstr( $source, 'OG Sync Group ACL' ) === false ) return;
+		
+		/*
+		print_r( array(
+			'method' => 'convert_og_group_to_bp_group',
+			'civi_group' => $civi_group,
+		) ); //die();
+		*/
 		
 		// set flag so that we don't act on the 'groups_create_group' action
 		$this->do_not_sync = true;
@@ -601,7 +645,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		);
 		
 		// get name for the Civi group
-		$acl_group_params['source'] = $this->get_acl_group_sync_name( $civi_group->id );
+		$acl_group_params['source'] = $this->get_acl_group_sync_name( $bp_group_id );
 		
 		// use Civi API to create the group (will update if ID is set)
 		$acl_group = civicrm_api( 'group', 'create', $acl_group_params );
@@ -620,26 +664,36 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		
 		// define Civi group
-		$group_params = array(
+		$member_group_params = array(
 			'version' => 3,
 			'id' => $civi_group_id,
 		);
 		
 		// get name for the Civi group
-		$group_params['source'] = $this->get_group_sync_name( $civi_group_id );
+		$member_group_params['source'] = $this->get_group_sync_name( $bp_group_id );
 		
 		// use Civi API to create the group (will update if ID is set)
-		$civi_group = civicrm_api( 'group', 'create', $group_params );
+		$member_group = civicrm_api( 'group', 'create', $member_group_params );
 		
 		// error check
-		if ( $civi_group['is_error'] == '1' ) {
+		if ( $member_group['is_error'] == '1' ) {
 		
 			// debug
 			print_r( array(
 				'method' => 'convert_og_group_to_bp_group',
-				'civi_group' => $civi_group,
+				'member_group' => $member_group,
 			) ); die();
 		
+		}
+		
+		
+		
+		// if no parent
+		if ( isset( $civi_group['parents'] ) AND $civi_group['parents'] == '' ) {
+		
+			// assign both to meta group
+			$this->update_civi_group_nesting( $bp_group_id, '0' );
+			
 		}
 		
 	}
@@ -967,6 +1021,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		
 		}
 		
+		// init transaction
+		//$transaction = new CRM_Core_Transaction();
+		
 		// define new group nesting
 		$create_params = array(
 			'version' => 3,
@@ -977,6 +1034,30 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// create Civi group nesting under meta group
 		$create_result = civicrm_api( 'group_nesting', 'create', $create_params );
 		
+		/*
+		// debug
+		print_r( array(
+			'method' => 'create_civi_group_nesting',
+			'create_params' => $create_params,
+			'create_result' => $create_result,
+		) ); //die();
+		*/
+		
+		// error check
+		if ( $create_result['is_error'] == '1' ) {
+		
+			// debug
+			print_r( array(
+				'method' => 'create_civi_group_nesting',
+				'create_params' => $create_params,
+				'create_result' => $create_result,
+			) ); die();
+		
+		}
+		
+		// do the database transaction
+	    //$transaction->commit();
+	    
 	}
 	
 	

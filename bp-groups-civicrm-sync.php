@@ -335,6 +335,8 @@ class BP_Groups_CiviCRM_Sync {
 			// show migration option
 			echo '
 			<h3>'.__( 'Convert OG groups in CiviCRM to BP groups', 'bp-groups-civicrm-sync' ).'</h3>
+			
+			<p>WARNING: this will probably only work when there are a small number of groups. If you have lots of groups, it would be worth writing some kind of chunked update routine. I will upgrade this plugin to do so at some point.</p>
 
 			<table class="form-table">
 
