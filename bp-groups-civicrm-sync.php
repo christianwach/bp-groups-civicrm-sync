@@ -399,6 +399,9 @@ class BP_Groups_CiviCRM_Sync {
 		
 		';
 		
+		// show BP to Civi
+		$this->admin_form_bp_to_civi();
+		
 		// do we have any OG groups?
 		if ( $checking_og AND $has_og_groups ) {
 			
@@ -435,21 +438,6 @@ class BP_Groups_CiviCRM_Sync {
 		
 		}
 		
-		// show heading
-		echo '
-		<hr>
-		<h3>'.__( 'BuddyPress to CiviCRM Sync', 'bp-groups-civicrm-sync' ).'</h3>';
-		
-		echo '
-		<table class="form-table">
-
-			<tr valign="top">
-				<th scope="row"><label for="bpcivisync_bp_check">'.__( 'Check for group sync integrity', 'bp-groups-civicrm-sync' ).'</label></th>
-				<td><input id="bpcivisync_bp_check" name="bpcivisync_bp_check" value="1" type="checkbox" /></td>
-			</tr>
-
-		</table>';
-				
 		// close div
 		echo '
 		
@@ -491,7 +479,7 @@ class BP_Groups_CiviCRM_Sync {
 		<hr>
 		<h3>'.__( 'Convert OG groups in CiviCRM to BP groups', 'bp-groups-civicrm-sync' ).'</h3>
 		
-		<p>WARNING: this will probably only work when there are a small number of groups. If you have lots of groups, it would be worth writing some kind of chunked update routine. I will upgrade this plugin to do so at some point.</p>
+		<p>'.__( 'WARNING: this will probably only work when there are a small number of groups. If you have lots of groups, it would be worth writing some kind of chunked update routine. I will upgrade this plugin to do so at some point.', 'bp-groups-civicrm-sync' ).'</p>
 
 		<table class="form-table">
 
@@ -502,6 +490,33 @@ class BP_Groups_CiviCRM_Sync {
 
 		</table>';
 	
+	}
+	
+	
+	
+	/**
+	 * Show our BP to Civi admin option
+	 * 
+	 * @return void
+	 */
+	public function admin_form_bp_to_civi() {
+	
+		// show heading
+		echo '
+		<hr>
+		<h3>'.__( 'BuddyPress to CiviCRM Sync', 'bp-groups-civicrm-sync' ).'</h3>
+		
+		<p>'.__( 'WARNING: this will probably only work when there are a small number of groups. If you have lots of groups, it would be worth writing some kind of chunked update routine. I will upgrade this plugin to do so at some point.', 'bp-groups-civicrm-sync' ).'</p>
+
+		<table class="form-table">
+
+			<tr valign="top">
+				<th scope="row"><label for="bpcivisync_bp_check">'.__( 'Check for group sync integrity', 'bp-groups-civicrm-sync' ).'</label></th>
+				<td><input id="bpcivisync_bp_check" name="bpcivisync_bp_check" value="1" type="checkbox" /></td>
+			</tr>
+
+		</table>';
+				
 	}
 	
 	
