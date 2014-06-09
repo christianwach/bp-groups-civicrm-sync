@@ -166,7 +166,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			);
 		
 			// set inscrutable group type
-			$params['group_type'] = array( '1' );
+			$params['group_type'] = array( '1' => 1 );
 		
 			// get "source" for the Civi group
 			$params['source'] = $this->get_meta_group_source();
@@ -825,7 +825,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$acl_params['source'] = $this->get_acl_group_sync_name( $bp_group_id );
 		
 		// set inscrutable group type
-		$acl_params['group_type'] = array( '1' );
+		$acl_params['group_type'] = array( '1' => 1 );
 		
 		// create the ACL group too
 		$this->create_group( $acl_params );
@@ -932,7 +932,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$acl_params['source'] = $this->get_acl_group_sync_name( $group_id );
 		
 		// set inscrutable group type
-		$acl_params['group_type'] = array( '1' );
+		$acl_params['group_type'] = array( '1' => 1 );
 		
 		// update the ACL group too
 		$this->update_group( $acl_params );
@@ -1179,6 +1179,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// get name for the Civi group
 		$group_params['source'] = $source;
 		
+		// define Civi group type
+		$group_params['group_type'] = array( '2' => 1 );
+		
 		// use our adapted version of CRM_Bridge_OG_Drupal::updateCiviGroup()
 		$this->update_group( $group_params );
 		
@@ -1214,6 +1217,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		
 		// get name for the Civi ACL group
 		$group_params['source'] = $acl_source;
+		
+		// define Civi group type
+		$group_params['group_type'] = array( '1' => 1 );
 		
 		// use our adapted version of CRM_Bridge_OG_Drupal::updateCiviGroup()
 		$this->update_group( $group_params );
@@ -1331,7 +1337,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$params['version'] = 3;
 		
 		// if we have a group type passed here, use it
-		if ( $group_type ) $params['group_type'] = $group_type;
+		if ( ! is_null( $group_type ) ) $params['group_type'] = $group_type;
 		
 		// use Civi API to create the group (will update if ID is set)
 		$group = civicrm_api( 'group', 'create', $params );
@@ -1377,7 +1383,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		);
 		
 		// if we have a group type passed here, use it
-		if ( $group_type ) $params['group_type'] = $group_type;
+		if ( ! is_null( $group_type ) ) $params['group_type'] = $group_type;
 		
 		// use Civi API to create the group (will update if ID is set)
 		$group = civicrm_api( 'group', 'create', $params );
