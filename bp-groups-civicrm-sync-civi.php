@@ -1265,6 +1265,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	/**
 	 * Creates a CiviCRM Group
 	 * 
+	 * Unfortunately, Civi insists on assigning the logged-in user as the group creator
+	 * This means that we cannot assign the BP group creator as the Civi group creator
+	 * except by doing some custom SQL.
+	 * @see CRM_Contact_BAO_Group::create()
+	 * 
 	 * @param array $params The array of Civi API params
 	 * @param string $group_type The type of Civi Group
 	 * @return void
@@ -1397,8 +1402,25 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		
 		// get the Civi contact ID
 		$civi_contact_id = $this->get_contact_id( $params['uf_id'] );
+		
+		// if we don't get one...
 		if ( !$civi_contact_id ) {
-			CRM_Core_Error::fatal();
+
+			// construct error string
+			$error = sprintf( 
+				__( 'No Civi Contact ID could be found in "sync_group_member" for %d', 'bp-groups-civicrm-sync' ),
+				$user_id
+			);
+			
+			// whitespace
+			$error .= "\n\n<br><br>";
+
+			// add user
+			$error .= print_r( new WP_User( $user_id ), true );
+			
+			// debug?
+			wp_die( $error );
+
 		}
 		
 		// die if not found
@@ -1510,7 +1532,22 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			// get the Civi contact ID
 			$civi_contact_id = CRM_Core_BAO_UFMatch::getContactId( $user_id );
 			if ( !$civi_contact_id ) {
-				CRM_Core_Error::fatal();
+				
+				// construct error string
+				$error = sprintf( 
+					__( 'No Civi Contact ID could be found in "get_contact_id" for %d', 'bp-groups-civicrm-sync' ),
+					$user_id
+				);
+				
+				// whitespace
+				$error .= "\n\n<br><br>";
+
+				// add user
+				$error .= print_r( new WP_User( $user_id ), true );
+			
+				// debug?
+				wp_die( $error );
+
 			}
 		
 		}
@@ -1553,9 +1590,26 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		
 		// check for failure and our flag
 		if ( $abort AND !$civi_group_id ) {
-		
+			
+			// construct meaningful error
+			$error = sprintf( 
+				__( 'No Civi Group ID could be found for %s', 'bp-groups-civicrm-sync' ),
+				$source
+			);
+			
+			/*
+			// construct meaningful error
+			$error .= "\n\n<br><br>";
+
+			// get the group object
+			$_group = groups_get_group( array( 'group_id' => $group->id, 'populate_extras' => true ) );
+			
+			// construct meaningful error
+			$error .= print_r( $group, true );
+			*/
+			
 			// okay, die!!!
-			CRM_Core_Error::fatal();
+			wp_die( $error );
 			
 		}
 		
