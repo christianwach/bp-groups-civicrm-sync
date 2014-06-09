@@ -268,6 +268,7 @@ class BP_Groups_CiviCRM_Sync {
 			
 			// init vars
 			$bpcivisync_convert = '0';
+			$bpcivisync_bp_check = '0';
 			
 			// get variables
 			extract( $_POST );
@@ -277,7 +278,17 @@ class BP_Groups_CiviCRM_Sync {
 			
 				// try and convert OG groups to BP groups
 				$this->civi->convert_og_groups_to_bp_groups();
-
+				return;
+				
+			}
+			
+			// did we ask to sync existing BP groups with Civi?
+			if ( $bpcivisync_bp_check == '1' ) {
+			
+				// try and sync BP groups with Civi groups
+				$this->sync_bp_and_civi();
+				return;
+				
 			}
 			
 		}
@@ -301,16 +312,66 @@ class BP_Groups_CiviCRM_Sync {
 			
 		}
 		
-		// if we've updated...
-		if ( isset( $_GET['updated'] ) ) {
+		// init BP flags
+		$checking_bp = false;
 		
-			// show message
-			echo '<div id="message" class="updated"><p>'.__( 'Options saved.', 'bp-groups-civicrm-sync' ).'</p></div>';
+		// did we ask to check for group sync integrity?
+		if ( isset( $_POST['bpcivisync_bp_check'] ) AND $_POST['bpcivisync_bp_check'] == '1' ) {
 			
+			// set flag
+			$checking_bp = true;
+		
 		}
 		
-		// do we have any OG groups?
-		$og = $this->civi->has_og_groups();
+		// init OG flags
+		$checking_og = false;
+		$has_og_groups = false;
+		
+		// did we ask to check for OG groups?
+		if ( isset( $_POST['bpcivisync_og_check'] ) AND $_POST['bpcivisync_og_check'] == '1' ) {
+			
+			// set flag
+			$checking_og = true;
+			
+			// do we have any OG groups?
+			$has_og_groups = $this->civi->has_og_groups();
+		
+		}
+		
+		// if we've updated...
+		if ( isset( $_GET['updated'] ) ) {
+			
+			// are we checking OG?
+			if ( $checking_og ) {
+				
+				// yes, did we get any?
+				if ( $has_og_groups !== false ) {
+				
+					// show settings updated message
+					echo '<div id="message" class="updated"><p>'.__( 'OG Groups found. You can now choose to migrate them to BP.', 'bp-groups-civicrm-sync' ).'</p></div>';
+					
+				} else {
+					
+					// show settings updated message
+					echo '<div id="message" class="updated"><p>'.__( 'No OG Groups found.', 'bp-groups-civicrm-sync' ).'</p></div>';
+					
+				}
+			
+			} else {
+			
+				// are we checking BP?
+				if ( $checking_bp ) {
+				
+				} else {
+				
+					// show settings updated message
+					echo '<div id="message" class="updated"><p>'.__( 'Options saved.', 'bp-groups-civicrm-sync' ).'</p></div>';
+				
+				}
+			
+			}
+			
+		}
 		
 		// sanitise admin page url
 		$url = $_SERVER['REQUEST_URI'];
@@ -337,50 +398,73 @@ class BP_Groups_CiviCRM_Sync {
 		echo '<div id="bpcivisync_admin_options">
 		
 		';
-
-		// do we have any OG groups?
-		if ( $og ) {
 		
-			// show migration option
-			echo '
-			<h3>'.__( 'Convert OG groups in CiviCRM to BP groups', 'bp-groups-civicrm-sync' ).'</h3>
+		// do we have any OG groups?
+		if ( $checking_og AND $has_og_groups ) {
 			
-			<p>WARNING: this will probably only work when there are a small number of groups. If you have lots of groups, it would be worth writing some kind of chunked update routine. I will upgrade this plugin to do so at some point.</p>
-
-			<table class="form-table">
-
-				<tr valign="top">
-					<th scope="row"><label for="bpcivisync_convert">'.__( 'Convert OG groups to BP groups', 'bp-groups-civicrm-sync' ).'</label></th>
-					<td><input id="bpcivisync_convert" name="bpcivisync_convert" value="1" type="checkbox" /></td>
-				</tr>
-
-			</table>';
+			// show OG to BP migration form
+			$this->admin_form_og_to_bp();
 		
 		} else {
 		
-			echo '<p>BP Groups CiviCRM Sync is up to date</p>';
+			// show heading
+			echo '
+			<hr>
+			<h3>'.__( 'CiviCRM to BuddyPress Sync', 'bp-groups-civicrm-sync' ).'</h3>';
+	
+			// did we ask to check for OG groups?
+			if ( $checking_og ) {
+				
+				// none were found
+				echo '<p>'.__( 'No OG Groups found', 'bp-groups-civicrm-sync' ).'</p>
+				';
+				
+			} else {
+		
+				echo '
+				<table class="form-table">
+
+					<tr valign="top">
+						<th scope="row"><label for="bpcivisync_og_check">'.__( 'Check for OG groups', 'bp-groups-civicrm-sync' ).'</label></th>
+						<td><input id="bpcivisync_og_check" name="bpcivisync_og_check" value="1" type="checkbox" /></td>
+					</tr>
+
+				</table>';
+			
+			}
 		
 		}
 		
+		// show heading
+		echo '
+		<hr>
+		<h3>'.__( 'BuddyPress to CiviCRM Sync', 'bp-groups-civicrm-sync' ).'</h3>';
+		
+		echo '
+		<table class="form-table">
+
+			<tr valign="top">
+				<th scope="row"><label for="bpcivisync_bp_check">'.__( 'Check for group sync integrity', 'bp-groups-civicrm-sync' ).'</label></th>
+				<td><input id="bpcivisync_bp_check" name="bpcivisync_bp_check" value="1" type="checkbox" /></td>
+			</tr>
+
+		</table>';
+				
 		// close div
 		echo '
 		
 		</div>';
 		
-		// do we have any OG groups?
-		if ( $og ) {
-		
-			// show submit button
-			echo '
-		
-			<p class="submit">
-				<input type="submit" name="bpcivisync_submit" value="'.__( 'Submit', 'bp-groups-civicrm-sync' ).'" class="button-primary" />
-			</p>
-		
-			';
-		
-		}
-		
+		// show submit button
+		echo '
+	
+		<hr>
+		<p class="submit">
+			<input type="submit" name="bpcivisync_submit" value="'.__( 'Submit', 'bp-groups-civicrm-sync' ).'" class="button-primary" />
+		</p>
+	
+		';
+	
 		// close form
 		echo '
 
@@ -395,6 +479,124 @@ class BP_Groups_CiviCRM_Sync {
 	
 	
 	
+	/**
+	 * Show our OG to BP admin option
+	 * 
+	 * @return void
+	 */
+	public function admin_form_og_to_bp() {
+	
+		// show migration option
+		echo '
+		<hr>
+		<h3>'.__( 'Convert OG groups in CiviCRM to BP groups', 'bp-groups-civicrm-sync' ).'</h3>
+		
+		<p>WARNING: this will probably only work when there are a small number of groups. If you have lots of groups, it would be worth writing some kind of chunked update routine. I will upgrade this plugin to do so at some point.</p>
+
+		<table class="form-table">
+
+			<tr valign="top">
+				<th scope="row"><label for="bpcivisync_convert">'.__( 'Convert OG groups to BP groups', 'bp-groups-civicrm-sync' ).'</label></th>
+				<td><input id="bpcivisync_convert" name="bpcivisync_convert" value="1" type="checkbox" /></td>
+			</tr>
+
+		</table>';
+	
+	}
+	
+	
+	
+	/**
+	 * Sync BuddyPress groups to CiviCRM
+	 * 
+	 * @return void
+	 */
+	public function sync_bp_and_civi() {
+		
+		// init or die
+		if ( ! $this->civi->is_active() ) return;
+		
+		// get all BP groups (batching to come later)
+		$groups = $this->bp->get_all_groups();
+		
+		///*
+		print_r( array( 
+			'groups' => $groups,
+		) ); die();
+		//*/
+		
+		// if we get some
+		if ( count( $groups ) > 0 ) {
+			
+			// one at a time, then...
+			foreach( $groups AS $group ) {
+				
+				// get the Civi group ID of this BuddyPress group
+				$civi_group_id = $this->civi->get_group_id(
+					$this->civi->get_group_sync_name( $group->id )
+				);
+				
+				/*
+				print_r( array( 
+					'group' => $group,
+					//'_group' => $_group,
+					'civi_group_id' => $civi_group_id,
+				) ); die();
+				*/
+				
+				// if we don't get an ID, create the group...
+				if ( ! $civi_group_id ) {
+					$this->bp->create_civi_group( $group->id, null, $group );
+				}
+				
+				// sync members
+				$this->sync_bp_and_civi_members( $group );
+				
+			}
+			
+		}
+		
+	}
+	
+	
+	
+	/**
+	 * Sync BuddyPress group members to CiviCRM group membership
+	 * 
+	 * @return void
+	 */
+	public function sync_bp_and_civi_members( $group ) {
+		
+		// params group members
+		$params = array(
+			'exclude_admins_mods' => 0,
+			'per_page' => 100000,
+			'group_id' => $group->id
+		);
+		
+		// query group members
+		if ( bp_group_has_members( $params ) ) {
+			
+			// one by one...
+			while ( bp_group_members() ) {
+				
+				// set up member
+				bp_group_the_member();
+				
+				// get user ID
+				$user_id = bp_get_group_member_id();
+				
+				// update their membership
+				$this->bp->civi_update_group_membership( $user_id, $group->id );
+				
+			}
+			
+		}
+	
+	}
+	
+	
+		
 } // class ends
 
 

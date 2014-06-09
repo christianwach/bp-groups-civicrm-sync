@@ -68,10 +68,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		add_action( 'civicrm_postProcess', array( $this, 'civi_group_form_process' ), 10, 2 );
 		
 		// intercept CiviCRM's add contacts to group
-		add_action( 'civicrm_post', array( $this, 'civi_group_contacts_added' ), 10, 4 );
+		//add_action( 'civicrm_post', array( $this, 'civi_group_contacts_added' ), 10, 4 );
 		
 		// intercept CiviCRM's delete contacts from group
-		add_action( 'civicrm_post', array( $this, 'civi_group_contacts_deleted' ), 10, 4 );
+		//add_action( 'civicrm_post', array( $this, 'civi_group_contacts_deleted' ), 10, 4 );
 		
 	}
 	
