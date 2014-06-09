@@ -40,7 +40,7 @@ BP_Groups_CiviCRM_Sync Class
 class BP_Groups_CiviCRM_Sync {
 
 	/** 
-	 * properties
+	 * Properties
 	 */
 	
 	// CiviCRM utilities class
@@ -52,7 +52,8 @@ class BP_Groups_CiviCRM_Sync {
 	
 	
 	/** 
-	 * @description: initialises this object
+	 * Initialises this object
+	 * 
 	 * @return object
 	 */
 	function __construct() {
@@ -72,8 +73,9 @@ class BP_Groups_CiviCRM_Sync {
 	
 	
 	/**
-	 * @description: do stuff on plugin init
-	 * @return nothing
+	 * Do stuff on plugin init
+	 * 
+	 * @return void
 	 */
 	public function initialise() {
 		
@@ -119,8 +121,9 @@ class BP_Groups_CiviCRM_Sync {
 	
 		
 	/**
-	 * @description: do stuff on plugin activation
-	 * @return nothing
+	 * Do stuff on plugin activation
+	 * 
+	 * @return void
 	 */
 	public function activate() {
 		
@@ -132,8 +135,9 @@ class BP_Groups_CiviCRM_Sync {
 	
 		
 	/**
-	 * @description: do stuff on plugin deactivation
-	 * @return nothing
+	 * Do stuff on plugin deactivation
+	 * 
+	 * @return void
 	 */
 	public function deactivate() {
 		
@@ -146,10 +150,11 @@ class BP_Groups_CiviCRM_Sync {
 	
 	
 	/** 
-	 * @description: load translation files
+	 * Load translation files
 	 * A good reference on how to implement translation in WordPress:
 	 * http://ottopress.com/2012/internationalization-youre-probably-doing-it-wrong/
-	 * @return nothing
+	 * 
+	 * @return void
 	 */
 	public function enable_translation() {
 		
@@ -172,8 +177,9 @@ class BP_Groups_CiviCRM_Sync {
 	
 	
 	/** 
-	 * @description: add an admin page for this plugin
-	 * @return nothing
+	 * Add an admin page for this plugin
+	 * 
+	 * @return void
 	 */
 	public function add_admin_menu() {
 		
@@ -226,8 +232,9 @@ class BP_Groups_CiviCRM_Sync {
 	
 	
 	/**
-	 * @description: enqueue any styles and scripts needed by our admin page
-	 * @return nothing
+	 * Enqueue any styles and scripts needed by our admin page
+	 * 
+	 * @return void
 	 */
 	public function add_admin_styles() {
 		
@@ -247,8 +254,9 @@ class BP_Groups_CiviCRM_Sync {
 	
 	
 	/**
-	 * @description: update options supplied by our admin page
-	 * @return nothing
+	 * Update options supplied by our admin page
+	 * 
+	 * @return void
 	 */
 	public function update_options() {
 		
@@ -279,8 +287,9 @@ class BP_Groups_CiviCRM_Sync {
 	
 	
 	/**
-	 * @description: show our admin page
-	 * @return nothing
+	 * Show our admin page
+	 * 
+	 * @return void
 	 */
 	public function admin_form() {
 	

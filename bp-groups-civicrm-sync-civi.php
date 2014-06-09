@@ -8,7 +8,7 @@ BP_Groups_CiviCRM_Sync_CiviCRM Class
 class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 	/** 
-	 * properties
+	 * Properties
 	 */
 	
 	// BuddyPress utilities class
@@ -20,7 +20,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/** 
-	 * @description: initialises this object
+	 * Initialises this object
+	 * 
 	 * @return object
 	 */
 	function __construct() {
@@ -36,8 +37,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: set references to other objects
-	 * @return nothing
+	 * Set references to other objects
+	 * 
+	 * @param object $bp_object Reference to this plugin's BP object
+	 * @return void
 	 */
 	public function set_references( &$bp_object ) {
 	
@@ -49,8 +52,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 		
 	/**
-	 * @description: register hooks on plugin init
-	 * @return nothing
+	 * Register hooks on plugin init
+	 * 
+	 * @return void
 	 */
 	public function register_hooks() {
 		
@@ -72,8 +76,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: creates the CiviCRM Group which is the ultimate parent for all BuddyPress groups
-	 * @return nothing
+	 * Creates the CiviCRM Group which is the ultimate parent for all BuddyPress groups
+	 * 
+	 * @return void
 	 */
 	public function create_meta_group() {
 	
@@ -138,8 +143,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: assign all CiviCRM Groups with no parent to our meta group
-	 * @return nothing
+	 * Assign all CiviCRM Groups with no parent to our meta group
+	 * 
+	 * @return void
 	 */
 	public function assign_groups_to_meta_group() {
 	
@@ -237,7 +243,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: get source (our unique code) for our meta group
+	 * Get source (our unique code) for our meta group
+	 * 
 	 * @return string
 	 */
 	public function get_meta_group_source() {
@@ -250,8 +257,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 		
 	/**
-	 * @description: construct name for CiviCRM group
-	 * @param int $bp_group_id the BuddyPress group ID
+	 * Construct name for CiviCRM group
+	 * 
+	 * @param int $bp_group_id The BuddyPress group ID
 	 * @return string
 	 */
 	public function get_group_sync_name( $bp_group_id ) {
@@ -264,8 +272,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: construct name for CiviCRM ACL group
-	 * @param int $bp_group_id the BuddyPress group ID
+	 * Construct name for CiviCRM ACL group
+	 * 
+	 * @param int $bp_group_id The BuddyPress group ID
 	 * @return string
 	 */
 	public function get_acl_group_sync_name( $bp_group_id ) {
@@ -282,7 +291,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: test if CiviCRM plugin is active
+	 * Test if CiviCRM plugin is active
+	 * 
 	 * @return bool
 	 */
 	public function is_active() {
@@ -298,9 +308,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: register directories that CiviCRM searches for php and template files
-	 * @param object $config the CiviCRM config object
-	 * @return nothing
+	 * Register directories that CiviCRM searches for php and template files
+	 * 
+	 * @param object $config The CiviCRM config object
+	 * @return void
 	 */
 	public function register_directories( &$config ) {
 		
@@ -333,10 +344,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		
 		
 	/**
-	 * @description: enable a BP group to be created from pre-existing Civi/Drupal/OG groups
-	 * @param string $formName the CiviCRM form name
-	 * @param object $form the CiviCRM form object
-	 * @return nothing
+	 * Enable a BP group to be created from pre-existing Civi/Drupal/OG groups
+	 * 
+	 * @param string $formName The CiviCRM form name
+	 * @param object $form The CiviCRM form object
+	 * @return void
 	 */
 	public function civi_group_form_options( $formName, &$form ) {
 		
@@ -388,10 +400,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: create a BP group based on pre-existing Civi/Drupal/OG group
-	 * @param string $formName the CiviCRM form name
-	 * @param object $form the CiviCRM form object
-	 * @return nothing
+	 * Create a BP group based on pre-existing Civi/Drupal/OG group
+	 * 
+	 * @param string $formName The CiviCRM form name
+	 * @param object $form The CiviCRM form object
+	 * @return void
 	 */
 	public function civi_group_form_process( $formName, &$form ) {
 		
@@ -427,7 +440,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: do we have any legacy OG CiviCRM Groups?
+	 * Do we have any legacy OG CiviCRM Groups?
+	 * 
 	 * @return bool
 	 */
 	public function has_og_groups() {
@@ -479,8 +493,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: convert all legacy OG CiviCRM Groups to BP CiviCRM Groups
-	 * @return nothing
+	 * Convert all legacy OG CiviCRM Groups to BP CiviCRM Groups
+	 * 
+	 * @return void
 	 */
 	public function convert_og_groups_to_bp_groups() {
 	
@@ -537,9 +552,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: create a BP group based on pre-existing Civi/Drupal/OG group
-	 * @param string $formName the CiviCRM form name
-	 * @param object $form the CiviCRM form object
+	 * Create a BP group based on pre-existing Civi/Drupal/OG group
+	 * 
+	 * @param object $civi_group The CiviCRM group object
+	 * @return void
 	 */
 	public function convert_og_group_to_bp_group( $civi_group ) {
 		
@@ -701,11 +717,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: creates a CiviCRM Group when a BuddyPress group is created
+	 * Creates a CiviCRM Group when a BuddyPress group is created
+	 * 
 	 * @param int $bp_group_id the numeric ID of the BP group
-	 * @param int $first_member WP user object
-	 * @param object $bp_group the BP group object
-	 * @return array $return associative array of CiviCRM group IDs (member_group_id, acl_group_id)
+	 * @param object $first_member WP user object
+	 * @param object $bp_group The BP group object
+	 * @return array $return Associative array of CiviCRM group IDs (member_group_id, acl_group_id)
 	 */
 	public function create_civi_group( $bp_group_id, $first_member, $bp_group ) {
 	
@@ -808,10 +825,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: updates a CiviCRM Group when a BuddyPress group is updated
-	 * @param int $group_id the numeric ID of the BP group
-	 * @param int $group the BP group object
-	 * @return nothing
+	 * Updates a CiviCRM Group when a BuddyPress group is updated
+	 * 
+	 * @param int $group_id The numeric ID of the BP group
+	 * @param object $group The BP group object
+	 * @return void
 	 */
 	public function update_civi_group( $group_id, $group ) {
 	
@@ -905,9 +923,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: deletes a CiviCRM Group when a BuddyPress group is deleted
-	 * @param int $group_id the numeric ID of the BP group
-	 * @return nothing
+	 * Deletes a CiviCRM Group when a BuddyPress group is deleted
+	 * 
+	 * @param int $group_id The numeric ID of the BP group
+	 * @return void
 	 */
 	public function delete_civi_group( $group_id ) {
 	
@@ -975,11 +994,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: create a CiviCRM Group Nesting
-	 * @param int $civi_group_id the numeric ID of the Civi group
-	 * @param int $bp_parent_id the numeric ID of the parent BP group
-	 * @param string $source group update type - ('member' or 'acl')
-	 * @return nothing
+	 * Create a CiviCRM Group Nesting
+	 * 
+	 * @param int $civi_group_id The numeric ID of the Civi group
+	 * @param int $bp_parent_id The numeric ID of the parent BP group
+	 * @param string $source Group update type - ('member' or 'acl')
+	 * @return void
 	 */
 	public function create_civi_group_nesting( $civi_group_id, $bp_parent_id, $source ) {
 		
@@ -1063,10 +1083,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: updates a CiviCRM Group's hierarchy when a BuddyPress group's hierarchy is updated
-	 * @param int $group_id the numeric ID of the BP group
-	 * @param int $parent_id the numeric ID of the parent BP group
-	 * @return nothing
+	 * Updates a CiviCRM Group's hierarchy when a BuddyPress group's hierarchy is updated
+	 * 
+	 * @param int $group_id The numeric ID of the BP group
+	 * @param int $parent_id The numeric ID of the parent BP group
+	 * @return void
 	 */
 	public function update_civi_group_nesting( $bp_group_id, $bp_parent_id ) {
 	
@@ -1194,8 +1215,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: deletes all CiviCRM Group Nestings for a given Group ID
-	 * @return nothing
+	 * Deletes all CiviCRM Group Nestings for a given Group ID
+	 * 
+	 * @param int $civi_group_id The numeric ID of the Civi Group
+	 * @return void
 	 */
 	public function delete_civi_group_nesting( $civi_group_id ) {
 		
@@ -1241,8 +1264,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: creates a CiviCRM Group
-	 * @return nothing
+	 * Creates a CiviCRM Group
+	 * 
+	 * @param array $params The array of Civi API params
+	 * @param string $group_type The type of Civi Group
+	 * @return void
 	 */
 	public function create_group( &$params, $group_type = null ) {
 		
@@ -1274,8 +1300,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: updates a CiviCRM Group or creates it if it doesn't exist
-	 * @return nothing
+	 * Updates a CiviCRM Group or creates it if it doesn't exist
+	 * 
+	 * @param array $params The array of Civi API params
+	 * @param string $group_type The type of Civi Group
+	 * @return void
 	 */
 	public function update_group( &$params, $group_type = null ) {
 		
@@ -1317,8 +1346,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: deletes a CiviCRM Group
-	 * @return nothing
+	 * Deletes a CiviCRM Group
+	 * 
+	 * @param array $params The array of Civi API params
+	 * @return void
 	 */
 	public function delete_group( &$params ) {
 		
@@ -1357,7 +1388,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: sync group member
+	 * Sync group member
+	 * 
+	 * @param array $params The array of Civi API params
+	 * @param string $op The type of Civi operation
 	 * @return int $group_id
 	 */
 	function sync_group_member( &$params, $op ) {
@@ -1440,8 +1474,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: get CiviCRM contact ID by WordPress user ID
-	 * @return int $group_id
+	 * Get CiviCRM contact ID by WordPress user ID
+	 * 
+	 * @param int $user_id The numeric ID of the WordPress user
+	 * @return int $civi_contact_id The numeric ID of the CiviCRM Contact
 	 */
 	public function get_contact_id( $user_id ) {
 		
@@ -1487,7 +1523,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: get CiviCRM group ID
+	 * Get CiviCRM group ID
+	 * 
+	 * @param string $source The sync name for the Civi Group
+	 * @param string $title The title of the Civi Group to search for
+	 * @param bool $abort Whether to die on failure or not
 	 * @return int $group_id
 	 */
 	public function get_group_id( $source, $title = null, $abort = false ) {
@@ -1528,8 +1568,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: update ACL tables
-	 * @return nothing
+	 * Update ACL tables
+	 * 
+	 * @param array $aclParams The array of Civi API params
+	 * @param string $op The Civi database operation
+	 * @return void
 	 */
 	public function updateCiviACLTables( $aclParams, $op ) {
 		
@@ -1548,8 +1591,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: update ACL role
-	 * @return nothing
+	 * Update ACL role
+	 * 
+	 * @param array $params The array of Civi API params
+	 * @param string $op The Civi database operation
+	 * @return void
 	 */
 	public function updateCiviACLRole( &$params, $op ) {
 
@@ -1606,8 +1652,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: update ACL entity role
-	 * @return nothing
+	 * Update ACL entity role
+	 * 
+	 * @param array $params The array of Civi API params
+	 * @param string $op The Civi database operation
+	 * @return void
 	 */
 	public function updateCiviACLEntityRole( &$params, $op ) {
 	
@@ -1633,8 +1682,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: update ACL
-	 * @return nothing
+	 * Update ACL
+	 * 
+	 * @param array $params The array of Civi API params
+	 * @param string $op The Civi database operation
+	 * @return void
 	 */
 	public function updateCiviACL( &$params, $op ) {
 		
@@ -1667,9 +1719,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * @description: updates a CiviCRM Contact when a WordPress user is updated
-	 * @param int $user a WP user object
-	 * @return nothing
+	 * Updates a CiviCRM Contact when a WordPress user is updated
+	 * 
+	 * @param object $user a WP user object
+	 * @return void
 	 */
 	function _civi_contact_update( $user ) {
 		

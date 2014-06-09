@@ -8,7 +8,7 @@ BP_Groups_CiviCRM_Sync_BuddyPress Class
 class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	/** 
-	 * properties
+	 * Properties
 	 */
 	
 	// CiviCRM utilities class
@@ -20,7 +20,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	/** 
-	 * @description: initialises this object
+	 * Initialises this object
+	 * 
 	 * @return object
 	 */
 	function __construct() {
@@ -36,8 +37,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	/**
-	 * @description: set references to other objects
-	 * @return nothing
+	 * Set references to other objects
+	 * 
+	 * @return void
 	 */
 	public function set_references( &$civi_object ) {
 	
@@ -49,8 +51,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 		
 	/**
-	 * @description: register hooks on BuddyPress loaded
-	 * @return nothing
+	 * Register hooks on BuddyPress loaded
+	 * 
+	 * @return void
 	 */
 	public function register_hooks() {
 		
@@ -97,7 +100,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	/**
-	 * @description: test if BuddyPress plugin is active
+	 * Test if BuddyPress plugin is active
+	 * 
 	 * @return bool
 	 */
 	public function is_active() {
@@ -113,11 +117,12 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	/**
-	 * @description: creates a CiviCRM Group when a BuddyPress group is created
-	 * @param int $group_id the numeric ID of the BP group
+	 * Creates a CiviCRM Group when a BuddyPress group is created
+	 * 
+	 * @param int $group_id The numeric ID of the BP group
 	 * @param int $first_member WP user object
-	 * @param int $group the BP group object
-	 * @return nothing
+	 * @param int $group The BP group object
+	 * @return void
 	 */
 	public function create_civi_group( $group_id, $first_member, $group ) {
 	
@@ -137,10 +142,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	/**
-	 * @description: updates a CiviCRM Group when a BuddyPress group is updated
-	 * @param int $group_id the numeric ID of the BP group
-	 * @param int $group the BP group object
-	 * @return nothing
+	 * Updates a CiviCRM Group when a BuddyPress group is updated
+	 * 
+	 * @param int $group_id The numeric ID of the BP group
+	 * @param int $group The BP group object
+	 * @return void
 	 */
 	public function update_civi_group_details( $group_id ) {
 	
@@ -156,10 +162,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	/**
-	 * @description: updates a CiviCRM Group when a BuddyPress group is updated
-	 * @param int $group_id the numeric ID of the BP group
-	 * @param int $group the BP group object
-	 * @return nothing
+	 * Updates a CiviCRM Group when a BuddyPress group is updated
+	 * 
+	 * @param int $group_id The numeric ID of the BP group
+	 * @param int $group The BP group object
+	 * @return void
 	 */
 	public function update_civi_group( $group_id, $group ) {
 		
@@ -178,9 +185,10 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	/**
-	 * @description: deletes a CiviCRM Group when a BuddyPress group is deleted
-	 * @param int $group_id the numeric ID of the BP group
-	 * @return nothing
+	 * Deletes a CiviCRM Group when a BuddyPress group is deleted
+	 * 
+	 * @param int $group_id The numeric ID of the BP group
+	 * @return void
 	 */
 	public function delete_civi_group( $group_id ) {
 	
@@ -194,10 +202,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	/**
-	 * @description: creates a BuddyPress Group given a title and description
-	 * @param string $title the title of the BP group
-	 * @param string $description the description of the BP group
-	 * @return nothing
+	 * Creates a BuddyPress Group given a title and description
+	 * 
+	 * @param string $title The title of the BP group
+	 * @param string $description The description of the BP group
+	 * @return int $new_group_id The numeric ID of the new BP group
 	 */
 	public function create_group( $title, $description, $civi_creator_id = null ) {
 	
@@ -244,11 +253,12 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	/*
-	 * @description: create BuddyPress Group Members given an array of Civi contacts
-	 * @param int $group_id the numeric ID of the BP group
-	 * @param int $civi_users an array of Civi contact data
-	 * @param bool $is_admin makes this member a group admin
-	 * @return bool $error or not...
+	 * Create BuddyPress Group Members given an array of Civi contacts
+	 * 
+	 * @param int $group_id The numeric ID of the BP group
+	 * @param int $civi_users An array of Civi contact data
+	 * @param bool $is_admin Makes this member a group admin
+	 * @return void
 	 */
 	public function create_group_members( $group_id, $civi_users, $is_admin = 0 ) {
 		
@@ -291,11 +301,12 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	/*
-	 * @description: creates a BuddyPress Group Membership given a title and description
-	 * @param int $group_id the numeric ID of the BP group
-	 * @param int $user_id the numeric ID of the WP user
-	 * @param bool $is_admin makes this member a group admin
-	 * @return bool $success or not...
+	 * Creates a BuddyPress Group Membership given a title and description
+	 * 
+	 * @param int $group_id The numeric ID of the BP group
+	 * @param int $user_id The numeric ID of the WP user
+	 * @param bool $is_admin Makes this member a group admin
+	 * @return bool $success True if successful, false if not
 	 */
 	public function create_group_member( $group_id, $user_id, $is_admin = 0 ) {
 		
@@ -325,10 +336,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	/**
-	 * @description: called when user joins group
-	 * @param int $group_id the numeric ID of the BP group
-	 * @param int $user_id the numeric ID of the WP user
-	 * @return nothing
+	 * Called when user joins group
+	 * 
+	 * @param int $group_id The numeric ID of the BP group
+	 * @param int $user_id The numeric ID of the WP user
+	 * @return void
 	 */
 	public function member_just_joined_group( $group_id, $user_id ) {
 	
@@ -340,11 +352,12 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	/*
-	 * @description: called when user joins group. Variable order for ($user_id, $group_id) 
+	 * Called when user joins group. Variable order for ($user_id, $group_id) 
 	 * is reversed for these hook other than 'groups_join_group', so call a separate function
-	 * @param int $group_id the numeric ID of the BP group
-	 * @param int $user_id the numeric ID of the WP user
-	 * @return nothing
+	 * 
+	 * @param int $group_id The numeric ID of the BP group
+	 * @param int $user_id The numeric ID of the WP user
+	 * @return void
 	 */
 	public function member_changed_status_group( $user_id, $group_id ) {
 	
@@ -356,10 +369,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	/*
-	 * @description: inform Civi of membership status change
-	 * @param int $user_id the numeric ID of the WP user
-	 * @param int $group_id the numeric ID of the BP group
-	 * @return nothing
+	 * Inform Civi of membership status change
+	 * 
+	 * @param int $user_id The numeric ID of the WP user
+	 * @param int $group_id The numeric ID of the BP group
+	 * @return void
 	 */
 	public function civi_update_group_membership( $user_id, $group_id ) {
 		
@@ -401,10 +415,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	/*
-	 * @description: inform Civi of membership status change
-	 * @param int $group_id the numeric ID of the BP group
-	 * @param int $user_id the numeric ID of the WP user
-	 * @return nothing
+	 * Inform Civi of membership status change
+	 * 
+	 * @param int $group_id The numeric ID of the BP group
+	 * @param int $user_id The numeric ID of the WP user
+	 * @return void
 	 */
 	public function civi_delete_group_membership( $group_id, $user_id ) {
 		
@@ -431,8 +446,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	/**
-	 * @description: registers when BuddyPress Group Hierarchy plugin is saving a group
-	 * @return nothing
+	 * Registers when BuddyPress Group Hierarchy plugin is saving a group
+	 * 
+	 * @return void
 	 */
 	public function hierarchy_before_change( $group ) {
 		
@@ -450,8 +466,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	/**
-	 * @description: registers when BuddyPress Group Hierarchy plugin has saved a group
-	 * @return nothing
+	 * Registers when BuddyPress Group Hierarchy plugin has saved a group
+	 * 
+	 * @return void
 	 */
 	public function hierarchy_after_change( $group ) {
 	
@@ -462,9 +479,10 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	/*
-	 * @description: get BP group membership status for a user
-	 * @param int $user_id the numeric ID of the WP user
-	 * @param int $group_id the numeric ID of the BP group
+	 * Get BP group membership status for a user
+	 * 
+	 * @param int $user_id The numeric ID of the WP user
+	 * @param int $group_id The numeric ID of the BP group
 	 * @return string $user_group_status
 	 */
 	public function get_user_group_status( $user_id, $group_id ) {
@@ -557,8 +575,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	/*
-	 * @description: creates a WordPress User given a Civi contact
-	 * @param array $civi_contact the data for the Civi contact
+	 * Creates a WordPress User given a Civi contact
+	 * 
+	 * @param array $civi_contact The data for the Civi contact
 	 * @return mixed $user WP user object or false on failure
 	 */
 	public function _wordpress_create_user( $civi_contact ) {
