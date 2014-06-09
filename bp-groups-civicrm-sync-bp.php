@@ -213,6 +213,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		// the creator is the current user
 		$user_id = bp_loggedin_user_id();
 		
+		// get current time
+		$time = current_time( 'mysql' );
+	
 		/**
 		 * Possible parameters (see function groups_create_group):
 		 *	'group_id'
@@ -233,7 +236,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			'slug' => groups_check_slug( sanitize_title( esc_attr( $title ) ) ),
 			'status' => 'public',
 			'enable_forum' => 0,
-			'date_created' => current_time( 'mysql' ),
+			'date_created' => $time,
 
 		);
 		
@@ -242,7 +245,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		
 		// add some meta
 		groups_update_groupmeta( $new_group_id, 'total_member_count', 1 );
-		groups_update_groupmeta( $new_group_id, 'last_activity', time() );
+		groups_update_groupmeta( $new_group_id, 'last_activity', $time );
 		groups_update_groupmeta( $new_group_id, 'invite_status', 'members' );
 		
 		// --<
