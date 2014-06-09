@@ -519,11 +519,11 @@ class BP_Groups_CiviCRM_Sync {
 		// get all BP groups (batching to come later)
 		$groups = $this->bp->get_all_groups();
 		
-		///*
+		/*
 		print_r( array( 
 			'groups' => $groups,
 		) ); die();
-		//*/
+		*/
 		
 		// if we get some
 		if ( count( $groups ) > 0 ) {
