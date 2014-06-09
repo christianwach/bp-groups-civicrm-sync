@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: BP Groups CiviCRM Sync 0.1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/bp-groups-civicrm-sync\n"
-"POT-Creation-Date: 2014-06-09 20:15:20+00:00\n"
+"POT-Creation-Date: 2014-06-09 20:17:33+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -91,7 +91,7 @@ msgid "BuddyPress to CiviCRM Sync"
 msgstr ""
 
 #: bp-groups-civicrm-sync.php:514
-msgid "Check for group sync integrity"
+msgid "Sync BP Groups to CiviCRM"
 msgstr ""
 #. Plugin Name of the plugin/theme
 msgid "BP Groups CiviCRM Sync"

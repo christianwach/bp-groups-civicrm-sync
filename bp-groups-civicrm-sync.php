@@ -511,7 +511,7 @@ class BP_Groups_CiviCRM_Sync {
 		<table class="form-table">
 
 			<tr valign="top">
-				<th scope="row"><label for="bpcivisync_bp_check">'.__( 'Check for group sync integrity', 'bp-groups-civicrm-sync' ).'</label></th>
+				<th scope="row"><label for="bpcivisync_bp_check">'.__( 'Sync BP Groups to CiviCRM', 'bp-groups-civicrm-sync' ).'</label></th>
 				<td><input id="bpcivisync_bp_check" name="bpcivisync_bp_check" value="1" type="checkbox" /></td>
 			</tr>
 
