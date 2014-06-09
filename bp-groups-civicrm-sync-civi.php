@@ -67,11 +67,59 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// intercept CiviCRM group edit form submission
 		add_action( 'civicrm_postProcess', array( $this, 'civi_group_form_process' ), 10, 2 );
 		
+		// intercept CiviCRM's add contacts to group
+		add_action( 'civicrm_post', array( $this, 'civi_group_contacts_added' ), 10, 4 );
+		
+		// intercept CiviCRM's delete contacts from group
+		add_action( 'civicrm_post', array( $this, 'civi_group_contacts_deleted' ), 10, 4 );
+		
 	}
 	
 	
 	
 	//##########################################################################
+	
+	
+	
+	/**
+	 * Update a BP group when a CiviCRM contact is added to a group
+	 * 
+	 * @param string $op The type of database operation
+	 * @param string $objectName The type of object
+	 * @param integer $objectId The ID of the object
+	 * @param object $objectRef The object
+	 * @return void
+	 */
+	public function civi_group_contacts_added( $op, $objectName, $objectId, $objectRef ) {
+		
+		// target our operation
+		if ( $op != 'create' ) return;
+		
+		// target our object type
+		if ( $objectName != 'GroupContact' ) return;
+		
+	}
+	
+	
+	
+	/**
+	 * Update a BP group when a CiviCRM contact is deleted from a group
+	 * 
+	 * @param string $op The type of database operation
+	 * @param string $objectName The type of object
+	 * @param integer $objectId The ID of the object
+	 * @param object $objectRef The object
+	 * @return void
+	 */
+	public function civi_group_contacts_deleted( $op, $objectName, $objectId, $objectRef ) {
+		
+		// target our operation
+		if ( $op != 'delete' ) return;
+		
+		// target our object type
+		if ( $objectName != 'GroupContact' ) return;
+		
+	}
 	
 	
 	
