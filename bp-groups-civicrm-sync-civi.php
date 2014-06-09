@@ -720,11 +720,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * Creates a CiviCRM Group when a BuddyPress group is created
 	 * 
 	 * @param int $bp_group_id the numeric ID of the BP group
-	 * @param object $first_member WP user object
 	 * @param object $bp_group The BP group object
 	 * @return array $return Associative array of CiviCRM group IDs (member_group_id, acl_group_id)
 	 */
-	public function create_civi_group( $bp_group_id, $first_member, $bp_group ) {
+	public function create_civi_group( $bp_group_id, $bp_group ) {
 	
 		// are we overriding this?
 		if ( $this->do_not_sync ) return false;
