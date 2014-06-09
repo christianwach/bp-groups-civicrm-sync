@@ -120,14 +120,14 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 * Creates a CiviCRM Group when a BuddyPress group is created
 	 * 
 	 * @param int $group_id The numeric ID of the BP group
-	 * @param int $first_member WP user object
-	 * @param int $group The BP group object
+	 * @param object $first_member WP user object
+	 * @param object $group The BP group object
 	 * @return void
 	 */
 	public function create_civi_group( $group_id, $first_member, $group ) {
 	
 		// pass to Civi to create groups
-		$civi_groups = $this->civi->create_civi_group( $group_id, $first_member, $group );
+		$civi_groups = $this->civi->create_civi_group( $group_id, $group );
 		
 		// did we get any?
 		if ( $civi_groups !== false ) {
@@ -197,6 +197,40 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		
 		// we don't need to delete our meta, as BP will do so
 		
+	}
+	
+	
+	
+	/**
+	 * Get all BuddyPress groups
+	 * 
+	 * @return array $groups Array of BuddyPress group objects
+	 */
+	public function get_all_groups() {
+		
+		// init return as empty array
+		$groups = array();
+		
+		// init with unlikely per_page value so we get all
+		$params = array(
+			'type' => 'alphabetical',
+			'per_page' => 100000,
+			'populate_extras' => true,
+			'show_hidden' => true,
+		);
+	
+		// query with our params
+		$has_groups = bp_has_groups( $params );
+		
+		// access template
+		global $groups_template;
+	
+		// if we we get any, return them
+		if ( $has_groups ) return $groups_template->groups;
+	
+		// fallback
+		return $groups;
+	
 	}
 	
 	
