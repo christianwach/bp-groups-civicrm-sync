@@ -76,6 +76,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// intercept CiviCRM's delete contacts from group
 		add_action( 'civicrm_pre', array( $this, 'civi_group_contacts_deleted' ), 10, 4 );
 		
+		// intercept CiviCRM's rejoin contacts to group
+		add_action( 'civicrm_pre', array( $this, 'civi_group_contacts_rejoined' ), 10, 4 );
+		
 		// broadcast to others
 		do_action( 'bp_groups_civicrm_sync_civi_loaded' );
 		
@@ -98,6 +101,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 */
 	public function civi_group_contacts_added( $op, $object_name, $civi_group_id, $contact_ids ) {
 		
+		// target our operation
+		if ( $op != 'create' ) return;
+		
+		// target our object type
+		if ( $object_name != 'GroupContact' ) return;
+		
 		/*
 		// debug
 		$this->_debug( array( 
@@ -108,12 +117,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			'contact_ids' => $contact_ids,
 		));
 		*/
-		
-		// target our operation
-		if ( $op != 'create' ) return;
-		
-		// target our object type
-		if ( $object_name != 'GroupContact' ) return;
 		
 		// get group data
 		$civi_group = $this->get_civi_group_by_id( $civi_group_id );
@@ -213,6 +216,17 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// target our object type
 		if ( $object_name != 'GroupContact' ) return;
 		
+		/*
+		// debug
+		$this->_debug( array( 
+			'method' => 'civi_group_contacts_deleted',
+			'op' => $op,
+			'object_name' => $object_name,
+			'civi_group_id' => $civi_group_id,
+			'contact_ids' => $contact_ids,
+		));
+		*/
+		
 		// get group data
 		$civi_group = $this->get_civi_group_by_id( $civi_group_id );
 		
@@ -285,6 +299,53 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		
 		// re-add this action
 		add_action( 'civicrm_pre', array( $this, 'civi_group_contacts_deleted' ), 10, 4 );
+		
+	}
+	
+	
+	
+	/**
+	 * Update a BP group when a CiviCRM contact is re-added to a group
+	 * 
+	 * The issue here is that CiviCRM fires 'civicrm_pre' with $op = 'delete' regardless
+	 * of whether the contact is being removed or deleted. If a contact is later re-added
+	 * to the group, then $op != 'create', so we need to intercept $op = 'edit'
+	 * 
+	 * @param string $op The type of database operation
+	 * @param string $object_name The type of object
+	 * @param integer $civi_group_id The ID of the CiviCRM group
+	 * @param array $contact_ids Array of Civi Contact IDs
+	 * @return void
+	 */
+	public function civi_group_contacts_rejoined( $op, $object_name, $civi_group_id, $contact_ids ) {
+		
+		// target our operation
+		if ( $op != 'edit' ) return;
+		
+		// target our object type
+		if ( $object_name != 'GroupContact' ) return;
+		
+		/*
+		// debug
+		$this->_debug( array( 
+			'method' => 'civi_group_contacts_rejoined',
+			'bp_group_id' => $bp_group_id,
+			'contacts' => $contacts,
+		));
+		die();
+		*/
+		
+		// first, remove this action, in case we recurse
+		remove_action( 'civicrm_pre', array( $this, 'civi_group_contacts_rejoined' ), 10 );
+		
+		// set op to 'create'
+		$op = 'create';
+		
+		// use our group contact addition callback
+		$this->civi_group_contacts_added( $op, $object_name, $civi_group_id, $contact_ids );
+		
+		// re-add this action
+		add_action( 'civicrm_pre', array( $this, 'civi_group_contacts_rejoined' ), 10, 4 );
 		
 	}
 	

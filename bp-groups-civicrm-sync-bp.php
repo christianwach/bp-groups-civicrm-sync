@@ -308,8 +308,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		// do we have any members?
 		if ( ! isset( $civi_users ) OR count( $civi_users ) == 0 ) return;
 		
-		
-		
 		// add members of this group as admins
 		foreach( $civi_users AS $civi_user ) {
 	
@@ -358,10 +356,29 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 */
 	public function create_group_member( $group_id, $user_id, $is_admin = 0 ) {
 		
-		// User is already a member, just return true
-		if ( groups_is_user_member( $user_id, $group_id ) ) return true;
+		// check existing membership
+		$is_member = groups_is_user_member( $user_id, $group_id );
 		
+		// if user is already a member
+		if ( $is_member ) {
+			
+			// if they are being promoted
+			if ( $is_admin == 1 ) {
+				
+				// promote them to admin
+				$this->promote_group_member( $group_id, $user_id, 'admin' );
+			
+			} else {
+			
+				// demote them if needed
+				$this->demote_group_member( $group_id, $user_id );
+			
+			}
+			
+			// either way, skip creation
+			return true;
 		
+		}
 		
 		// set up member
 		$new_member = new BP_Groups_Member;
@@ -395,9 +412,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		// do we have any members?
 		if ( ! isset( $civi_users ) OR count( $civi_users ) == 0 ) return;
 		
-		
-		
-		// add members of this group as admins
+		// one by one...
 		foreach( $civi_users AS $civi_user ) {
 	
 			// get WP user
@@ -406,7 +421,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			// sanity check
 			if ( $user ) {
 			
-				// try and create membership
+				// try and delete membership
 				if ( ! $this->delete_group_member( $group_id, $user->ID ) ) {
 				
 					// allow something to be done about it
@@ -428,9 +443,10 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	/*
-	 * Delete a BuddyPress Group Membership given a WordPress user. Because we 
-	 * are using 'groups_remove_member()', we will not trigger recursion since 
-	 * we only hook into 'groups_removed_member' within this plugin
+	 * Delete a BuddyPress Group Membership given a WordPress user
+	 * 
+	 * We cannot use 'groups_remove_member()' because the logged in user may not 
+	 * pass the 'bp_is_item_admin()' check in that function.
 	 * 
 	 * @param int $group_id The numeric ID of the BP group
 	 * @param int $user_id The numeric ID of the WP user
@@ -439,10 +455,16 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	public function delete_group_member( $group_id, $user_id ) {
 		
 		// bail if user is not a member
-		if ( ! groups_is_user_member( $user_id, $group_id ) ) return;
+		if ( ! groups_is_user_member( $user_id, $group_id ) ) return false;
 		
-		// remove them
-		$success = groups_remove_member( $user_id, $group_id );
+		// set up object
+		$member = new BP_Groups_Member( $user_id, $group_id );
+		
+		// we hook in to 'groups_removed_member' so we can trigger this action without recursion
+		do_action( 'groups_remove_member', $group_id, $user_id );
+		
+		// remove member
+		$success = $member->remove();
 		
 		// --<
 		return $success;
@@ -463,9 +485,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		// do we have any members?
 		if ( ! isset( $civi_users ) OR count( $civi_users ) == 0 ) return;
 		
-		
-		
-		// add members of this group as admins
+		// one by one...
 		foreach( $civi_users AS $civi_user ) {
 	
 			// get WP user
@@ -474,7 +494,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			// sanity check
 			if ( $user ) {
 			
-				// try and create membership
+				// try and demote member
 				if ( ! $this->demote_group_member( $group_id, $user->ID ) ) {
 				
 					// allow something to be done about it
@@ -496,9 +516,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	/*
-	 * Delete a BuddyPress Group Membership given a WordPress user. Because we 
-	 * are using 'groups_remove_member()', we will not trigger recursion since 
-	 * we only hook into 'groups_removed_member' within this plugin
+	 * Demote a BuddyPress Group Member given a WordPress user.
 	 * 
 	 * @param int $group_id The numeric ID of the BP group
 	 * @param int $user_id The numeric ID of the WP user
@@ -507,12 +525,12 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	public function demote_group_member( $group_id, $user_id ) {
 		
 		// bail if user is not a member
-		if ( ! groups_is_user_member( $user_id, $group_id ) ) return;
+		if ( ! groups_is_user_member( $user_id, $group_id ) ) return false;
 		
-		// remove admin status from BP group membership (demote to member)
+		// set up object
 		$member = new BP_Groups_Member( $user_id, $group_id );
 		
-		// trigger action
+		// we hook in to 'groups_demoted_member' so we can trigger this action without recursion
 		do_action( 'groups_demote_member', $group_id, $user_id );
 		
 		// demote them
@@ -526,18 +544,74 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	/*
-	We could use the "banned" group membership status as equivalent to "removed" in CiviCRM
+	 * Promote BuddyPress Group Members given an array of Civi contacts
+	 * 
+	 * @param int $group_id The numeric ID of the BP group
+	 * @param int $civi_users An array of Civi contact data
+	 * @param string $status The status to which the members will be promoted
+	 * @return void
+	 */
+	public function promote_group_members( $group_id, $civi_users, $status ) {
 		
-	// ban
-	$member = new BP_Groups_Member( $user_id, $group_id );
-	do_action( 'groups_ban_member', $group_id, $user_id );
-	return $member->ban();
+		// do we have any members?
+		if ( ! isset( $civi_users ) OR count( $civi_users ) == 0 ) return;
+		
+		// one by one...
+		foreach( $civi_users AS $civi_user ) {
 	
-	// unban
-	$member = new BP_Groups_Member( $user_id, $group_id );
-	do_action( 'groups_unban_member', $group_id, $user_id );
-	return $member->unban();
-	*/
+			// get WP user
+			$user = get_user_by( 'email', $civi_user['email'] );
+			
+			// sanity check
+			if ( $user ) {
+			
+				// try and promote member
+				if ( ! $this->promote_group_member( $group_id, $user->ID, $status ) ) {
+				
+					// allow something to be done about it
+					do_action( 'bp_groups_civicrm_sync_member_promote_failed', $group_id, $user->ID );
+				
+				} else {
+				
+					// broadcast
+					do_action( 'bp_groups_civicrm_sync_member_promoted', $group_id, $user->ID );
+				
+				}
+			
+			}
+			
+		}
+		
+	}
+	
+	
+	
+	/*
+	 * Promote a BuddyPress Group Member given a WordPress user and a status.
+	 * 
+	 * @param int $group_id The numeric ID of the BP group
+	 * @param int $user_id The numeric ID of the WP user
+	 * @param string $status The status to which the member will be promoted
+	 * @return bool $success True if successful, false if not
+	 */
+	public function promote_group_member( $group_id, $user_id, $status ) {
+		
+		// bail if user is not a member
+		if ( ! groups_is_user_member( $user_id, $group_id ) ) return false;
+		
+		// set up object
+		$member = new BP_Groups_Member( $user_id, $group_id );
+		
+		// we hook in to 'groups_demoted_member' so we can trigger this action without recursion
+		do_action( 'groups_promote_member', $group_id, $user_id, $status );
+		
+		// promote them
+		$success = $member->promote( $status );
+		
+		// --<
+		return $success;
+		
+	}
 	
 	
 	
