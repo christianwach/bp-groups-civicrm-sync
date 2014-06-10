@@ -171,17 +171,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// first, remove this action, otherwise we'll recurse
 		remove_action( 'civicrm_pre', array( $this, 'civi_group_contacts_added' ), 10 );
 		
-		/*
-		// debug
-		$this->_debug( array( 
-			'method' => 'civi_group_contacts_added',
-			'bp_group_id' => $bp_group_id,
-			'contacts' => $contacts,
-			'is_admin' => $is_admin,
-		));
-		die();
-		*/
-		
 		// get the Civi group ID of the member group
 		$civi_group_id = $this->find_group_id(
 			$this->get_group_sync_name( $bp_group_id )
@@ -212,13 +201,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * 
 	 * @param string $op The type of database operation
 	 * @param string $object_name The type of object
-	 * @param integer $group_id The ID of the group
+	 * @param integer $civi_group_id The ID of the CiviCRM group
 	 * @param array $contact_ids Array of Civi Contact IDs
 	 * @return void
 	 */
-	public function civi_group_contacts_deleted( $op, $object_name, $group_id, $contact_ids ) {
-		
-		return;
+	public function civi_group_contacts_deleted( $op, $object_name, $civi_group_id, $contact_ids ) {
 		
 		// target our operation
 		if ( $op != 'delete' ) return;
@@ -226,21 +213,78 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// target our object type
 		if ( $object_name != 'GroupContact' ) return;
 		
+		// get group data
+		$civi_group = $this->get_civi_group_by_id( $civi_group_id );
+		
+		// sanity check
+		if ( $civi_group === false ) return;
+		
+		// get BP group ID
+		$bp_group_id = $this->get_bp_group_id_by_civi_group( $civi_group );
+		
+		// sanity check
+		if ( $bp_group_id === false ) return;
+		
+		// loop through contacts
+		if ( count( $contact_ids ) > 0 ) {
+			foreach( $contact_ids AS $contact_id ) {
+				
+				// get contact data
+				$contact = $this->get_contact_by_contact_id( $contact_id );
+				
+				// sanity check and add if okay
+				if ( $contact !== false ) $contacts[] = $contact;
+				
+			}
+		}
+		
 		/*
 		// debug
 		$this->_debug( array( 
 			'method' => 'civi_group_contacts_deleted',
-			'op' => $op,
-			'object_name' => $object_name,
-			'group_id' => $group_id,
-			'contact_ids' => $contact_ids,
+			'bp_group_id' => $bp_group_id,
+			'contacts' => $contacts,
 		));
-		
 		die();
 		*/
 		
-		// get BP group ID
-		//$this->get_bp_group_id_by_civi_group_id( $group_id );
+		// is this an ACL group?
+		if ( $this->is_acl_group( $civi_group ) ) {
+			
+			// demote to member of BP group
+			$this->bp->demote_group_members( $bp_group_id, $contacts );
+	
+			// skip deletion
+			return;
+			
+		}
+		
+		// delete from BP group
+		$this->bp->delete_group_members( $bp_group_id, $contacts );
+	
+		// first, remove this action, otherwise we'll recurse
+		remove_action( 'civicrm_pre', array( $this, 'civi_group_contacts_deleted' ), 10 );
+		
+		// get the group ID of the acl group
+		$civi_group_id = $this->find_group_id(
+			$this->get_acl_group_sync_name( $bp_group_id )
+		);
+		
+		// sanity check
+		if ( $civi_group_id ) {
+			
+			// loop through contacts
+			foreach( $contacts AS $contact ) {
+				
+				// remove member from group
+				$this->delete_group_member( $civi_group_id, $contact['contact_id'] );
+			
+			}
+		
+		}
+		
+		// re-add this action
+		add_action( 'civicrm_pre', array( $this, 'civi_group_contacts_deleted' ), 10, 4 );
 		
 	}
 	
@@ -1600,6 +1644,33 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
+	 * Delete a CiviCRM contact from a CiviCRM group
+	 * 
+	 * @param integer $civi_group_id The ID of the CiviCRM group
+	 * @param array $civi_contact_id The numeric ID of a Civi contact
+	 * @return array $group_contact
+	 */
+	public function delete_group_member( $civi_group_id, $civi_contact_id ) {
+	
+		// init API params
+		$params = array(
+			'version' => 3,
+			'contact_id' => $civi_contact_id,
+			'group_id' => $civi_group_id,
+			'status' => 'Deleted',
+		);
+		
+		// call API
+		$group_contact = civicrm_api( 'GroupContact', 'Delete', $params );
+		
+		// --<
+		return $group_contact;
+		
+	}
+	
+	
+	
+	/**
 	 * Sync group member
 	 * 
 	 * @param array $params The array of Civi API params
@@ -1673,7 +1744,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		}
 		
 		// do we have an admin user?
-		if ( $params['is_admin'] !== NULL ) {
+		if ( isset( $params['is_admin'] ) AND ! is_null( $params['is_admin'] ) ) {
 		
 			// get the group ID of the acl group
 			$civi_group_id = $this->find_group_id(
@@ -1693,7 +1764,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			);
 			
 			// either add or remove, depending on role
-			if ($params['is_admin']) {
+			if ( $params['is_admin'] ) {
 				$acl_group_contact = civicrm_api( 'GroupContact', 'Create', $groupParams );
 			} else {
 				$acl_group_contact = civicrm_api( 'GroupContact', 'Delete', $groupParams );
