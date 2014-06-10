@@ -392,7 +392,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	/*
-	 * Called when user joins group. Variable order for ($user_id, $group_id) 
+	 * Called when user's group status changes. Variable order for ($user_id, $group_id) 
 	 * is reversed for these hook other than 'groups_join_group', so call a separate function
 	 * 
 	 * @param int $group_id The numeric ID of the BP group
