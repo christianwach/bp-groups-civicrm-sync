@@ -451,6 +451,96 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	
+	/*
+	 * Demote BuddyPress Group Members given an array of Civi contacts
+	 * 
+	 * @param int $group_id The numeric ID of the BP group
+	 * @param int $civi_users An array of Civi contact data
+	 * @return void
+	 */
+	public function demote_group_members( $group_id, $civi_users ) {
+		
+		// do we have any members?
+		if ( ! isset( $civi_users ) OR count( $civi_users ) == 0 ) return;
+		
+		
+		
+		// add members of this group as admins
+		foreach( $civi_users AS $civi_user ) {
+	
+			// get WP user
+			$user = get_user_by( 'email', $civi_user['email'] );
+			
+			// sanity check
+			if ( $user ) {
+			
+				// try and create membership
+				if ( ! $this->demote_group_member( $group_id, $user->ID ) ) {
+				
+					// allow something to be done about it
+					do_action( 'bp_groups_civicrm_sync_member_demote_failed', $group_id, $user->ID );
+				
+				} else {
+				
+					// broadcast
+					do_action( 'bp_groups_civicrm_sync_member_demoted', $group_id, $user->ID );
+				
+				}
+			
+			}
+			
+		}
+		
+	}
+	
+	
+	
+	/*
+	 * Delete a BuddyPress Group Membership given a WordPress user. Because we 
+	 * are using 'groups_remove_member()', we will not trigger recursion since 
+	 * we only hook into 'groups_removed_member' within this plugin
+	 * 
+	 * @param int $group_id The numeric ID of the BP group
+	 * @param int $user_id The numeric ID of the WP user
+	 * @return bool $success True if successful, false if not
+	 */
+	public function demote_group_member( $group_id, $user_id ) {
+		
+		// bail if user is not a member
+		if ( ! groups_is_user_member( $user_id, $group_id ) ) return;
+		
+		// remove admin status from BP group membership (demote to member)
+		$member = new BP_Groups_Member( $user_id, $group_id );
+		
+		// trigger action
+		do_action( 'groups_demote_member', $group_id, $user_id );
+		
+		// demote them
+		$success = $member->demote();
+		
+		// --<
+		return $success;
+		
+	}
+	
+	
+	
+	/*
+	We could use the "banned" group membership status as equivalent to "removed" in CiviCRM
+		
+	// ban
+	$member = new BP_Groups_Member( $user_id, $group_id );
+	do_action( 'groups_ban_member', $group_id, $user_id );
+	return $member->ban();
+	
+	// unban
+	$member = new BP_Groups_Member( $user_id, $group_id );
+	do_action( 'groups_unban_member', $group_id, $user_id );
+	return $member->unban();
+	*/
+	
+	
+	
 	/** 
 	 * Called when user joins group
 	 * 
