@@ -91,6 +91,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		
 		}
 		
+		// broadcast to others
+		do_action( 'bp_groups_civicrm_sync_bp_loaded' );
+		
 	}
 	
 	
@@ -314,7 +317,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			if ( ! $user ) {
 			
 				// create a WP user
-				$user = $this->_wordpress_create_user( $civi_user );
+				$user = $this->wordpress_create_user( $civi_user );
 				
 			}
 			
@@ -617,7 +620,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 * @param array $civi_contact The data for the Civi contact
 	 * @return mixed $user WP user object or false on failure
 	 */
-	public function _wordpress_create_user( $civi_contact ) {
+	public function wordpress_create_user( $civi_contact ) {
 	
 		// create username from display name
 		$user_name = sanitize_title( $civi_contact['display_name'] );
@@ -627,7 +630,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		
 		/*
 		print_r( array(
-			'in' => '_wordpress_create_user',
+			'in' => 'wordpress_create_user',
 			'civi_contact' => $civi_contact,
 			'user_name' => $user_name,
 			'user_id' => $user_id,
@@ -667,6 +670,17 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 				
 			) );
 			
+			// re-add Civi plugin filters
+			add_action( 'user_register', array( civi_wp(), 'update_user' ) );
+			add_action( 'profile_update', array( civi_wp(), 'update_user' ) );
+			
+			// re-add CiviCRM WordPress Profile Sync filters
+			global $civicrm_wp_profile_sync;
+			if ( is_object( $civicrm_wp_profile_sync ) ) {
+				add_action( 'user_register', array( $civicrm_wp_profile_sync, 'wordpress_contact_updated' ), 100, 1 );
+				add_action( 'profile_update', array( $civicrm_wp_profile_sync, 'wordpress_contact_updated' ), 100, 1 );
+			}
+		
 		}
 		
 		// sanity check

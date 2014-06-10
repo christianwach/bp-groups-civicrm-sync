@@ -73,6 +73,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// intercept CiviCRM's delete contacts from group
 		//add_action( 'civicrm_post', array( $this, 'civi_group_contacts_deleted' ), 10, 4 );
 		
+		// broadcast to others
+		do_action( 'bp_groups_civicrm_sync_civi_loaded' );
+		
 	}
 	
 	
@@ -1450,7 +1453,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * 
 	 * @param array $params The array of Civi API params
 	 * @param string $op The type of Civi operation
-	 * @return int $group_id
+	 * @return void
 	 */
 	function sync_group_member( &$params, $op ) {
 		
@@ -1459,21 +1462,31 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		
 		// if we don't get one...
 		if ( !$civi_contact_id ) {
-
-			// construct error string
-			$error = sprintf( 
-				__( 'No Civi Contact ID could be found in "sync_group_member" for %d', 'bp-groups-civicrm-sync' ),
-				$user_id
-			);
 			
-			// whitespace
-			$error .= "\n\n<br><br>";
+			// what to do?
+			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
 
-			// add user
-			$error .= print_r( new WP_User( $user_id ), true );
+				// construct error string
+				$error = sprintf( 
+					__( 'No Civi Contact ID could be found in "sync_group_member" for %d', 'bp-groups-civicrm-sync' ),
+					$user_id
+				);
 			
-			// debug?
-			wp_die( $error );
+				// whitespace
+				$error .= "\n\n<br><br>";
+
+				// add user
+				$error .= print_r( new WP_User( $user_id ), true );
+			
+				// debug?
+				wp_die( $error );
+			
+			} else {
+				
+				// just return
+				return;
+				
+			}
 
 		}
 		
@@ -1587,20 +1600,30 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			$civi_contact_id = CRM_Core_BAO_UFMatch::getContactId( $user_id );
 			if ( !$civi_contact_id ) {
 				
-				// construct error string
-				$error = sprintf( 
-					__( 'No Civi Contact ID could be found in "get_contact_id" for %d', 'bp-groups-civicrm-sync' ),
-					$user_id
-				);
-				
-				// whitespace
-				$error .= "\n\n<br><br>";
+				// what to do?
+				if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
 
-				// add user
-				$error .= print_r( new WP_User( $user_id ), true );
+					// construct error string
+					$error = sprintf( 
+						__( 'No Civi Contact ID could be found in "get_contact_id" for %d', 'bp-groups-civicrm-sync' ),
+						$user_id
+					);
+				
+					// whitespace
+					$error .= "\n\n<br><br>";
+
+					// add user
+					$error .= print_r( new WP_User( $user_id ), true );
 			
-				// debug?
-				wp_die( $error );
+					// debug?
+					wp_die( $error );
+				
+				} else {
+					
+					// fallback
+					return false;
+					
+				}
 
 			}
 		

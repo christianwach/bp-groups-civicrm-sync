@@ -24,10 +24,14 @@ if ( !defined( 'BP_GROUPS_CIVICRM_SYNC_FILE' ) ) {
 if ( !defined( 'BP_GROUPS_CIVICRM_SYNC_URL' ) ) {
 	define( 'BP_GROUPS_CIVICRM_SYNC_URL', plugin_dir_url( BP_GROUPS_CIVICRM_SYNC_FILE ) );
 }
+
 // store PATH to this plugin's directory
 if ( !defined( 'BP_GROUPS_CIVICRM_SYNC_PATH' ) ) {
 	define( 'BP_GROUPS_CIVICRM_SYNC_PATH', plugin_dir_path( BP_GROUPS_CIVICRM_SYNC_FILE ) );
 }
+
+// for debugging
+define( 'BP_GROUPS_CIVICRM_SYNC_DEBUG', false );
 
 
 
