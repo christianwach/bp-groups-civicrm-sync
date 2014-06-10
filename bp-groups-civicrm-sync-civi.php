@@ -208,33 +208,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	/**
-	 * Add a CiviCRM contact to a CiviCRM group
-	 * 
-	 * @param integer $civi_group_id The ID of the CiviCRM group
-	 * @param array $civi_contact_id The numeric ID of a Civi contact
-	 * @return array $group_contact
-	 */
-	public function create_group_member( $civi_group_id, $civi_contact_id ) {
-	
-		// init API params
-		$params = array(
-			'version' => 3,
-			'contact_id' => $civi_contact_id,
-			'group_id' => $civi_group_id,
-			'status' => 'Added',
-		);
-		
-		// call API
-		$group_contact = civicrm_api( 'GroupContact', 'Create', $params );
-		
-		// --<
-		return $group_contact;
-		
-	}
-	
-	
-	
-	/**
 	 * Update a BP group when a CiviCRM contact is deleted (or removed) from a group
 	 * 
 	 * @param string $op The type of database operation
@@ -1596,6 +1569,33 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	
 	
 	//##########################################################################
+	
+	
+	
+	/**
+	 * Add a CiviCRM contact to a CiviCRM group
+	 * 
+	 * @param integer $civi_group_id The ID of the CiviCRM group
+	 * @param array $civi_contact_id The numeric ID of a Civi contact
+	 * @return array $group_contact
+	 */
+	public function create_group_member( $civi_group_id, $civi_contact_id ) {
+	
+		// init API params
+		$params = array(
+			'version' => 3,
+			'contact_id' => $civi_contact_id,
+			'group_id' => $civi_group_id,
+			'status' => 'Added',
+		);
+		
+		// call API
+		$group_contact = civicrm_api( 'GroupContact', 'Create', $params );
+		
+		// --<
+		return $group_contact;
+		
+	}
 	
 	
 	
