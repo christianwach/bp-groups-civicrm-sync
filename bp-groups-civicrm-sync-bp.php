@@ -285,6 +285,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		groups_update_groupmeta( $new_group_id, 'last_activity', $time );
 		groups_update_groupmeta( $new_group_id, 'invite_status', 'members' );
 		
+		// broadcast
+		do_action( 'bp_groups_civicrm_sync_group_created', $new_group_id );
+		
 		// --<
 		return $new_group_id;
 		
@@ -329,6 +332,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 				
 					// allow something to be done about it
 					do_action( 'bp_groups_civicrm_sync_member_create_failed', $group_id, $user->ID, $is_admin );
+				
+				} else {
+				
+					// broadcast
+					do_action( 'bp_groups_civicrm_sync_member_created', $group_id, $user->ID, $is_admin );
 				
 				}
 			
@@ -375,7 +383,75 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	
 	
 	
-	/**
+	/*
+	 * Delete BuddyPress Group Members given an array of Civi contacts
+	 * 
+	 * @param int $group_id The numeric ID of the BP group
+	 * @param int $civi_users An array of Civi contact data
+	 * @return void
+	 */
+	public function delete_group_members( $group_id, $civi_users ) {
+		
+		// do we have any members?
+		if ( ! isset( $civi_users ) OR count( $civi_users ) == 0 ) return;
+		
+		
+		
+		// add members of this group as admins
+		foreach( $civi_users AS $civi_user ) {
+	
+			// get WP user
+			$user = get_user_by( 'email', $civi_user['email'] );
+			
+			// sanity check
+			if ( $user ) {
+			
+				// try and create membership
+				if ( ! $this->delete_group_member( $group_id, $user->ID ) ) {
+				
+					// allow something to be done about it
+					do_action( 'bp_groups_civicrm_sync_member_delete_failed', $group_id, $user->ID );
+				
+				} else {
+				
+					// broadcast
+					do_action( 'bp_groups_civicrm_sync_member_deleted', $group_id, $user->ID );
+				
+				}
+			
+			}
+			
+		}
+		
+	}
+	
+	
+	
+	/*
+	 * Delete a BuddyPress Group Membership given a WordPress user. Because we 
+	 * are using 'groups_remove_member()', we will not trigger recursion since 
+	 * we only hook into 'groups_removed_member' within this plugin
+	 * 
+	 * @param int $group_id The numeric ID of the BP group
+	 * @param int $user_id The numeric ID of the WP user
+	 * @return bool $success True if successful, false if not
+	 */
+	public function delete_group_member( $group_id, $user_id ) {
+		
+		// bail if user is not a member
+		if ( ! groups_is_user_member( $user_id, $group_id ) ) return;
+		
+		// remove them
+		$success = groups_remove_member( $user_id, $group_id );
+		
+		// --<
+		return $success;
+		
+	}
+	
+	
+	
+	/** 
 	 * Called when user joins group
 	 * 
 	 * @param int $group_id The numeric ID of the BP group
