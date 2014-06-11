@@ -64,6 +64,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// allow plugins to register php and template directories
 		add_action( 'civicrm_config', array( $this, 'register_directories' ), 10, 1 );
 		
+		// intercept CiviCRM group create form
+		add_action( 'civicrm_buildForm', array( $this, 'civi_group_form_create_options' ), 10, 2 );
+		
 		// intercept CiviCRM group edit form
 		add_action( 'civicrm_buildForm', array( $this, 'civi_group_form_edit_options' ), 10, 2 );
 		
@@ -620,7 +623,49 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		
 		
 	/**
-	 * Enable a BP group to be created from pre-existing Civi/Drupal/OG groups
+	 * Enable a BP group to be created from a pre-existing Civi group
+	 * 
+	 * @param string $formName The CiviCRM form name
+	 * @param object $form The CiviCRM form object
+	 * @return void
+	 */
+	public function civi_group_form_create_options( $formName, &$form ) {
+		
+		// is this the group edit form?
+		if ( $formName != 'CRM_Group_Form_Edit' ) return;
+	
+		// get Civi group
+		$civi_group = $form->getVar( '_group' );
+	
+		// if we have a group, bail
+		if ( isset( $civi_group ) ) return;
+		if ( ! empty( $civi_group ) ) return;
+		
+		// okay, it's the new group form...
+		
+		/*
+		$this->_debug( array( 
+			'formName' => $formName,
+			'form' => $form,
+			'civi_group' => $civi_group,
+		) ); 
+		die();
+		*/
+		
+		// Add the field element in the form
+		$form->add( 'checkbox', 'bpgroupscivicrmsynccreatefromnew', __( 'Create BuddyPress Group', 'bp-groups-civicrm-sync' ) );
+
+		// dynamically insert a template block in the page
+		CRM_Core_Region::instance('page-body')->add( array(
+			'template' => 'bp-groups-civicrm-sync-new.tpl'
+		));
+
+	}
+	
+	
+		
+	/**
+	 * Enable a BP group to be created from pre-existing Drupal OG groups in Civi
 	 * 
 	 * @param string $formName The CiviCRM form name
 	 * @param object $form The CiviCRM form object
@@ -630,8 +675,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		
 		// is this the group edit form?
 		if ( $formName != 'CRM_Group_Form_Edit' ) return;
-		
-		
 		
 		// get Civi group
 		$civi_group = $form->getVar( '_group' );
@@ -644,16 +687,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		) ); die();
 		*/
 
-		// get source
-		$source = $civi_group->source;
+		// get source safely
+		$source = isset( $civi_group->source ) ? $civi_group->source : '';
 	
 		// in Drupal, OG groups are synced with 'OG Sync Group :GID:'
 		// related OG ACL groups are synced with 'OG Sync Group ACL :GID:'
 	
 		// is this an OG administrator group?
 		if ( strstr( $source, 'OG Sync Group ACL' ) === false ) return;
-		
-		
 		
 		/*
 		print_r( array(
@@ -664,11 +705,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		*/
 
 		// Add the field element in the form
-		$form->add( 'checkbox', 'bpgroupscivicrmsynccreate', __( 'Create BuddyPress Group', 'bp-groups-civicrm-sync' ) );
+		$form->add( 'checkbox', 'bpgroupscivicrmsynccreatefromog', __( 'Create BuddyPress Group', 'bp-groups-civicrm-sync' ) );
 
 		// dynamically insert a template block in the page
 		CRM_Core_Region::instance('page-body')->add( array(
-			'template' => 'bp-groups-civicrm-sync.tpl'
+			'template' => 'bp-groups-civicrm-sync-og.tpl'
 		));
 
 	}
@@ -694,16 +735,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// kick out if not group edit form
 		if ( ! is_a( $form, 'CRM_Group_Form_Edit' ) ) return;
 		
-		
-		
 		// inspect submitted values
 		$values = $form->getVar( '_submitValues' );
 		
 		// was our checkbox ticked?
-		if ( !isset( $values['bpgroupscivicrmsynccreate'] ) ) return;
-		if ( $values['bpgroupscivicrmsynccreate'] != '1' ) return;
-		
-		
+		if ( !isset( $values['bpgroupscivicrmsynccreatefromog'] ) ) return;
+		if ( $values['bpgroupscivicrmsynccreatefromog'] != '1' ) return;
 		
 		// get Civi group
 		$civi_group = $form->getVar( '_group' );
