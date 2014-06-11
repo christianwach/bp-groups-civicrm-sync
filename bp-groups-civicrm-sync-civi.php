@@ -65,10 +65,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		add_action( 'civicrm_config', array( $this, 'register_directories' ), 10, 1 );
 		
 		// intercept CiviCRM group edit form
-		add_action( 'civicrm_buildForm', array( $this, 'civi_group_form_options' ), 10, 2 );
+		add_action( 'civicrm_buildForm', array( $this, 'civi_group_form_edit_options' ), 10, 2 );
 		
 		// intercept CiviCRM group edit form submission
-		add_action( 'civicrm_postProcess', array( $this, 'civi_group_form_process' ), 10, 2 );
+		add_action( 'civicrm_postProcess', array( $this, 'civi_group_form_edit_process' ), 10, 2 );
 		
 		// intercept CiviCRM's add contacts to group
 		add_action( 'civicrm_pre', array( $this, 'civi_group_contacts_added' ), 10, 4 );
@@ -626,7 +626,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @param object $form The CiviCRM form object
 	 * @return void
 	 */
-	public function civi_group_form_options( $formName, &$form ) {
+	public function civi_group_form_edit_options( $formName, &$form ) {
 		
 		// is this the group edit form?
 		if ( $formName != 'CRM_Group_Form_Edit' ) return;
@@ -682,7 +682,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @param object $form The CiviCRM form object
 	 * @return void
 	 */
-	public function civi_group_form_process( $formName, &$form ) {
+	public function civi_group_form_edit_process( $formName, &$form ) {
 		
 		/*
 		print_r( array(
