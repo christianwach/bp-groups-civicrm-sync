@@ -393,7 +393,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				'is_active' => 1,
 			);
 		
-			// set inscrutable group type
+			// set inscrutable group type (Access Control)
 			$params['group_type'] = array( '1' => 1 );
 		
 			// get "source" for the Civi group
@@ -1032,8 +1032,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// get name for the Civi group
 		$group_params['source'] = $this->get_group_sync_name( $bp_group_id );
 		
-		// define Civi group type
-		$group_params['group_type'] = array( '2' => 1 );
+		// define Civi group type (Mailing List by default)
+		$group_params['group_type'] = apply_filters( 'bp_groups_civicrm_sync_member_group_type', array( '2' => 1 ) );
 		
 		// use our adapted version of CRM_Bridge_OG_Drupal::updateCiviGroup()
 		$this->create_group( $group_params );
@@ -1052,7 +1052,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// set source name for ACL group
 		$acl_params['source'] = $this->get_acl_group_sync_name( $bp_group_id );
 		
-		// set inscrutable group type
+		// set inscrutable group type (Access Control)
 		$acl_params['group_type'] = array( '1' => 1 );
 		
 		// create the ACL group too
@@ -1139,8 +1139,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// get name for the Civi group
 		$group_params['source'] = $this->get_group_sync_name( $group_id );
 		
-		// define Civi group type
-		$group_params['group_type'] = array( '2' => 1 );
+		// define Civi group type (Mailing List by default)
+		$group_params['group_type'] = apply_filters( 'bp_groups_civicrm_sync_member_group_type', array( '2' => 1 ) );
 		
 		// use our adapted version of CRM_Bridge_OG_Drupal::updateCiviGroup()
 		$this->update_group( $group_params );
@@ -1159,7 +1159,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// set source name for ACL group
 		$acl_params['source'] = $this->get_acl_group_sync_name( $group_id );
 		
-		// set inscrutable group type
+		// set inscrutable group type (Access Control)
 		$acl_params['group_type'] = array( '1' => 1 );
 		
 		// update the ACL group too
@@ -1407,8 +1407,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// get name for the Civi group
 		$group_params['source'] = $source;
 		
-		// define Civi group type
-		$group_params['group_type'] = array( '2' => 1 );
+		// define Civi group type (Mailing List by default)
+		$group_params['group_type'] = apply_filters( 'bp_groups_civicrm_sync_member_group_type', array( '2' => 1 ) );
 		
 		// use our adapted version of CRM_Bridge_OG_Drupal::updateCiviGroup()
 		$this->update_group( $group_params );
@@ -1446,7 +1446,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// get name for the Civi ACL group
 		$group_params['source'] = $acl_source;
 		
-		// define Civi group type
+		// define Civi group type (Access Control)
 		$group_params['group_type'] = array( '1' => 1 );
 		
 		// use our adapted version of CRM_Bridge_OG_Drupal::updateCiviGroup()
