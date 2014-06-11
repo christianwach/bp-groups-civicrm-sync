@@ -243,12 +243,18 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 * 
 	 * @param string $title The title of the BP group
 	 * @param string $description The description of the BP group
+	 * @param int $creator_id The numeric ID of the WP user
 	 * @return int $new_group_id The numeric ID of the new BP group
 	 */
-	public function create_group( $title, $description, $civi_creator_id = null ) {
-	
-		// the creator is the current user
-		$user_id = bp_loggedin_user_id();
+	public function create_group( $title, $description, $creator_id = null ) {
+		
+		// if we have no Civi contact passed...
+		if ( is_null( $creator_id ) ) {
+		
+			// set the creator to the current WP user
+			$creator_id = bp_loggedin_user_id();
+		
+		}
 		
 		// get current time
 		$time = current_time( 'mysql' );
@@ -267,7 +273,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		$args = array(
 			
 			// group_id is not passed so that we create a group
-			'creator_id' => $user_id,
+			'creator_id' => $creator_id,
 			'name' => $title,
 			'description' => $description,
 			'slug' => groups_check_slug( sanitize_title( esc_attr( $title ) ) ),
