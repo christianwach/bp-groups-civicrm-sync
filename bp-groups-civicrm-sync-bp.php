@@ -386,6 +386,16 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		
 		}
 		
+		// unhook our action to prevent BP->Civi sync
+		remove_action( 'groups_join_group', array( $this, 'member_just_joined_group' ), 5 );
+		
+		// use BuddyPress function
+		$success = groups_join_group( $group_id, $user_id );
+		
+		// re-hook our action to enable BP->Civi sync
+		add_action( 'groups_join_group', array( $this, 'member_just_joined_group' ), 5, 2 );
+		
+		/*
 		// set up member
 		$new_member = new BP_Groups_Member;
 		$new_member->group_id = $group_id;
@@ -398,9 +408,10 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		
 		// save the membership
 		if ( ! $new_member->save() ) return false;
+		*/
 		
 		// --<
-		return true;
+		return $success;
 		
 	}
 	
@@ -897,6 +908,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			// remove filters
 			$this->remove_filters();
 			
+			// allow other plugins to be aware of what we're doing
+			do_action( 'bp_groups_civicrm_sync_before_insert_user', $civi_contact );
+			
 			// create the user
 			$user_id = wp_insert_user( array(
 			
@@ -910,6 +924,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			
 			// re-add filters
 			$this->add_filters();
+			
+			// allow other plugins to be aware of what we've done
+			do_action( 'bp_groups_civicrm_sync_after_insert_user', $civi_contact, $user_id );
 			
 		}
 		
