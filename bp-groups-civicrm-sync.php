@@ -295,6 +295,15 @@ class BP_Groups_CiviCRM_Sync {
 				
 			}
 			
+			// did we ask to check the sync of BP groups and Civi groups?
+			if ( $bpcivisync_bp_check_sync == '1' ) {
+			
+				// check the sync between BP groups and Civi groups
+				$this->check_sync_between_bp_and_civi();
+				return;
+				
+			}
+			
 		}
 		
 	}
@@ -405,6 +414,9 @@ class BP_Groups_CiviCRM_Sync {
 		
 		// show BP to Civi
 		$this->admin_form_bp_to_civi();
+		
+		// show BP and Civi Sync Check
+		$this->admin_form_audit_bp_and_civi();
 		
 		// do we have any OG groups?
 		if ( $checking_og AND $has_og_groups ) {
@@ -526,6 +538,33 @@ class BP_Groups_CiviCRM_Sync {
 	
 	
 	/**
+	 * Show our BP and Civi Sync Checker
+	 * 
+	 * @return void
+	 */
+	public function admin_form_audit_bp_and_civi() {
+	
+		// show heading
+		echo '
+		<hr>
+		<h3>'.__( 'Check BuddyPress and CiviCRM Sync', 'bp-groups-civicrm-sync' ).'</h3>
+		
+		<p>'.__( 'Check this to find out if there are BuddyPres Groups with no CiviCRM Group and vice versa.', 'bp-groups-civicrm-sync' ).'</p>
+
+		<table class="form-table">
+
+			<tr valign="top">
+				<th scope="row"><label for="bpcivisync_bp_check_sync">'.__( 'Check BP Groups and CiviCRM Groups', 'bp-groups-civicrm-sync' ).'</label></th>
+				<td><input id="bpcivisync_bp_check_sync" name="bpcivisync_bp_check_sync" value="1" type="checkbox" /></td>
+			</tr>
+
+		</table>';
+				
+	}
+	
+	
+	
+	/**
 	 * Sync BuddyPress groups to CiviCRM
 	 * 
 	 * @return void
@@ -551,7 +590,7 @@ class BP_Groups_CiviCRM_Sync {
 			foreach( $groups AS $group ) {
 				
 				// get the Civi group ID of this BuddyPress group
-				$civi_group_id = $this->civi->get_group_id(
+				$civi_group_id = $this->civi->find_group_id(
 					$this->civi->get_group_sync_name( $group->id )
 				);
 				
@@ -566,6 +605,8 @@ class BP_Groups_CiviCRM_Sync {
 				// if we don't get an ID, create the group...
 				if ( ! $civi_group_id ) {
 					$this->bp->create_civi_group( $group->id, null, $group );
+				} else {
+					$this->bp->update_civi_group( $group->id, $group );
 				}
 				
 				// sync members
@@ -615,6 +656,69 @@ class BP_Groups_CiviCRM_Sync {
 	}
 	
 	
+		
+	/**
+	 * Check the Sync between BuddyPress groups and CiviCRM groups
+	 * 
+	 * @return void
+	 */
+	public function check_sync_between_bp_and_civi() {
+		
+		// disable
+		return;
+		
+		// init or die
+		if ( ! $this->civi->is_active() ) return;
+		
+		// define get all groups params
+		$params = array(
+			'version' => 3,
+			// define stupidly high limit, because API defaults to 25
+			'options' => array( 
+				'limit' => '10000',
+			),
+		);
+		
+		// get all groups with no parent ID (get ALL for now)
+		$all_groups = civicrm_api( 'group', 'get', $params );
+		
+		/*
+		print_r( array(
+			'method' => 'check_sync_between_bp_and_civi',
+			'all_groups' => $all_groups,
+		) ); die();
+		*/
+		
+		// if we got some...
+		if (
+		
+			$all_groups['is_error'] == 0 AND 
+			isset( $all_groups['values'] ) AND 
+			count( $all_groups['values'] ) > 0 
+			
+		) {
+			
+			// loop through them
+			foreach( $all_groups['values'] AS $civi_group ) {
+				
+				// is this group supposed to have a BP Group?
+				$has_group = $this->civi->has_bp_group( $civi_group );
+				
+				// if so...
+				if ( $has_group ) {
+					
+					// get the ID of the BP group it was supposed to sync with
+					$group_id = $this->civi->get_bp_group_id_by_civi_group( $civi_group );
+					
+					// does this group exist?
+					
+				} 
+				
+			}
+			
+		}
+		
+	}
 		
 } // class ends
 

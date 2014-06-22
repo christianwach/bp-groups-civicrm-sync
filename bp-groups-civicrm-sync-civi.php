@@ -3,6 +3,13 @@
 --------------------------------------------------------------------------------
 BP_Groups_CiviCRM_Sync_CiviCRM Class
 --------------------------------------------------------------------------------
+
+Notes:
+
+$groupOptions = CRM_Core_BAO_OptionValue::getOptionValuesAssocArrayFromName('group_type');
+$groupTypes = CRM_Core_OptionGroup::values('group_type', TRUE);
+
+--------------------------------------------------------------------------------
 */
 
 class BP_Groups_CiviCRM_Sync_CiviCRM {
