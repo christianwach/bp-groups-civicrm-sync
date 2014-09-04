@@ -1254,9 +1254,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// define group
 		$params = array(
 			'bp_group_id' => $bp_group_id,
-			'name' => $bp_group->name,
-			'title' => $bp_group->name,
-			'description' => $bp_group->description,
+			'name' => stripslashes( $bp_group->name ),
+			'title' => stripslashes( $bp_group->name ),
+			'description' => stripslashes( $bp_group->description ),
 			'is_active' => 1,
 		);
 		
@@ -1361,9 +1361,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// define group
 		$params = array(
 			'bp_group_id' => $group_id,
-			'name' => $group->name,
-			'title' => $group->name,
-			'description' => $group->description,
+			'name' => stripslashes( $group->name ),
+			'title' => stripslashes( $group->name ),
+			'description' => stripslashes( $group->description ),
 			'is_active' => 1,
 		);
 		
