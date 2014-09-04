@@ -549,7 +549,7 @@ class BP_Groups_CiviCRM_Sync {
 		<hr>
 		<h3>'.__( 'Check BuddyPress and CiviCRM Sync', 'bp-groups-civicrm-sync' ).'</h3>
 		
-		<p>'.__( 'Check this to find out if there are BuddyPres Groups with no CiviCRM Group and vice versa.', 'bp-groups-civicrm-sync' ).'</p>
+		<p>'.__( 'Check this to find out if there are BuddyPress Groups with no CiviCRM Group and vice versa.', 'bp-groups-civicrm-sync' ).'</p>
 
 		<table class="form-table">
 
