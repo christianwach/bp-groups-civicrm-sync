@@ -1578,11 +1578,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $create_result['is_error'] == '1' ) {
 		
 			// debug
-			print_r( array(
+			trigger_error( print_r( array( 
 				'method' => 'create_civi_group_nesting',
 				'create_params' => $create_params,
 				'create_result' => $create_result,
-			) ); die();
+			), true ), E_USER_ERROR ); die();
 		
 		}
 		
