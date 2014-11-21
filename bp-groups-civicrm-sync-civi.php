@@ -2108,7 +2108,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			CRM_Core_BAO_UFMatch::synchronizeUFMatch(
 				$user, // user object
 				$user->ID, // ID
-				$user->user_mail, // unique identifier
+				$user->user_email, // unique identifier
 				'WordPress', // CMS
 				null, // status
 				'Individual', // contact type
@@ -2565,7 +2565,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 			$user, // user object
 			$user->ID, // ID
-			$user->user_mail, // unique identifier
+			$user->user_email, // unique identifier
 			'WordPress', // CMS
 			null, // unused
 			'Individual' // contact type
