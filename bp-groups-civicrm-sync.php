@@ -216,7 +216,6 @@ class BP_Groups_CiviCRM_Sync {
 			// add the admin page to the Settings menu
 			$page = add_options_page(
 
-				'settings.php',
 				__( 'BP Groups CiviCRM Sync', 'bp-groups-civicrm-sync' ),
 				__( 'BP Groups CiviCRM Sync', 'bp-groups-civicrm-sync' ),
 				'manage_options',
