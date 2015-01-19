@@ -8,13 +8,13 @@ Stable tag: 0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-A port of the Drupal civicrm_og_sync module for WordPress that enables synchronisation between BuddyPress Groups and CiviCRM.
+BP Groups CiviCRM Sync enables two-way synchronisation between BuddyPress groups and CiviCRM groups.
 
 
 
 == Description ==
 
-A port of the Drupal civicrm_og_sync module for WordPress that enables synchronisation between BuddyPress Groups and CiviCRM. It does not rely on any core CiviCRM files, since any required (or adapted) methods are included.
+A port of the Drupal civicrm_og_sync module for WordPress that enables two-way synchronisation between BuddyPress Groups and CiviCRM. It does not rely on any core CiviCRM files, since any required (or adapted) methods are included.
 
 For each *BuddyPress* group, the plugin will automatically create two *CiviCRM* groups:
 
