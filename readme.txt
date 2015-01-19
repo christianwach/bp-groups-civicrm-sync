@@ -16,6 +16,13 @@ A port of the Drupal civicrm_og_sync module for WordPress that enables synchroni
 
 A port of the Drupal civicrm_og_sync module for WordPress that enables synchronisation between BuddyPress Groups and CiviCRM. It does not rely on any core CiviCRM files, since any required (or adapted) methods are included.
 
+For each *BuddyPress* group, the plugin will automatically create two *CiviCRM* groups:
+
+* A "normal" (mailing list) group containing a contact record for each corresponding *BuddyPress* group member. This group is assigned the same name as the linked *BuddyPress* group.
+* An "ACL" group containing the contact record of the administrators of the corresponding *BuddyPress* group. This gives *BuddyPress* group admins the ability to view and edit members of their group in *CiviCRM*.
+
+When a new user is added to (or joins) a *BuddyPress* group, they are automatically added to the corresponding *CiviCRM* group. Likewise, when a contact is added to the "normal" *CiviCRM* group, they will be added as a member to the corresponding *BuddyPress* group. If a contact is added to the *CiviCRM* "ACL" group, they will be added to the *BuddyPress* group as an administrator.
+
 ### Requirements
 
 This plugin requires a minimum of *WordPress 3.9*, *BuddyPress 1.8* and *CiviCRM 4.6-alpha1*. Please refer to the installation page for how to use this plugin with versions of CiviCRM prior to 4.6-alpha1.
