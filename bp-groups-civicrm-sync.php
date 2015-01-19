@@ -2,11 +2,14 @@
 /*
 --------------------------------------------------------------------------------
 Plugin Name: BP Groups CiviCRM Sync
-Description: A port of the Drupal civicrm_og_sync module for WordPress that enables synchronisation between BuddyPress Groups and CiviCRM. Does not rely on any core CiviCRM files, since any required (or adapted) methods are included.
-Version: 0.1
+Plugin URI: https://github.com/christianwach/bp-groups-civicrm-sync
+Description: A port of the Drupal civicrm_og_sync module for WordPress that enables synchronisation between BuddyPress Groups and CiviCRM.
 Author: Christian Wach
+Version: 0.1
 Author URI: http://haystack.co.uk
-Plugin URI: http://haystack.co.uk
+Text Domain: bp-groups-civicrm-sync
+Domain Path: /languages
+Depends: CiviCRM
 --------------------------------------------------------------------------------
 */
 
