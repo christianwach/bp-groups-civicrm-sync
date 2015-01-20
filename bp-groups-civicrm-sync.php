@@ -19,17 +19,17 @@ Depends: CiviCRM
 define( 'BP_GROUPS_CIVICRM_SYNC_VERSION', '0.1' );
 
 // store reference to this file
-if ( !defined( 'BP_GROUPS_CIVICRM_SYNC_FILE' ) ) {
+if ( ! defined( 'BP_GROUPS_CIVICRM_SYNC_FILE' ) ) {
 	define( 'BP_GROUPS_CIVICRM_SYNC_FILE', __FILE__ );
 }
 
 // store URL to this plugin's directory
-if ( !defined( 'BP_GROUPS_CIVICRM_SYNC_URL' ) ) {
+if ( ! defined( 'BP_GROUPS_CIVICRM_SYNC_URL' ) ) {
 	define( 'BP_GROUPS_CIVICRM_SYNC_URL', plugin_dir_url( BP_GROUPS_CIVICRM_SYNC_FILE ) );
 }
 
 // store PATH to this plugin's directory
-if ( !defined( 'BP_GROUPS_CIVICRM_SYNC_PATH' ) ) {
+if ( ! defined( 'BP_GROUPS_CIVICRM_SYNC_PATH' ) ) {
 	define( 'BP_GROUPS_CIVICRM_SYNC_PATH', plugin_dir_path( BP_GROUPS_CIVICRM_SYNC_FILE ) );
 }
 
@@ -191,10 +191,10 @@ class BP_Groups_CiviCRM_Sync {
 	public function add_admin_menu() {
 
 		// we must be network admin in multisite
-		if ( is_multisite() AND !is_super_admin() ) { return false; }
+		if ( is_multisite() AND ! is_super_admin() ) { return false; }
 
 		// check user permissions
-		if ( !current_user_can('manage_options') ) { return false; }
+		if ( ! current_user_can('manage_options') ) { return false; }
 
 		// try and update options
 		$saved = $this->update_options();
@@ -231,7 +231,7 @@ class BP_Groups_CiviCRM_Sync {
 
 		// add styles only on our admin page, see:
 		// http://codex.wordpress.org/Function_Reference/wp_enqueue_script#Load_scripts_only_on_plugin_pages
-		//add_action( 'admin_print_styles-'.$page, array( $this, 'add_admin_styles' ) );
+		//add_action( 'admin_print_styles-' . $page, array( $this, 'add_admin_styles' ) );
 
 	}
 
@@ -320,7 +320,7 @@ class BP_Groups_CiviCRM_Sync {
 	public function admin_form() {
 
 		// we must be network admin in multisite
-		if ( is_multisite() AND !is_super_admin() ) {
+		if ( is_multisite() AND ! is_super_admin() ) {
 
 			// disallow
 			wp_die( __( 'You do not have permission to access this page.', 'bp-groups-civicrm-sync' ) );
@@ -363,12 +363,12 @@ class BP_Groups_CiviCRM_Sync {
 				if ( $has_og_groups !== false ) {
 
 					// show settings updated message
-					echo '<div id="message" class="updated"><p>'.__( 'OG Groups found. You can now choose to migrate them to BP.', 'bp-groups-civicrm-sync' ).'</p></div>';
+					echo '<div id="message" class="updated"><p>' . __( 'OG Groups found. You can now choose to migrate them to BP.', 'bp-groups-civicrm-sync' ) . '</p></div>';
 
 				} else {
 
 					// show settings updated message
-					echo '<div id="message" class="updated"><p>'.__( 'No OG Groups found.', 'bp-groups-civicrm-sync' ).'</p></div>';
+					echo '<div id="message" class="updated"><p>' . __( 'No OG Groups found.', 'bp-groups-civicrm-sync' ) . '</p></div>';
 
 				}
 
@@ -380,7 +380,7 @@ class BP_Groups_CiviCRM_Sync {
 				} else {
 
 					// show settings updated message
-					echo '<div id="message" class="updated"><p>'.__( 'Options saved.', 'bp-groups-civicrm-sync' ).'</p></div>';
+					echo '<div id="message" class="updated"><p>' . __( 'Options saved.', 'bp-groups-civicrm-sync' ) . '</p></div>';
 
 				}
 
@@ -400,12 +400,12 @@ class BP_Groups_CiviCRM_Sync {
 
 		<div class="icon32" id="icon-options-general"><br/></div>
 
-		<h2>'.__( 'BP Groups CiviCRM Sync', 'bp-groups-civicrm-sync' ).'</h2>
+		<h2>' . __( 'BP Groups CiviCRM Sync', 'bp-groups-civicrm-sync' ) . '</h2>
 
-		<form method="post" action="'.htmlentities($url.'&updated=true').'">
+		<form method="post" action="' . htmlentities( $url . '&updated=true' ) . '">
 
-		'.wp_nonce_field( 'bpcivisync_admin_action', 'bpcivisync_nonce', true, false ).'
-		'.wp_referer_field( false ).'
+		' . wp_nonce_field( 'bpcivisync_admin_action', 'bpcivisync_nonce', true, false ) . '
+		' . wp_referer_field( false ) . '
 
 		';
 
@@ -431,13 +431,13 @@ class BP_Groups_CiviCRM_Sync {
 			// show heading
 			echo '
 			<hr>
-			<h3>'.__( 'CiviCRM to BuddyPress Sync', 'bp-groups-civicrm-sync' ).'</h3>';
+			<h3>' . __( 'CiviCRM to BuddyPress Sync', 'bp-groups-civicrm-sync' ) . '</h3>';
 
 			// did we ask to check for OG groups?
 			if ( $checking_og ) {
 
 				// none were found
-				echo '<p>'.__( 'No OG Groups found', 'bp-groups-civicrm-sync' ).'</p>
+				echo '<p>' . __( 'No OG Groups found', 'bp-groups-civicrm-sync' ) . '</p>
 				';
 
 			} else {
@@ -446,7 +446,7 @@ class BP_Groups_CiviCRM_Sync {
 				<table class="form-table">
 
 					<tr valign="top">
-						<th scope="row"><label for="bpcivisync_og_check">'.__( 'Check for OG groups', 'bp-groups-civicrm-sync' ).'</label></th>
+						<th scope="row"><label for="bpcivisync_og_check">' . __( 'Check for OG groups', 'bp-groups-civicrm-sync' ) . '</label></th>
 						<td><input id="bpcivisync_og_check" name="bpcivisync_og_check" value="1" type="checkbox" /></td>
 					</tr>
 
@@ -466,7 +466,7 @@ class BP_Groups_CiviCRM_Sync {
 
 		<hr>
 		<p class="submit">
-			<input type="submit" name="bpcivisync_submit" value="'.__( 'Submit', 'bp-groups-civicrm-sync' ).'" class="button-primary" />
+			<input type="submit" name="bpcivisync_submit" value="' . __( 'Submit', 'bp-groups-civicrm-sync' ) . '" class="button-primary" />
 		</p>
 
 		';
@@ -477,7 +477,7 @@ class BP_Groups_CiviCRM_Sync {
 		</form>
 
 		</div>
-		'."\n\n\n\n";
+		' . "\n\n\n\n";
 
 
 
@@ -495,14 +495,14 @@ class BP_Groups_CiviCRM_Sync {
 		// show migration option
 		echo '
 		<hr>
-		<h3>'.__( 'Convert OG groups in CiviCRM to BP groups', 'bp-groups-civicrm-sync' ).'</h3>
+		<h3>' . __( 'Convert OG groups in CiviCRM to BP groups', 'bp-groups-civicrm-sync' ) . '</h3>
 
-		<p>'.__( 'WARNING: this will probably only work when there are a small number of groups. If you have lots of groups, it would be worth writing some kind of chunked update routine. I will upgrade this plugin to do so at some point.', 'bp-groups-civicrm-sync' ).'</p>
+		<p>' . __( 'WARNING: this will probably only work when there are a small number of groups. If you have lots of groups, it would be worth writing some kind of chunked update routine. I will upgrade this plugin to do so at some point.', 'bp-groups-civicrm-sync' ) . '</p>
 
 		<table class="form-table">
 
 			<tr valign="top">
-				<th scope="row"><label for="bpcivisync_convert">'.__( 'Convert OG groups to BP groups', 'bp-groups-civicrm-sync' ).'</label></th>
+				<th scope="row"><label for="bpcivisync_convert">' . __( 'Convert OG groups to BP groups', 'bp-groups-civicrm-sync' ) . '</label></th>
 				<td><input id="bpcivisync_convert" name="bpcivisync_convert" value="1" type="checkbox" /></td>
 			</tr>
 
@@ -522,14 +522,14 @@ class BP_Groups_CiviCRM_Sync {
 		// show heading
 		echo '
 		<hr>
-		<h3>'.__( 'BuddyPress to CiviCRM Sync', 'bp-groups-civicrm-sync' ).'</h3>
+		<h3>' . __( 'BuddyPress to CiviCRM Sync', 'bp-groups-civicrm-sync' ) . '</h3>
 
-		<p>'.__( 'WARNING: this will probably only work when there are a small number of groups. If you have lots of groups, it would be worth writing some kind of chunked update routine. I will upgrade this plugin to do so at some point.', 'bp-groups-civicrm-sync' ).'</p>
+		<p>' . __( 'WARNING: this will probably only work when there are a small number of groups. If you have lots of groups, it would be worth writing some kind of chunked update routine. I will upgrade this plugin to do so at some point.', 'bp-groups-civicrm-sync' ) . '</p>
 
 		<table class="form-table">
 
 			<tr valign="top">
-				<th scope="row"><label for="bpcivisync_bp_check">'.__( 'Sync BP Groups to CiviCRM', 'bp-groups-civicrm-sync' ).'</label></th>
+				<th scope="row"><label for="bpcivisync_bp_check">' . __( 'Sync BP Groups to CiviCRM', 'bp-groups-civicrm-sync' ) . '</label></th>
 				<td><input id="bpcivisync_bp_check" name="bpcivisync_bp_check" value="1" type="checkbox" /></td>
 			</tr>
 
@@ -549,14 +549,14 @@ class BP_Groups_CiviCRM_Sync {
 		// show heading
 		echo '
 		<hr>
-		<h3>'.__( 'Check BuddyPress and CiviCRM Sync', 'bp-groups-civicrm-sync' ).'</h3>
+		<h3>' . __( 'Check BuddyPress and CiviCRM Sync', 'bp-groups-civicrm-sync' ) . '</h3>
 
-		<p>'.__( 'Check this to find out if there are BuddyPress Groups with no CiviCRM Group and vice versa.', 'bp-groups-civicrm-sync' ).'</p>
+		<p>' . __( 'Check this to find out if there are BuddyPress Groups with no CiviCRM Group and vice versa.', 'bp-groups-civicrm-sync' ) . '</p>
 
 		<table class="form-table">
 
 			<tr valign="top">
-				<th scope="row"><label for="bpcivisync_bp_check_sync">'.__( 'Check BP Groups and CiviCRM Groups', 'bp-groups-civicrm-sync' ).'</label></th>
+				<th scope="row"><label for="bpcivisync_bp_check_sync">' . __( 'Check BP Groups and CiviCRM Groups', 'bp-groups-civicrm-sync' ) . '</label></th>
 				<td><input id="bpcivisync_bp_check_sync" name="bpcivisync_bp_check_sync" value="1" type="checkbox" /></td>
 			</tr>
 

@@ -554,7 +554,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	public function get_group_sync_name( $bp_group_id ) {
 
 		// construct name, based on OG schema
-		return 'BP Sync Group :'.$bp_group_id.':';
+		return 'BP Sync Group :' . $bp_group_id . ':';
 
 	}
 
@@ -569,7 +569,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	public function get_acl_group_sync_name( $bp_group_id ) {
 
 		// construct name, based on OG schema
-		return 'BP Sync Group ACL :'.$bp_group_id.':';
+		return 'BP Sync Group ACL :' . $bp_group_id . ':';
 
 	}
 
@@ -688,7 +688,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$values = $form->getVar( '_submitValues' );
 
 		// was our checkbox ticked?
-		if ( !isset( $values['bpgroupscivicrmsynccreatefromnew'] ) ) return;
+		if ( ! isset( $values['bpgroupscivicrmsynccreatefromnew'] ) ) return;
 		if ( $values['bpgroupscivicrmsynccreatefromnew'] != '1' ) return;
 
 		/*
@@ -938,7 +938,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$values = $form->getVar( '_submitValues' );
 
 		// was our checkbox ticked?
-		if ( !isset( $values['bpgroupscivicrmsynccreatefromog'] ) ) return;
+		if ( ! isset( $values['bpgroupscivicrmsynccreatefromog'] ) ) return;
 		if ( $values['bpgroupscivicrmsynccreatefromog'] != '1' ) return;
 
 		// get Civi group
@@ -1283,7 +1283,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$acl_params = $params;
 
 		// set name and title of ACL group
-		$acl_params['name'] = $acl_params['title'] = $acl_params['name'].': Administrator';
+		$acl_params['name'] = $acl_params['title'] = $acl_params['name'] . ': Administrator';
 
 		// set source name for ACL group
 		$acl_params['source'] = $this->get_acl_group_sync_name( $bp_group_id );
@@ -1390,7 +1390,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$acl_params = $params;
 
 		// set name and title of ACL group
-		$acl_params['name'] = $acl_params['title'] = $acl_params['name'].': Administrator';
+		$acl_params['name'] = $acl_params['title'] = $acl_params['name'] . ': Administrator';
 
 		// set source name for ACL group
 		$acl_params['source'] = $this->get_acl_group_sync_name( $group_id );
@@ -1480,7 +1480,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$acl_params = $params;
 
 		// set name and title of ACL group
-		$acl_params['name'] = $acl_params['title'] = $acl_params['name'].': Administrator';
+		$acl_params['name'] = $acl_params['title'] = $acl_params['name'] . ': Administrator';
 
 		// set source name for ACL group
 		$acl_params['source'] = $this->get_acl_group_sync_name( $group_id );
@@ -1720,7 +1720,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		*/
 
 		/*
-		if( !$success ) {
+		if( ! $success ) {
 			bp_core_add_message( __( 'There was an error syncing; please try again.', 'bp-groups-civicrm-sync' ), 'error' );
 		} else {
 			bp_core_add_message( __( 'Group hierarchy settings synced successfully.', 'bp-groups-civicrm-sync' ) );
@@ -1980,7 +1980,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$civi_contact_id = $this->get_contact_id( $params['uf_id'] );
 
 		// if we don't get one...
-		if ( !$civi_contact_id ) {
+		if ( ! $civi_contact_id ) {
 
 			// what to do?
 			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
@@ -2117,7 +2117,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 			// get the Civi contact ID
 			$civi_contact_id = CRM_Core_BAO_UFMatch::getContactId( $user_id );
-			if ( !$civi_contact_id ) {
+			if ( ! $civi_contact_id ) {
 
 				// what to do?
 				if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
@@ -2230,7 +2230,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$civi_group_id = CRM_Core_DAO::singleValueQuery( $query, $params );
 
 		// check for failure and our flag
-		if ( $abort AND !$civi_group_id ) {
+		if ( $abort AND ! $civi_group_id ) {
 
 			// construct meaningful error
 			$error = sprintf(
