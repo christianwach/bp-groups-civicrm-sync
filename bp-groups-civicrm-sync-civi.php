@@ -981,8 +981,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			// loop through them
 			foreach( $all_groups['values'] AS $civi_group ) {
 
-				// if "Source" is not present, it's not an OG group
-				if ( ! isset( $civi_group['source'] ) ) continue;
+				// if "source" is not present, it's not an OG group
+				if ( ! isset( $civi_group['source'] ) OR is_null( $civi_group['source'] ) ) continue;
 
 				// get source
 				$source = $civi_group['source'];

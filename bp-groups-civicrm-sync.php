@@ -134,9 +134,6 @@ class BP_Groups_CiviCRM_Sync {
 	 */
 	public function activate() {
 
-		// create a meta group to hold all BuddyPress groups
-		$this->civi->create_meta_group();
-
 	}
 
 
@@ -275,6 +272,7 @@ class BP_Groups_CiviCRM_Sync {
 			// init vars
 			$bpcivisync_convert = '0';
 			$bpcivisync_bp_check = '0';
+			$bpcivisync_bp_check_sync = '0';
 
 			// get variables
 			extract( $_POST );
@@ -380,7 +378,7 @@ class BP_Groups_CiviCRM_Sync {
 				} else {
 
 					// show settings updated message
-					echo '<div id="message" class="updated"><p>' . __( 'Options saved.', 'bp-groups-civicrm-sync' ) . '</p></div>';
+					//echo '<div id="message" class="updated"><p>' . __( 'Options saved.', 'bp-groups-civicrm-sync' ) . '</p></div>';
 
 				}
 
@@ -740,6 +738,41 @@ register_deactivation_hook( __FILE__, array( $bp_groups_civicrm_sync, 'deactivat
 
 // uninstall will use the 'uninstall.php' method when fully built
 // see: http://codex.wordpress.org/Function_Reference/register_uninstall_hook
+
+
+
+/**
+ * Utility to add link to settings page
+ *
+ * @param array $links The existing links array
+ * @param str $file The name of the plugin file
+ * @return array $links The modified links array
+ */
+function bp_groups_civicrm_sync_plugin_action_links( $links, $file ) {
+
+	// add settings link
+	if ( $file == plugin_basename( dirname( __FILE__ ) . '/bp-groups-civicrm-sync.php' ) ) {
+
+		// is this Network Admin?
+		if ( is_network_admin() ) {
+			$link = add_query_arg( array( 'page' => 'bpcivisync_admin_page' ), network_admin_url( 'settings.php' ) );
+		} else {
+			$link = add_query_arg( array( 'page' => 'bpcivisync_admin_page' ), admin_url( 'options-general.php' ) );
+		}
+
+		// add settings link
+		$links[] = '<a href="' . $link . '">' . esc_html__( 'Settings', 'bp-groups-civicrm-sync' ) . '</a>';
+
+	}
+
+	// --<
+	return $links;
+
+}
+
+// add filters for the above
+add_filter( 'network_admin_plugin_action_links', 'bp_groups_civicrm_sync_plugin_action_links', 10, 2 );
+add_filter( 'plugin_action_links', 'bp_groups_civicrm_sync_plugin_action_links', 10, 2 );
 
 
 
