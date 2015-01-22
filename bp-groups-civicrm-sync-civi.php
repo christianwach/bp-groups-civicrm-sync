@@ -682,7 +682,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	public function civi_group_form_create_process( $formName, &$form ) {
 
 		// kick out if not group edit form
-		if ( ! is_a( $form, 'CRM_Group_Form_Edit' ) ) return;
+		if ( ! ( $form instanceof CRM_Group_Form_Edit ) ) return;
 
 		// inspect submitted values
 		$values = $form->getVar( '_submitValues' );
@@ -932,7 +932,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		*/
 
 		// kick out if not group edit form
-		if ( ! is_a( $form, 'CRM_Group_Form_Edit' ) ) return;
+		if ( ! ( $form instanceof CRM_Group_Form_Edit ) ) return;
 
 		// inspect submitted values
 		$values = $form->getVar( '_submitValues' );
