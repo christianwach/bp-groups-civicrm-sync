@@ -499,13 +499,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 				// when there is no parent...
 				if (
-					isset( $group['parents'] )
-					AND
-					(
-						is_null( $group['parents'] )
-						OR
-						$group['parents'] == ''
-					)
+					isset( $group['parents'] ) AND
+					( is_null( $group['parents'] ) OR $group['parents'] == '' )
 				) {
 
 					// init transaction
@@ -513,6 +508,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 					// set BP group to empty, which triggers assignment to meta group
 					$bp_parent_id = 0;
+
+					// if "source" is not present, it's not an OG/BP group
+					if ( ! isset( $group['source'] ) OR is_null( $group['source'] ) ) continue;
 
 					// check for member group
 					if ( strstr( $group['source'], 'BP Sync Group :' ) !== false ) {
@@ -776,6 +774,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		}
 
 
+
+		// get source safely
+		$source = isset( $civi_group->source ) ? $civi_group->source : '';
 
 		// get the non-ACL Civi group ID
 		$civi_group_id = $this->find_group_id(
