@@ -18,8 +18,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * Properties
 	 */
 
+	// parent object
+	public $parent_obj;
+
 	// BuddyPress utilities class
 	public $bp;
+
+	// Admin utilities class
+	public $admin;
 
 	// flag for overriding sync process
 	public $do_not_sync = false;
@@ -30,11 +36,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Initialises this object
+	 * Initialise this object
 	 *
+	 * @param object $parent_obj The parent object
 	 * @return object
 	 */
-	function __construct() {
+	function __construct( $parent_obj ) {
+
+		// store reference to parent
+		$this->parent_obj = $parent_obj;
 
 		// add actions for plugin init on CiviCRM init
 		add_action( 'civicrm_instance_loaded', array( $this, 'register_hooks' ) );
@@ -50,12 +60,16 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * Set references to other objects
 	 *
 	 * @param object $bp_object Reference to this plugin's BP object
+	 * @param object $admin_object Reference to this plugin's Admin object
 	 * @return void
 	 */
-	public function set_references( &$bp_object ) {
+	public function set_references( &$bp_object, &$admin_object ) {
 
 		// store BuddyPress reference
 		$this->bp = $bp_object;
+
+		// store Admin reference
+		$this->admin = $admin_object;
 
 	}
 
