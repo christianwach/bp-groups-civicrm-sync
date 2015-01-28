@@ -113,268 +113,58 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 
+	/**
+	 * Test if CiviCRM plugin is active
+	 *
+	 * @return bool
+	 */
+	public function is_active() {
+
+		// bail if no CiviCRM init function
+		if ( ! function_exists( 'civi_wp' ) ) return false;
+
+		// try and init CiviCRM
+		return civi_wp()->initialize();
+
+	}
+
+
+
+	/**
+	 * Register directories that CiviCRM searches for php and template files
+	 *
+	 * @param object $config The CiviCRM config object
+	 * @return void
+	 */
+	public function register_directories( &$config ) {
+
+		/*
+		print_r( array(
+			'config' => $config
+		) ); die();
+		*/
+
+		// define our custom path
+		$custom_path = BP_GROUPS_CIVICRM_SYNC_PATH . 'civicrm_custom_templates';
+
+		// kick out if no CiviCRM
+		if ( ! civi_wp()->initialize() ) return;
+
+		// get template instance
+		$template = CRM_Core_Smarty::singleton();
+
+		// add our custom template directory
+		$template->addTemplateDir( $custom_path );
+
+		// register template directories
+		$template_include_path = $custom_path . PATH_SEPARATOR . get_include_path();
+		set_include_path( $template_include_path );
+
+	}
+
+
+
 	//##########################################################################
-
-
-
-	/**
-	 * Update a BP group when a CiviCRM contact is added to a group
-	 *
-	 * @param string $op The type of database operation
-	 * @param string $object_name The type of object
-	 * @param integer $civi_group_id The ID of the CiviCRM group
-	 * @param array $contact_ids Array of Civi Contact IDs
-	 * @return void
-	 */
-	public function group_contacts_added( $op, $object_name, $civi_group_id, $contact_ids ) {
-
-		// target our operation
-		if ( $op != 'create' ) return;
-
-		// target our object type
-		if ( $object_name != 'GroupContact' ) return;
-
-		/*
-		// debug
-		$this->_debug( array(
-			'method' => 'group_contacts_added',
-			'op' => $op,
-			'object_name' => $object_name,
-			'civi_group_id' => $civi_group_id,
-			'contact_ids' => $contact_ids,
-		));
-		*/
-
-		// get group data
-		$civi_group = $this->get_civi_group_by_id( $civi_group_id );
-
-		// sanity check
-		if ( $civi_group === false ) return;
-
-		// get BP group ID
-		$bp_group_id = $this->get_bp_group_id_by_civi_group( $civi_group );
-
-		// sanity check
-		if ( $bp_group_id === false ) return;
-
-		// loop through contacts
-		if ( count( $contact_ids ) > 0 ) {
-			foreach( $contact_ids AS $contact_id ) {
-
-				// get contact data
-				$contact = $this->get_contact_by_contact_id( $contact_id );
-
-				// sanity check and add if okay
-				if ( $contact !== false ) $contacts[] = $contact;
-
-			}
-		}
-
-		// assume member group
-		$is_admin = 0;
-
-		// is this an ACL group?
-		if ( $this->is_acl_group( $civi_group ) ) {
-
-			// add as admin
-			$is_admin = 1;
-
-		}
-
-		/*
-		// debug
-		$this->_debug( array(
-			'method' => 'group_contacts_added',
-			'bp_group_id' => $bp_group_id,
-			'contacts' => $contacts,
-			'is_admin' => $is_admin,
-		));
-		*/
-
-		// add contacts to BP group
-		$this->bp->create_group_members( $bp_group_id, $contacts, $is_admin );
-
-		// if it was an ACL group they were added to, we also need to add them to
-		// the member group - so, bail if this is a member group...
-		if ( $is_admin == 0 ) return;
-
-		// first, remove this action, otherwise we'll recurse
-		remove_action( 'civicrm_pre', array( $this, 'group_contacts_added' ), 10 );
-
-		// get the Civi group ID of the member group
-		$civi_group_id = $this->find_group_id(
-			$this->member_group_get_sync_name( $bp_group_id )
-		);
-
-		// sanity check
-		if ( $civi_group_id ) {
-
-			// loop through contacts
-			foreach( $contacts AS $contact ) {
-
-				// add to member group
-				$this->create_group_contact( $civi_group_id, $contact['contact_id'] );
-
-			}
-
-		}
-
-		// re-add this action
-		add_action( 'civicrm_pre', array( $this, 'group_contacts_added' ), 10, 4 );
-
-	}
-
-
-
-	/**
-	 * Update a BP group when a CiviCRM contact is deleted (or removed) from a group
-	 *
-	 * @param string $op The type of database operation
-	 * @param string $object_name The type of object
-	 * @param integer $civi_group_id The ID of the CiviCRM group
-	 * @param array $contact_ids Array of Civi Contact IDs
-	 * @return void
-	 */
-	public function group_contacts_deleted( $op, $object_name, $civi_group_id, $contact_ids ) {
-
-		// target our operation
-		if ( $op != 'delete' ) return;
-
-		// target our object type
-		if ( $object_name != 'GroupContact' ) return;
-
-		/*
-		// debug
-		$this->_debug( array(
-			'method' => 'group_contacts_deleted',
-			'op' => $op,
-			'object_name' => $object_name,
-			'civi_group_id' => $civi_group_id,
-			'contact_ids' => $contact_ids,
-		));
-		*/
-
-		// get group data
-		$civi_group = $this->get_civi_group_by_id( $civi_group_id );
-
-		// sanity check
-		if ( $civi_group === false ) return;
-
-		// get BP group ID
-		$bp_group_id = $this->get_bp_group_id_by_civi_group( $civi_group );
-
-		// sanity check
-		if ( $bp_group_id === false ) return;
-
-		// loop through contacts
-		if ( count( $contact_ids ) > 0 ) {
-			foreach( $contact_ids AS $contact_id ) {
-
-				// get contact data
-				$contact = $this->get_contact_by_contact_id( $contact_id );
-
-				// sanity check and add if okay
-				if ( $contact !== false ) $contacts[] = $contact;
-
-			}
-		}
-
-		/*
-		// debug
-		$this->_debug( array(
-			'method' => 'group_contacts_deleted',
-			'bp_group_id' => $bp_group_id,
-			'contacts' => $contacts,
-		));
-		die();
-		*/
-
-		// is this an ACL group?
-		if ( $this->is_acl_group( $civi_group ) ) {
-
-			// demote to member of BP group
-			$this->bp->demote_group_members( $bp_group_id, $contacts );
-
-			// skip deletion
-			return;
-
-		}
-
-		// delete from BP group
-		$this->bp->delete_group_members( $bp_group_id, $contacts );
-
-		// first, remove this action, otherwise we'll recurse
-		remove_action( 'civicrm_pre', array( $this, 'group_contacts_deleted' ), 10 );
-
-		// get the group ID of the acl group
-		$civi_group_id = $this->find_group_id(
-			$this->acl_group_get_sync_name( $bp_group_id )
-		);
-
-		// sanity check
-		if ( $civi_group_id ) {
-
-			// loop through contacts
-			foreach( $contacts AS $contact ) {
-
-				// remove member from group
-				$this->group_member_delete( $civi_group_id, $contact['contact_id'] );
-
-			}
-
-		}
-
-		// re-add this action
-		add_action( 'civicrm_pre', array( $this, 'group_contacts_deleted' ), 10, 4 );
-
-	}
-
-
-
-	/**
-	 * Update a BP group when a CiviCRM contact is re-added to a group
-	 *
-	 * The issue here is that CiviCRM fires 'civicrm_pre' with $op = 'delete' regardless
-	 * of whether the contact is being removed or deleted. If a contact is later re-added
-	 * to the group, then $op != 'create', so we need to intercept $op = 'edit'
-	 *
-	 * @param string $op The type of database operation
-	 * @param string $object_name The type of object
-	 * @param integer $civi_group_id The ID of the CiviCRM group
-	 * @param array $contact_ids Array of Civi Contact IDs
-	 * @return void
-	 */
-	public function group_contacts_rejoined( $op, $object_name, $civi_group_id, $contact_ids ) {
-
-		// target our operation
-		if ( $op != 'edit' ) return;
-
-		// target our object type
-		if ( $object_name != 'GroupContact' ) return;
-
-		/*
-		// debug
-		$this->_debug( array(
-			'method' => 'group_contacts_rejoined',
-			'bp_group_id' => $bp_group_id,
-			'contacts' => $contacts,
-		));
-		die();
-		*/
-
-		// first, remove this action, in case we recurse
-		remove_action( 'civicrm_pre', array( $this, 'group_contacts_rejoined' ), 10 );
-
-		// set op to 'create'
-		$op = 'create';
-
-		// use our group contact addition callback
-		$this->group_contacts_added( $op, $object_name, $civi_group_id, $contact_ids );
-
-		// re-add this action
-		add_action( 'civicrm_pre', array( $this, 'group_contacts_rejoined' ), 10, 4 );
-
-	}
 
 
 
@@ -767,88 +557,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 
-	/**
-	 * Construct name for CiviCRM group
-	 *
-	 * @param int $bp_group_id The BuddyPress group ID
-	 * @return string
-	 */
-	public function member_group_get_sync_name( $bp_group_id ) {
-
-		// construct name, based on OG schema
-		return 'BP Sync Group :' . $bp_group_id . ':';
-
-	}
-
-
-
-	/**
-	 * Construct name for CiviCRM ACL group
-	 *
-	 * @param int $bp_group_id The BuddyPress group ID
-	 * @return string
-	 */
-	public function acl_group_get_sync_name( $bp_group_id ) {
-
-		// construct name, based on OG schema
-		return 'BP Sync Group ACL :' . $bp_group_id . ':';
-
-	}
-
-
-
 	//##########################################################################
-
-
-
-	/**
-	 * Test if CiviCRM plugin is active
-	 *
-	 * @return bool
-	 */
-	public function is_active() {
-
-		// bail if no CiviCRM init function
-		if ( ! function_exists( 'civi_wp' ) ) return false;
-
-		// try and init CiviCRM
-		return civi_wp()->initialize();
-
-	}
-
-
-
-	/**
-	 * Register directories that CiviCRM searches for php and template files
-	 *
-	 * @param object $config The CiviCRM config object
-	 * @return void
-	 */
-	public function register_directories( &$config ) {
-
-		/*
-		print_r( array(
-			'config' => $config
-		) ); die();
-		*/
-
-		// define our custom path
-		$custom_path = BP_GROUPS_CIVICRM_SYNC_PATH . 'civicrm_custom_templates';
-
-		// kick out if no CiviCRM
-		if ( ! civi_wp()->initialize() ) return;
-
-		// get template instance
-		$template = CRM_Core_Smarty::singleton();
-
-		// add our custom template directory
-		$template->addTemplateDir( $custom_path );
-
-		// register template directories
-		$template_include_path = $custom_path . PATH_SEPARATOR . get_include_path();
-		set_include_path( $template_include_path );
-
-	}
 
 
 
@@ -1548,7 +1257,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		);
 
 		// use clone of CRM_Bridge_OG_Drupal::og()
-		$this->group_member_sync( $params, 'add' );
+		$this->group_contact_sync( $params, 'add' );
 
 
 
@@ -2236,7 +1945,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @param array $civi_contact_id The numeric ID of a Civi contact
 	 * @return array $group_contact
 	 */
-	public function create_group_contact( $civi_group_id, $civi_contact_id ) {
+	public function group_contact_create( $civi_group_id, $civi_contact_id ) {
 
 		// init API params
 		$params = array(
@@ -2263,7 +1972,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @param array $civi_contact_id The numeric ID of a Civi contact
 	 * @return array $group_contact
 	 */
-	public function group_member_delete( $civi_group_id, $civi_contact_id ) {
+	public function group_contact_delete( $civi_group_id, $civi_contact_id ) {
 
 		// init API params
 		$params = array(
@@ -2290,7 +1999,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @param string $op The type of Civi operation
 	 * @return void
 	 */
-	function group_member_sync( &$params, $op ) {
+	function group_contact_sync( &$params, $op ) {
 
 		// get the Civi contact ID
 		$civi_contact_id = $this->get_contact_id( $params['uf_id'] );
@@ -2303,7 +2012,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 				// construct error string
 				$error = sprintf(
-					__( 'No Civi Contact ID could be found in "group_member_sync" for %d', 'bp-groups-civicrm-sync' ),
+					__( 'No Civi Contact ID could be found in "group_contact_sync" for %d', 'bp-groups-civicrm-sync' ),
 					$user_id
 				);
 
@@ -2393,6 +2102,267 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
+	 * Update a BP group when a CiviCRM contact is added to a group
+	 *
+	 * @param string $op The type of database operation
+	 * @param string $object_name The type of object
+	 * @param integer $civi_group_id The ID of the CiviCRM group
+	 * @param array $contact_ids Array of Civi Contact IDs
+	 * @return void
+	 */
+	public function group_contacts_added( $op, $object_name, $civi_group_id, $contact_ids ) {
+
+		// target our operation
+		if ( $op != 'create' ) return;
+
+		// target our object type
+		if ( $object_name != 'GroupContact' ) return;
+
+		/*
+		// debug
+		$this->_debug( array(
+			'method' => 'group_contacts_added',
+			'op' => $op,
+			'object_name' => $object_name,
+			'civi_group_id' => $civi_group_id,
+			'contact_ids' => $contact_ids,
+		));
+		*/
+
+		// get group data
+		$civi_group = $this->get_civi_group_by_id( $civi_group_id );
+
+		// sanity check
+		if ( $civi_group === false ) return;
+
+		// get BP group ID
+		$bp_group_id = $this->get_bp_group_id_by_civi_group( $civi_group );
+
+		// sanity check
+		if ( $bp_group_id === false ) return;
+
+		// loop through contacts
+		if ( count( $contact_ids ) > 0 ) {
+			foreach( $contact_ids AS $contact_id ) {
+
+				// get contact data
+				$contact = $this->get_contact_by_contact_id( $contact_id );
+
+				// sanity check and add if okay
+				if ( $contact !== false ) $contacts[] = $contact;
+
+			}
+		}
+
+		// assume member group
+		$is_admin = 0;
+
+		// is this an ACL group?
+		if ( $this->is_acl_group( $civi_group ) ) {
+
+			// add as admin
+			$is_admin = 1;
+
+		}
+
+		/*
+		// debug
+		$this->_debug( array(
+			'method' => 'group_contacts_added',
+			'bp_group_id' => $bp_group_id,
+			'contacts' => $contacts,
+			'is_admin' => $is_admin,
+		));
+		*/
+
+		// add contacts to BP group
+		$this->bp->create_group_members( $bp_group_id, $contacts, $is_admin );
+
+		// if it was an ACL group they were added to, we also need to add them to
+		// the member group - so, bail if this is a member group...
+		if ( $is_admin == 0 ) return;
+
+		// first, remove this action, otherwise we'll recurse
+		remove_action( 'civicrm_pre', array( $this, 'group_contacts_added' ), 10 );
+
+		// get the Civi group ID of the member group
+		$civi_group_id = $this->find_group_id(
+			$this->member_group_get_sync_name( $bp_group_id )
+		);
+
+		// sanity check
+		if ( $civi_group_id ) {
+
+			// loop through contacts
+			foreach( $contacts AS $contact ) {
+
+				// add to member group
+				$this->group_contact_create( $civi_group_id, $contact['contact_id'] );
+
+			}
+
+		}
+
+		// re-add this action
+		add_action( 'civicrm_pre', array( $this, 'group_contacts_added' ), 10, 4 );
+
+	}
+
+
+
+	/**
+	 * Update a BP group when a CiviCRM contact is deleted (or removed) from a group
+	 *
+	 * @param string $op The type of database operation
+	 * @param string $object_name The type of object
+	 * @param integer $civi_group_id The ID of the CiviCRM group
+	 * @param array $contact_ids Array of Civi Contact IDs
+	 * @return void
+	 */
+	public function group_contacts_deleted( $op, $object_name, $civi_group_id, $contact_ids ) {
+
+		// target our operation
+		if ( $op != 'delete' ) return;
+
+		// target our object type
+		if ( $object_name != 'GroupContact' ) return;
+
+		/*
+		// debug
+		$this->_debug( array(
+			'method' => 'group_contacts_deleted',
+			'op' => $op,
+			'object_name' => $object_name,
+			'civi_group_id' => $civi_group_id,
+			'contact_ids' => $contact_ids,
+		));
+		*/
+
+		// get group data
+		$civi_group = $this->get_civi_group_by_id( $civi_group_id );
+
+		// sanity check
+		if ( $civi_group === false ) return;
+
+		// get BP group ID
+		$bp_group_id = $this->get_bp_group_id_by_civi_group( $civi_group );
+
+		// sanity check
+		if ( $bp_group_id === false ) return;
+
+		// loop through contacts
+		if ( count( $contact_ids ) > 0 ) {
+			foreach( $contact_ids AS $contact_id ) {
+
+				// get contact data
+				$contact = $this->get_contact_by_contact_id( $contact_id );
+
+				// sanity check and add if okay
+				if ( $contact !== false ) $contacts[] = $contact;
+
+			}
+		}
+
+		/*
+		// debug
+		$this->_debug( array(
+			'method' => 'group_contacts_deleted',
+			'bp_group_id' => $bp_group_id,
+			'contacts' => $contacts,
+		));
+		die();
+		*/
+
+		// is this an ACL group?
+		if ( $this->is_acl_group( $civi_group ) ) {
+
+			// demote to member of BP group
+			$this->bp->demote_group_members( $bp_group_id, $contacts );
+
+			// skip deletion
+			return;
+
+		}
+
+		// delete from BP group
+		$this->bp->delete_group_members( $bp_group_id, $contacts );
+
+		// first, remove this action, otherwise we'll recurse
+		remove_action( 'civicrm_pre', array( $this, 'group_contacts_deleted' ), 10 );
+
+		// get the group ID of the acl group
+		$civi_group_id = $this->find_group_id(
+			$this->acl_group_get_sync_name( $bp_group_id )
+		);
+
+		// sanity check
+		if ( $civi_group_id ) {
+
+			// loop through contacts
+			foreach( $contacts AS $contact ) {
+
+				// remove member from group
+				$this->group_contact_delete( $civi_group_id, $contact['contact_id'] );
+
+			}
+
+		}
+
+		// re-add this action
+		add_action( 'civicrm_pre', array( $this, 'group_contacts_deleted' ), 10, 4 );
+
+	}
+
+
+
+	/**
+	 * Update a BP group when a CiviCRM contact is re-added to a group
+	 *
+	 * The issue here is that CiviCRM fires 'civicrm_pre' with $op = 'delete' regardless
+	 * of whether the contact is being removed or deleted. If a contact is later re-added
+	 * to the group, then $op != 'create', so we need to intercept $op = 'edit'
+	 *
+	 * @param string $op The type of database operation
+	 * @param string $object_name The type of object
+	 * @param integer $civi_group_id The ID of the CiviCRM group
+	 * @param array $contact_ids Array of Civi Contact IDs
+	 * @return void
+	 */
+	public function group_contacts_rejoined( $op, $object_name, $civi_group_id, $contact_ids ) {
+
+		// target our operation
+		if ( $op != 'edit' ) return;
+
+		// target our object type
+		if ( $object_name != 'GroupContact' ) return;
+
+		/*
+		// debug
+		$this->_debug( array(
+			'method' => 'group_contacts_rejoined',
+			'bp_group_id' => $bp_group_id,
+			'contacts' => $contacts,
+		));
+		die();
+		*/
+
+		// first, remove this action, in case we recurse
+		remove_action( 'civicrm_pre', array( $this, 'group_contacts_rejoined' ), 10 );
+
+		// set op to 'create'
+		$op = 'create';
+
+		// use our group contact addition callback
+		$this->group_contacts_added( $op, $object_name, $civi_group_id, $contact_ids );
+
+		// re-add this action
+		add_action( 'civicrm_pre', array( $this, 'group_contacts_rejoined' ), 10, 4 );
+
+	}
+
+
+
+	/**
 	 * Get CiviCRM contact ID by WordPress user ID
 	 *
 	 * @param int $user_id The numeric ID of the WordPress user
@@ -2463,6 +2433,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// --<
 		return $civi_contact_id;
 	}
+
+
+
+	//##########################################################################
 
 
 
@@ -2748,6 +2722,21 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
+	 * Construct name for CiviCRM group
+	 *
+	 * @param int $bp_group_id The BuddyPress group ID
+	 * @return string
+	 */
+	public function member_group_get_sync_name( $bp_group_id ) {
+
+		// construct name, based on OG schema
+		return 'BP Sync Group :' . $bp_group_id . ':';
+
+	}
+
+
+
+	/**
 	 * Check if a CiviCRM Group is a BuddyPress member group
 	 *
 	 * @param array $civi_group The array of CiviCRM group data
@@ -2763,6 +2752,21 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// --<
 		return false;
+
+	}
+
+
+
+	/**
+	 * Construct name for CiviCRM ACL group
+	 *
+	 * @param int $bp_group_id The BuddyPress group ID
+	 * @return string
+	 */
+	public function acl_group_get_sync_name( $bp_group_id ) {
+
+		// construct name, based on OG schema
+		return 'BP Sync Group ACL :' . $bp_group_id . ':';
 
 	}
 

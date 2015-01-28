@@ -710,7 +710,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		);
 
 		// use clone of CRM_Bridge_OG_Drupal::og()
-		$this->civi->group_member_sync( $params, 'add' );
+		$this->civi->group_contact_sync( $params, 'add' );
 
 		/*
 		print_r( array(
@@ -751,7 +751,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		);
 
 		// use clone of CRM_Bridge_OG_Drupal::og()
-		$this->civi->group_member_sync( $params, 'delete' );
+		$this->civi->group_contact_sync( $params, 'delete' );
 
 	}
 
