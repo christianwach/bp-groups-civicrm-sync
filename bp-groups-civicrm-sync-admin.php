@@ -693,7 +693,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		check_admin_referer( 'bp_groups_civicrm_sync_settings_action', 'bp_groups_civicrm_sync_nonce' );
 
 		// get existing option
-		$parent_group = $this->setting_get( 'parent_group' );
+		$existing_parent_group = $this->setting_get( 'parent_group' );
 
 		// did we ask to enable parent group?
 		if ( isset( $_POST['bp_groups_civicrm_sync_settings_parent_group'] ) ) {
@@ -711,14 +711,33 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// sanitise and set option
 		$this->setting_set( 'parent_group', ( $settings_parent_group ? 1 : 0 ) );
 
+		// get existing option
+		$existing_hierarchy = $this->setting_get( 'nesting' );
+
+		// did we ask to enable parent group?
+		if ( isset( $_POST['bp_groups_civicrm_sync_settings_hierarchy'] ) ) {
+
+			// yes, set flag
+			$settings_hierarchy = absint( $_POST['bp_groups_civicrm_sync_settings_hierarchy'] );
+
+		} else {
+
+			// no, set empty value
+			$settings_hierarchy = 0;
+
+		}
+
+		// sanitise and set option
+		$this->setting_set( 'nesting', ( $settings_hierarchy ? 1 : 0 ) );
+
 		// save settings
 		$this->settings_save();
 
-		// is the setting changing?
-		if ( $parent_group != $settings_parent_group ) {
+		// is the parent group setting changing?
+		if ( $existing_parent_group != $settings_parent_group ) {
 
 			// are we switching from "no parent group"?
-			if ( $parent_group == 0 ) {
+			if ( $existing_parent_group == 0 ) {
 
 				// create a meta group to hold all BuddyPress groups
 				$this->civi->meta_group_create();
@@ -733,6 +752,24 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 				// delete "BuddyPress Groups" meta group
 				$this->civi->meta_group_delete();
+
+			}
+
+		}
+
+		// is the hierarchy setting changing?
+		if ( $existing_hierarchy != $settings_hierarchy ) {
+
+			// are we switching from "no hierarchy" to "use hierarchy"?
+			if ( $existing_hierarchy == 0 ) {
+
+				// build Civi group hierarchy
+				$this->civi->group_hierarchy_build();
+
+			} else {
+
+				// collapse Civi group hierarchy
+				$this->civi->group_hierarchy_collapse();
 
 			}
 

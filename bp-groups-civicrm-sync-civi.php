@@ -1733,6 +1733,28 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
+	 * Create all CiviCRM Group Nestings
+	 *
+	 * @return void
+	 */
+	public function group_hierarchy_build() {
+
+	}
+
+
+
+	/**
+	 * Delete all CiviCRM Group Nestings
+	 *
+	 * @return void
+	 */
+	public function group_hierarchy_collapse() {
+
+	}
+
+
+
+	/**
 	 * Create a CiviCRM Group Nesting
 	 *
 	 * @param int $civi_group_id The numeric ID of the Civi group
