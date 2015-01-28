@@ -562,606 +562,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Enable a BP group to be created when creating a Civi group
-	 *
-	 * @param string $formName The CiviCRM form name
-	 * @param object $form The CiviCRM form object
-	 * @return void
-	 */
-	public function civi_group_form_create_options( $formName, &$form ) {
-
-		// is this the group edit form?
-		if ( $formName != 'CRM_Group_Form_Edit' ) return;
-
-		// get Civi group
-		$civi_group = $form->getVar( '_group' );
-
-		// if we have a group, bail
-		if ( isset( $civi_group ) ) return;
-		if ( ! empty( $civi_group ) ) return;
-
-		// okay, it's the new group form...
-
-		/*
-		$this->_debug( array(
-			'formName' => $formName,
-			'form' => $form,
-			'civi_group' => $civi_group,
-		) );
-		die();
-		*/
-
-		// Add the field element in the form
-		$form->add( 'checkbox', 'bpgroupscivicrmsynccreatefromnew', __( 'Create BuddyPress Group', 'bp-groups-civicrm-sync' ) );
-
-		// dynamically insert a template block in the page
-		CRM_Core_Region::instance('page-body')->add( array(
-			'template' => 'bp-groups-civicrm-sync-new.tpl'
-		));
-
-	}
-
-
-
-	/**
-	 * Create a BP group when creating a Civi group
-	 *
-	 * @param string $formName The CiviCRM form name
-	 * @param object $form The CiviCRM form object
-	 * @return void
-	 */
-	public function civi_group_form_create_process( $formName, &$form ) {
-
-		// kick out if not group edit form
-		if ( ! ( $form instanceof CRM_Group_Form_Edit ) ) return;
-
-		// inspect submitted values
-		$values = $form->getVar( '_submitValues' );
-
-		// was our checkbox ticked?
-		if ( ! isset( $values['bpgroupscivicrmsynccreatefromnew'] ) ) return;
-		if ( $values['bpgroupscivicrmsynccreatefromnew'] != '1' ) return;
-
-		/*
-		The group hasn't been created yet...
-		*/
-
-		/*
-		$this->_debug( array(
-			'formName' => $formName,
-			'form' => $form,
-		) ); //die();
-		*/
-
-		// get Civi group
-		$civi_group = $form->getVar( '_group' );
-
-		// convert to BP group
-		$this->convert_civi_group_to_bp_group( $civi_group );
-
-	}
-
-
-
-	/**
-	 * Create a BP group from a Civi group
-	 *
-	 * @param object $civi_group The CiviCRM group object
-	 * @return void
-	 */
-	public function convert_civi_group_to_bp_group( $civi_group ) {
-
-		/*
-		$this->_debug( array(
-			'method' => 'convert_civi_group_to_bp_group',
-			'civi_group' => $civi_group,
-		) ); die();
-		*/
-
-		// set flag so that we don't act on the 'groups_create_group' action
-		$this->do_not_sync = true;
-
-		// remove hooks
-		remove_action( 'groups_create_group', array( $this->bp, 'create_civi_group' ), 100 );
-		remove_action( 'groups_details_updated', array( $this->bp, 'update_civi_group_details' ), 100 );
-
-		// create the BuddyPress group
-		$bp_group_id = $this->bp->create_group( $civi_group->title, $civi_group->description );
-
-		// re-add hooks
-		add_action( 'groups_create_group', array( $this->bp, 'create_civi_group' ), 100, 3 );
-		add_action( 'groups_details_updated', array( $this->bp, 'update_civi_group_details' ), 100, 1 );
-
-		// get all contacts in this group
-		$params = array(
-			'version' => 3,
-			'group' => $civi_group->id,
-		);
-
-		// use API to get members
-		$group_admins = civicrm_api( 'contact', 'get', $params );
-
-		// do we have any members?
-		if ( isset( $group_admins['values'] ) AND count( $group_admins['values'] ) > 0 ) {
-
-			// make admins
-			$is_admin = 1;
-
-			// create memberships from the Civi contacts
-			$this->bp->create_group_members( $bp_group_id, $group_admins['values'], $is_admin );
-
-		}
-
-
-
-		// get source safely
-		$source = isset( $civi_group->source ) ? $civi_group->source : '';
-
-		// get the non-ACL Civi group ID
-		$civi_group_id = $this->find_group_id(
-			str_replace( 'OG Sync Group ACL', 'OG Sync Group', $source )
-		);
-
-		// get all contacts in this group
-		$params = array(
-			'version' => 3,
-			'group' => $civi_group_id,
-		);
-
-		// use API to get members
-		$group_members = civicrm_api( 'contact', 'get', $params );
-
-		/*
-		$this->_debug( array(
-			'formName' => $formName,
-			'group_members' => $group_members,
-		) ); die();
-		*/
-
-		// do we have any members?
-		if ( isset( $group_members['values'] ) AND count( $group_members['values'] ) > 0 ) {
-
-			// make members
-			$is_admin = 0;
-
-			// create memberships from the Civi contacts
-			$this->bp->create_group_members( $bp_group_id, $group_members['values'], $is_admin );
-
-		}
-
-
-
-		// update the "source" field for both CiviCRM groups
-
-		// define Civi ACL group
-		$acl_group_params = array(
-			'version' => 3,
-			'id' => $civi_group->id,
-		);
-
-		// get name for the Civi group
-		$acl_group_params['source'] = $this->acl_group_get_sync_name( $bp_group_id );
-
-		// use Civi API to create the group (will update if ID is set)
-		$acl_group = civicrm_api( 'group', 'create', $acl_group_params );
-
-		// error check
-		if ( $acl_group['is_error'] == '1' ) {
-
-			// debug
-			print_r( array(
-				'method' => 'convert_civi_group_to_bp_group',
-				'acl_group' => $acl_group,
-			) ); die();
-
-		}
-
-
-
-		// define Civi group
-		$member_group_params = array(
-			'version' => 3,
-			'id' => $civi_group_id,
-		);
-
-		// get name for the Civi group
-		$member_group_params['source'] = $this->member_group_get_sync_name( $bp_group_id );
-
-		// use Civi API to create the group (will update if ID is set)
-		$member_group = civicrm_api( 'group', 'create', $member_group_params );
-
-		// error check
-		if ( $member_group['is_error'] == '1' ) {
-
-			// debug
-			print_r( array(
-				'method' => 'convert_civi_group_to_bp_group',
-				'member_group' => $member_group,
-			) ); die();
-
-		}
-
-
-
-		// if no parent
-		if ( isset( $civi_group['parents'] ) AND $civi_group['parents'] == '' ) {
-
-			// assign both to meta group
-			$this->group_nesting_update( $bp_group_id, '0' );
-
-		}
-
-	}
-
-
-
-	/**
-	 * Enable a BP group to be created from pre-existing Drupal OG groups in Civi
-	 *
-	 * @param string $formName The CiviCRM form name
-	 * @param object $form The CiviCRM form object
-	 * @return void
-	 */
-	public function civi_group_form_edit_og_options( $formName, &$form ) {
-
-		// is this the group edit form?
-		if ( $formName != 'CRM_Group_Form_Edit' ) return;
-
-		// get Civi group
-		$civi_group = $form->getVar( '_group' );
-
-		/*
-		print_r( array(
-			'formName' => $formName,
-			'civi_group' => $civi_group,
-			//'form' => $form,
-		) ); die();
-		*/
-
-		// get source safely
-		$source = isset( $civi_group->source ) ? $civi_group->source : '';
-
-		// in Drupal, OG groups are synced with 'OG Sync Group :GID:'
-		// related OG ACL groups are synced with 'OG Sync Group ACL :GID:'
-
-		// is this an OG administrator group?
-		if ( strstr( $source, 'OG Sync Group ACL' ) === false ) return;
-
-		/*
-		print_r( array(
-			'formName' => $formName,
-			'source' => $source,
-			'form' => $form,
-		) ); die();
-		*/
-
-		// Add the field element in the form
-		$form->add( 'checkbox', 'bpgroupscivicrmsynccreatefromog', __( 'Create BuddyPress Group', 'bp-groups-civicrm-sync' ) );
-
-		// dynamically insert a template block in the page
-		CRM_Core_Region::instance('page-body')->add( array(
-			'template' => 'bp-groups-civicrm-sync-og.tpl'
-		));
-
-	}
-
-
-
-	/**
-	 * Create a BP group based on pre-existing Civi/Drupal/OG group
-	 *
-	 * @param string $formName The CiviCRM form name
-	 * @param object $form The CiviCRM form object
-	 * @return void
-	 */
-	public function civi_group_form_edit_og_process( $formName, &$form ) {
-
-		/*
-		print_r( array(
-			'formName' => $formName,
-			'form' => $form,
-		) ); die();
-		*/
-
-		// kick out if not group edit form
-		if ( ! ( $form instanceof CRM_Group_Form_Edit ) ) return;
-
-		// inspect submitted values
-		$values = $form->getVar( '_submitValues' );
-
-		// was our checkbox ticked?
-		if ( ! isset( $values['bpgroupscivicrmsynccreatefromog'] ) ) return;
-		if ( $values['bpgroupscivicrmsynccreatefromog'] != '1' ) return;
-
-		// get Civi group
-		$civi_group = $form->getVar( '_group' );
-
-		// convert to BP group
-		$this->og_group_to_bp_group_convert( $civi_group );
-
-	}
-
-
-
-	/**
-	 * Do we have any legacy OG CiviCRM Groups?
-	 *
-	 * @return bool
-	 */
-	public function has_og_groups() {
-
-		// init or die
-		if ( ! $this->is_active() ) return;
-
-		// define get all groups params
-		$params = array(
-			'version' => 3,
-		);
-
-		// get all groups with no parent ID (get ALL for now)
-		$all_groups = civicrm_api( 'group', 'get', $params );
-
-		// if we got some...
-		if (
-
-			$all_groups['is_error'] == 0 AND
-			isset( $all_groups['values'] ) AND
-			count( $all_groups['values'] ) > 0
-
-		) {
-
-			// loop through them
-			foreach( $all_groups['values'] AS $civi_group ) {
-
-				// if "source" is not present, it's not an OG group
-				if ( ! isset( $civi_group['source'] ) OR is_null( $civi_group['source'] ) ) continue;
-
-				// get source
-				$source = $civi_group['source'];
-
-				// in Drupal, OG groups are synced with 'OG Sync Group :GID:'
-				// related OG ACL groups are synced with 'OG Sync Group ACL :GID:'
-
-				// is this an OG administrator group?
-				if ( strstr( $source, 'OG Sync Group ACL :' ) !== false ) return true;
-
-				// is this an OG member group?
-				if ( strstr( $source, 'OG Sync Group :' ) !== false ) return true;
-
-			}
-
-		}
-
-		// --<
-		return false;
-
-	}
-
-
-
-	/**
-	 * Convert all legacy OG CiviCRM Groups to BP CiviCRM Groups
-	 *
-	 * @return void
-	 */
-	public function og_groups_to_bp_groups_convert() {
-
-		// init or die
-		if ( ! $this->is_active() ) return;
-
-		// define get all groups params
-		$params = array(
-
-			// v3, of course
-			'version' => 3,
-
-			// define stupidly high limit, because API defaults to 25
-			'options' => array(
-				'limit' => '10000',
-			),
-
-		);
-
-		// get all groups with no parent ID (get ALL for now)
-		$all_groups = civicrm_api( 'group', 'get', $params );
-
-		/*
-		print_r( array(
-			'method' => 'og_groups_to_bp_groups_convert',
-			'all_groups' => $all_groups,
-		) ); die();
-		*/
-
-		// if we got some...
-		if (
-
-			$all_groups['is_error'] == 0 AND
-			isset( $all_groups['values'] ) AND
-			count( $all_groups['values'] ) > 0
-
-		) {
-
-			// loop through them
-			foreach( $all_groups['values'] AS $civi_group ) {
-
-				// send for processing
-				$this->og_group_to_bp_group_convert( (object)$civi_group );
-
-			}
-
-		}
-
-		// assign to meta group
-		$this->meta_group_groups_assign();
-
-	}
-
-
-
-	/**
-	 * Create a BP group based on pre-existing Civi/Drupal/OG group
-	 *
-	 * @param object $civi_group The CiviCRM group object
-	 * @return void
-	 */
-	public function og_group_to_bp_group_convert( $civi_group ) {
-
-		// get source
-		$source = $civi_group->source;
-
-		// in Drupal, OG groups are synced with 'OG Sync Group :GID:'
-		// related OG ACL groups are synced with 'OG Sync Group ACL :GID:'
-
-		// is this an OG administrator group?
-		if ( strstr( $source, 'OG Sync Group ACL' ) === false ) return;
-
-		/*
-		print_r( array(
-			'method' => 'og_group_to_bp_group_convert',
-			'civi_group' => $civi_group,
-		) ); //die();
-		*/
-
-		// set flag so that we don't act on the 'groups_create_group' action
-		$this->do_not_sync = true;
-
-		// remove hooks
-		remove_action( 'groups_create_group', array( $this->bp, 'create_civi_group' ), 100 );
-		remove_action( 'groups_details_updated', array( $this->bp, 'update_civi_group_details' ), 100 );
-
-		// sanitise title by stripping suffix
-		$bp_group_title = array_shift( explode( ': Administrator', $civi_group->title ) );
-
-		// create the BuddyPress group
-		$bp_group_id = $this->bp->create_group( $bp_group_title, $civi_group->description );
-
-		// re-add hooks
-		add_action( 'groups_create_group', array( $this->bp, 'create_civi_group' ), 100, 3 );
-		add_action( 'groups_details_updated', array( $this->bp, 'update_civi_group_details' ), 100, 1 );
-
-
-
-		// get all contacts in this group
-		$params = array(
-			'version' => 3,
-			'group' => $civi_group->id,
-		);
-
-		// use API to get members
-		$group_admins = civicrm_api( 'contact', 'get', $params );
-
-		// do we have any members?
-		if ( isset( $group_admins['values'] ) AND count( $group_admins['values'] ) > 0 ) {
-
-			// make admins
-			$is_admin = 1;
-
-			// create memberships from the Civi contacts
-			$this->bp->create_group_members( $bp_group_id, $group_admins['values'], $is_admin );
-
-		}
-
-
-
-		// get the non-ACL Civi group ID
-		$civi_group_id = $this->find_group_id(
-			str_replace( 'OG Sync Group ACL', 'OG Sync Group', $source )
-		);
-
-		// get all contacts in this group
-		$params = array(
-			'version' => 3,
-			'group' => $civi_group_id,
-		);
-
-		// use API to get members
-		$group_members = civicrm_api( 'contact', 'get', $params );
-
-		/*
-		print_r( array(
-			'formName' => $formName,
-			'group_members' => $group_members,
-		) ); die();
-		*/
-
-		// do we have any members?
-		if ( isset( $group_members['values'] ) AND count( $group_members['values'] ) > 0 ) {
-
-			// make members
-			$is_admin = 0;
-
-			// create memberships from the Civi contacts
-			$this->bp->create_group_members( $bp_group_id, $group_members['values'], $is_admin );
-
-		}
-
-
-
-		// update the "source" field for both CiviCRM groups
-
-		// define Civi ACL group
-		$acl_group_params = array(
-			'version' => 3,
-			'id' => $civi_group->id,
-		);
-
-		// get name for the Civi group
-		$acl_group_params['source'] = $this->acl_group_get_sync_name( $bp_group_id );
-
-		// use Civi API to create the group (will update if ID is set)
-		$acl_group = civicrm_api( 'group', 'create', $acl_group_params );
-
-		// error check
-		if ( $acl_group['is_error'] == '1' ) {
-
-			// debug
-			print_r( array(
-				'method' => 'og_group_to_bp_group_convert',
-				'acl_group' => $acl_group,
-			) ); die();
-
-		}
-
-
-
-		// define Civi group
-		$member_group_params = array(
-			'version' => 3,
-			'id' => $civi_group_id,
-		);
-
-		// get name for the Civi group
-		$member_group_params['source'] = $this->member_group_get_sync_name( $bp_group_id );
-
-		// use Civi API to create the group (will update if ID is set)
-		$member_group = civicrm_api( 'group', 'create', $member_group_params );
-
-		// error check
-		if ( $member_group['is_error'] == '1' ) {
-
-			// debug
-			print_r( array(
-				'method' => 'og_group_to_bp_group_convert',
-				'member_group' => $member_group,
-			) ); die();
-
-		}
-
-
-
-		// if no parent
-		if ( isset( $civi_group['parents'] ) AND $civi_group['parents'] == '' ) {
-
-			// assign both to meta group
-			$this->group_nesting_update( $bp_group_id, '0' );
-
-		}
-
-	}
-
-
-
-	/**
 	 * Creates a CiviCRM Group when a BuddyPress group is created
 	 *
 	 * @param int $bp_group_id the numeric ID of the BP group
@@ -2939,6 +2339,610 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$dao->is_active = TRUE;
 		$dao->save();
 		$params['acl_id'] = $dao->id;
+
+	}
+
+
+
+	//##########################################################################
+
+
+
+	/**
+	 * Enable a BP group to be created when creating a Civi group
+	 *
+	 * @param string $formName The CiviCRM form name
+	 * @param object $form The CiviCRM form object
+	 * @return void
+	 */
+	public function civi_group_form_create_options( $formName, &$form ) {
+
+		// is this the group edit form?
+		if ( $formName != 'CRM_Group_Form_Edit' ) return;
+
+		// get Civi group
+		$civi_group = $form->getVar( '_group' );
+
+		// if we have a group, bail
+		if ( isset( $civi_group ) ) return;
+		if ( ! empty( $civi_group ) ) return;
+
+		// okay, it's the new group form...
+
+		/*
+		$this->_debug( array(
+			'formName' => $formName,
+			'form' => $form,
+			'civi_group' => $civi_group,
+		) );
+		die();
+		*/
+
+		// Add the field element in the form
+		$form->add( 'checkbox', 'bpgroupscivicrmsynccreatefromnew', __( 'Create BuddyPress Group', 'bp-groups-civicrm-sync' ) );
+
+		// dynamically insert a template block in the page
+		CRM_Core_Region::instance('page-body')->add( array(
+			'template' => 'bp-groups-civicrm-sync-new.tpl'
+		));
+
+	}
+
+
+
+	/**
+	 * Create a BP group when creating a Civi group
+	 *
+	 * @param string $formName The CiviCRM form name
+	 * @param object $form The CiviCRM form object
+	 * @return void
+	 */
+	public function civi_group_form_create_process( $formName, &$form ) {
+
+		// kick out if not group edit form
+		if ( ! ( $form instanceof CRM_Group_Form_Edit ) ) return;
+
+		// inspect submitted values
+		$values = $form->getVar( '_submitValues' );
+
+		// was our checkbox ticked?
+		if ( ! isset( $values['bpgroupscivicrmsynccreatefromnew'] ) ) return;
+		if ( $values['bpgroupscivicrmsynccreatefromnew'] != '1' ) return;
+
+		/*
+		The group hasn't been created yet...
+		*/
+
+		/*
+		$this->_debug( array(
+			'formName' => $formName,
+			'form' => $form,
+		) ); //die();
+		*/
+
+		// get Civi group
+		$civi_group = $form->getVar( '_group' );
+
+		// convert to BP group
+		$this->convert_civi_group_to_bp_group( $civi_group );
+
+	}
+
+
+
+	/**
+	 * Create a BP group from a Civi group
+	 *
+	 * @param object $civi_group The CiviCRM group object
+	 * @return void
+	 */
+	public function convert_civi_group_to_bp_group( $civi_group ) {
+
+		/*
+		$this->_debug( array(
+			'method' => 'convert_civi_group_to_bp_group',
+			'civi_group' => $civi_group,
+		) ); die();
+		*/
+
+		// set flag so that we don't act on the 'groups_create_group' action
+		$this->do_not_sync = true;
+
+		// remove hooks
+		remove_action( 'groups_create_group', array( $this->bp, 'create_civi_group' ), 100 );
+		remove_action( 'groups_details_updated', array( $this->bp, 'update_civi_group_details' ), 100 );
+
+		// create the BuddyPress group
+		$bp_group_id = $this->bp->create_group( $civi_group->title, $civi_group->description );
+
+		// re-add hooks
+		add_action( 'groups_create_group', array( $this->bp, 'create_civi_group' ), 100, 3 );
+		add_action( 'groups_details_updated', array( $this->bp, 'update_civi_group_details' ), 100, 1 );
+
+		// get all contacts in this group
+		$params = array(
+			'version' => 3,
+			'group' => $civi_group->id,
+		);
+
+		// use API to get members
+		$group_admins = civicrm_api( 'contact', 'get', $params );
+
+		// do we have any members?
+		if ( isset( $group_admins['values'] ) AND count( $group_admins['values'] ) > 0 ) {
+
+			// make admins
+			$is_admin = 1;
+
+			// create memberships from the Civi contacts
+			$this->bp->create_group_members( $bp_group_id, $group_admins['values'], $is_admin );
+
+		}
+
+
+
+		// get source safely
+		$source = isset( $civi_group->source ) ? $civi_group->source : '';
+
+		// get the non-ACL Civi group ID
+		$civi_group_id = $this->find_group_id(
+			str_replace( 'OG Sync Group ACL', 'OG Sync Group', $source )
+		);
+
+		// get all contacts in this group
+		$params = array(
+			'version' => 3,
+			'group' => $civi_group_id,
+		);
+
+		// use API to get members
+		$group_members = civicrm_api( 'contact', 'get', $params );
+
+		/*
+		$this->_debug( array(
+			'formName' => $formName,
+			'group_members' => $group_members,
+		) ); die();
+		*/
+
+		// do we have any members?
+		if ( isset( $group_members['values'] ) AND count( $group_members['values'] ) > 0 ) {
+
+			// make members
+			$is_admin = 0;
+
+			// create memberships from the Civi contacts
+			$this->bp->create_group_members( $bp_group_id, $group_members['values'], $is_admin );
+
+		}
+
+
+
+		// update the "source" field for both CiviCRM groups
+
+		// define Civi ACL group
+		$acl_group_params = array(
+			'version' => 3,
+			'id' => $civi_group->id,
+		);
+
+		// get name for the Civi group
+		$acl_group_params['source'] = $this->acl_group_get_sync_name( $bp_group_id );
+
+		// use Civi API to create the group (will update if ID is set)
+		$acl_group = civicrm_api( 'group', 'create', $acl_group_params );
+
+		// error check
+		if ( $acl_group['is_error'] == '1' ) {
+
+			// debug
+			print_r( array(
+				'method' => 'convert_civi_group_to_bp_group',
+				'acl_group' => $acl_group,
+			) ); die();
+
+		}
+
+
+
+		// define Civi group
+		$member_group_params = array(
+			'version' => 3,
+			'id' => $civi_group_id,
+		);
+
+		// get name for the Civi group
+		$member_group_params['source'] = $this->member_group_get_sync_name( $bp_group_id );
+
+		// use Civi API to create the group (will update if ID is set)
+		$member_group = civicrm_api( 'group', 'create', $member_group_params );
+
+		// error check
+		if ( $member_group['is_error'] == '1' ) {
+
+			// debug
+			print_r( array(
+				'method' => 'convert_civi_group_to_bp_group',
+				'member_group' => $member_group,
+			) ); die();
+
+		}
+
+
+
+		// if no parent
+		if ( isset( $civi_group['parents'] ) AND $civi_group['parents'] == '' ) {
+
+			// assign both to meta group
+			$this->group_nesting_update( $bp_group_id, '0' );
+
+		}
+
+	}
+
+
+
+	/**
+	 * Enable a BP group to be created from pre-existing Drupal OG groups in Civi
+	 *
+	 * @param string $formName The CiviCRM form name
+	 * @param object $form The CiviCRM form object
+	 * @return void
+	 */
+	public function civi_group_form_edit_og_options( $formName, &$form ) {
+
+		// is this the group edit form?
+		if ( $formName != 'CRM_Group_Form_Edit' ) return;
+
+		// get Civi group
+		$civi_group = $form->getVar( '_group' );
+
+		/*
+		print_r( array(
+			'formName' => $formName,
+			'civi_group' => $civi_group,
+			//'form' => $form,
+		) ); die();
+		*/
+
+		// get source safely
+		$source = isset( $civi_group->source ) ? $civi_group->source : '';
+
+		// in Drupal, OG groups are synced with 'OG Sync Group :GID:'
+		// related OG ACL groups are synced with 'OG Sync Group ACL :GID:'
+
+		// is this an OG administrator group?
+		if ( strstr( $source, 'OG Sync Group ACL' ) === false ) return;
+
+		/*
+		print_r( array(
+			'formName' => $formName,
+			'source' => $source,
+			'form' => $form,
+		) ); die();
+		*/
+
+		// Add the field element in the form
+		$form->add( 'checkbox', 'bpgroupscivicrmsynccreatefromog', __( 'Create BuddyPress Group', 'bp-groups-civicrm-sync' ) );
+
+		// dynamically insert a template block in the page
+		CRM_Core_Region::instance('page-body')->add( array(
+			'template' => 'bp-groups-civicrm-sync-og.tpl'
+		));
+
+	}
+
+
+
+	/**
+	 * Create a BP group based on pre-existing Civi/Drupal/OG group
+	 *
+	 * @param string $formName The CiviCRM form name
+	 * @param object $form The CiviCRM form object
+	 * @return void
+	 */
+	public function civi_group_form_edit_og_process( $formName, &$form ) {
+
+		/*
+		print_r( array(
+			'formName' => $formName,
+			'form' => $form,
+		) ); die();
+		*/
+
+		// kick out if not group edit form
+		if ( ! ( $form instanceof CRM_Group_Form_Edit ) ) return;
+
+		// inspect submitted values
+		$values = $form->getVar( '_submitValues' );
+
+		// was our checkbox ticked?
+		if ( ! isset( $values['bpgroupscivicrmsynccreatefromog'] ) ) return;
+		if ( $values['bpgroupscivicrmsynccreatefromog'] != '1' ) return;
+
+		// get Civi group
+		$civi_group = $form->getVar( '_group' );
+
+		// convert to BP group
+		$this->og_group_to_bp_group_convert( $civi_group );
+
+	}
+
+
+
+	/**
+	 * Do we have any legacy OG CiviCRM Groups?
+	 *
+	 * @return bool
+	 */
+	public function has_og_groups() {
+
+		// init or die
+		if ( ! $this->is_active() ) return;
+
+		// define get all groups params
+		$params = array(
+			'version' => 3,
+		);
+
+		// get all groups with no parent ID (get ALL for now)
+		$all_groups = civicrm_api( 'group', 'get', $params );
+
+		// if we got some...
+		if (
+
+			$all_groups['is_error'] == 0 AND
+			isset( $all_groups['values'] ) AND
+			count( $all_groups['values'] ) > 0
+
+		) {
+
+			// loop through them
+			foreach( $all_groups['values'] AS $civi_group ) {
+
+				// if "source" is not present, it's not an OG group
+				if ( ! isset( $civi_group['source'] ) OR is_null( $civi_group['source'] ) ) continue;
+
+				// get source
+				$source = $civi_group['source'];
+
+				// in Drupal, OG groups are synced with 'OG Sync Group :GID:'
+				// related OG ACL groups are synced with 'OG Sync Group ACL :GID:'
+
+				// is this an OG administrator group?
+				if ( strstr( $source, 'OG Sync Group ACL :' ) !== false ) return true;
+
+				// is this an OG member group?
+				if ( strstr( $source, 'OG Sync Group :' ) !== false ) return true;
+
+			}
+
+		}
+
+		// --<
+		return false;
+
+	}
+
+
+
+	/**
+	 * Convert all legacy OG CiviCRM Groups to BP CiviCRM Groups
+	 *
+	 * @return void
+	 */
+	public function og_groups_to_bp_groups_convert() {
+
+		// init or die
+		if ( ! $this->is_active() ) return;
+
+		// define get all groups params
+		$params = array(
+
+			// v3, of course
+			'version' => 3,
+
+			// define stupidly high limit, because API defaults to 25
+			'options' => array(
+				'limit' => '10000',
+			),
+
+		);
+
+		// get all groups with no parent ID (get ALL for now)
+		$all_groups = civicrm_api( 'group', 'get', $params );
+
+		/*
+		print_r( array(
+			'method' => 'og_groups_to_bp_groups_convert',
+			'all_groups' => $all_groups,
+		) ); die();
+		*/
+
+		// if we got some...
+		if (
+
+			$all_groups['is_error'] == 0 AND
+			isset( $all_groups['values'] ) AND
+			count( $all_groups['values'] ) > 0
+
+		) {
+
+			// loop through them
+			foreach( $all_groups['values'] AS $civi_group ) {
+
+				// send for processing
+				$this->og_group_to_bp_group_convert( (object)$civi_group );
+
+			}
+
+		}
+
+		// assign to meta group
+		$this->meta_group_groups_assign();
+
+	}
+
+
+
+	/**
+	 * Create a BP group based on pre-existing Civi/Drupal/OG group
+	 *
+	 * @param object $civi_group The CiviCRM group object
+	 * @return void
+	 */
+	public function og_group_to_bp_group_convert( $civi_group ) {
+
+		// get source
+		$source = $civi_group->source;
+
+		// in Drupal, OG groups are synced with 'OG Sync Group :GID:'
+		// related OG ACL groups are synced with 'OG Sync Group ACL :GID:'
+
+		// is this an OG administrator group?
+		if ( strstr( $source, 'OG Sync Group ACL' ) === false ) return;
+
+		/*
+		print_r( array(
+			'method' => 'og_group_to_bp_group_convert',
+			'civi_group' => $civi_group,
+		) ); //die();
+		*/
+
+		// set flag so that we don't act on the 'groups_create_group' action
+		$this->do_not_sync = true;
+
+		// remove hooks
+		remove_action( 'groups_create_group', array( $this->bp, 'create_civi_group' ), 100 );
+		remove_action( 'groups_details_updated', array( $this->bp, 'update_civi_group_details' ), 100 );
+
+		// sanitise title by stripping suffix
+		$bp_group_title = array_shift( explode( ': Administrator', $civi_group->title ) );
+
+		// create the BuddyPress group
+		$bp_group_id = $this->bp->create_group( $bp_group_title, $civi_group->description );
+
+		// re-add hooks
+		add_action( 'groups_create_group', array( $this->bp, 'create_civi_group' ), 100, 3 );
+		add_action( 'groups_details_updated', array( $this->bp, 'update_civi_group_details' ), 100, 1 );
+
+
+
+		// get all contacts in this group
+		$params = array(
+			'version' => 3,
+			'group' => $civi_group->id,
+		);
+
+		// use API to get members
+		$group_admins = civicrm_api( 'contact', 'get', $params );
+
+		// do we have any members?
+		if ( isset( $group_admins['values'] ) AND count( $group_admins['values'] ) > 0 ) {
+
+			// make admins
+			$is_admin = 1;
+
+			// create memberships from the Civi contacts
+			$this->bp->create_group_members( $bp_group_id, $group_admins['values'], $is_admin );
+
+		}
+
+
+
+		// get the non-ACL Civi group ID
+		$civi_group_id = $this->find_group_id(
+			str_replace( 'OG Sync Group ACL', 'OG Sync Group', $source )
+		);
+
+		// get all contacts in this group
+		$params = array(
+			'version' => 3,
+			'group' => $civi_group_id,
+		);
+
+		// use API to get members
+		$group_members = civicrm_api( 'contact', 'get', $params );
+
+		/*
+		print_r( array(
+			'formName' => $formName,
+			'group_members' => $group_members,
+		) ); die();
+		*/
+
+		// do we have any members?
+		if ( isset( $group_members['values'] ) AND count( $group_members['values'] ) > 0 ) {
+
+			// make members
+			$is_admin = 0;
+
+			// create memberships from the Civi contacts
+			$this->bp->create_group_members( $bp_group_id, $group_members['values'], $is_admin );
+
+		}
+
+
+
+		// update the "source" field for both CiviCRM groups
+
+		// define Civi ACL group
+		$acl_group_params = array(
+			'version' => 3,
+			'id' => $civi_group->id,
+		);
+
+		// get name for the Civi group
+		$acl_group_params['source'] = $this->acl_group_get_sync_name( $bp_group_id );
+
+		// use Civi API to create the group (will update if ID is set)
+		$acl_group = civicrm_api( 'group', 'create', $acl_group_params );
+
+		// error check
+		if ( $acl_group['is_error'] == '1' ) {
+
+			// debug
+			print_r( array(
+				'method' => 'og_group_to_bp_group_convert',
+				'acl_group' => $acl_group,
+			) ); die();
+
+		}
+
+
+
+		// define Civi group
+		$member_group_params = array(
+			'version' => 3,
+			'id' => $civi_group_id,
+		);
+
+		// get name for the Civi group
+		$member_group_params['source'] = $this->member_group_get_sync_name( $bp_group_id );
+
+		// use Civi API to create the group (will update if ID is set)
+		$member_group = civicrm_api( 'group', 'create', $member_group_params );
+
+		// error check
+		if ( $member_group['is_error'] == '1' ) {
+
+			// debug
+			print_r( array(
+				'method' => 'og_group_to_bp_group_convert',
+				'member_group' => $member_group,
+			) ); die();
+
+		}
+
+
+
+		// if no parent
+		if ( isset( $civi_group['parents'] ) AND $civi_group['parents'] == '' ) {
+
+			// assign both to meta group
+			$this->group_nesting_update( $bp_group_id, '0' );
+
+		}
 
 	}
 
