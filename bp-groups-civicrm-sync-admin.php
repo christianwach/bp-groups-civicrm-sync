@@ -407,6 +407,32 @@ class BP_Groups_CiviCRM_Sync_Admin {
 			// get our settings
 			$parent_group = absint( $this->setting_get( 'parent_group' ) );
 
+			// checked by default
+			$checked = ' checked="checked"';
+			if ( isset( $parent_group ) AND $parent_group === 0 ) {
+				$checked = '';
+			}
+
+			// assume no BP Group Hierarchy plugin
+			$bp_group_hierarchy = false;
+
+			// test for presence BP Group Hierarchy plugin
+			if ( defined( 'BP_GROUP_HIERARCHY_IS_INSTALLED' ) ) {
+
+				// set flag
+				$bp_group_hierarchy = true;
+
+				// get our settings
+				$hierarchy = absint( $this->setting_get( 'nesting' ) );
+
+				// checked by default
+				$hierarchy_checked = ' checked="checked"';
+				if ( isset( $hierarchy ) AND $hierarchy === 0 ) {
+					$hierarchy_checked = '';
+				}
+
+			}
+
 			// include template file
 			include( BP_GROUPS_CIVICRM_SYNC_PATH . 'assets/templates/settings.php' );
 
@@ -666,16 +692,51 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// check that we trust the source of the data
 		check_admin_referer( 'bp_groups_civicrm_sync_settings_action', 'bp_groups_civicrm_sync_nonce' );
 
+		// get existing option
+		$parent_group = $this->setting_get( 'parent_group' );
+
 		// did we ask to enable parent group?
 		if ( isset( $_POST['bp_groups_civicrm_sync_settings_parent_group'] ) ) {
+
+			// yes, set flag
 			$settings_parent_group = absint( $_POST['bp_groups_civicrm_sync_settings_parent_group'] );
+
 		} else {
+
+			// no, set empty value
 			$settings_parent_group = 0;
+
 		}
+
+		// sanitise and set option
 		$this->setting_set( 'parent_group', ( $settings_parent_group ? 1 : 0 ) );
 
 		// save settings
 		$this->settings_save();
+
+		// is the setting changing?
+		if ( $parent_group != $settings_parent_group ) {
+
+			// are we switching from "no parent group"?
+			if ( $parent_group == 0 ) {
+
+				// create a meta group to hold all BuddyPress groups
+				$this->civi->meta_group_create();
+
+				// assign BP Sync Groups with no parent to the meta group
+				$this->civi->meta_group_groups_assign();
+
+			} else {
+
+				// remove top-level BP Sync Groups from the "BuddyPress Groups" container group
+				$this->civi->meta_group_groups_remove();
+
+				// delete "BuddyPress Groups" meta group
+				$this->civi->meta_group_delete();
+
+			}
+
+		}
 
 		// get admin URLs
 		$urls = $this->page_get_urls();

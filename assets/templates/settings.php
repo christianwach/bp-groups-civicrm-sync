@@ -28,20 +28,30 @@
 			<tr>
 				<th scope="row"><label class="bp_groups_civicrm_sync_settings_label" for="bp_groups_civicrm_sync_settings_parent_group"><?php _e( 'Use Parent Group', 'bp-groups-civicrm-sync' ); ?></label></th>
 				<td>
-					<?php
-
-					// checked by default
-					$checked = ' checked="checked"';
-					if ( isset( $parent_group ) AND $parent_group === 0 ) {
-						$checked = '';
-					}
-
-					?><input type="checkbox" class="settings-checkbox" name="bp_groups_civicrm_sync_settings_parent_group" id="bp_groups_civicrm_sync_settings_parent_group" value="1"<?php echo $checked; ?> />
+					<input type="checkbox" class="settings-checkbox" name="bp_groups_civicrm_sync_settings_parent_group" id="bp_groups_civicrm_sync_settings_parent_group" value="1"<?php echo $checked; ?> />
 					<label class="bp_groups_civicrm_sync_settings_label" for="bp_groups_civicrm_sync_settings_parent_group"><?php _e( 'Assign CiviCRM groups to a "BuddyPress Groups" parent group.', 'bp-groups-civicrm-sync' ); ?></label>
 				</td>
 			</tr>
 
 		</table>
+
+		<?php if ( $bp_group_hierarchy ) : ?>
+			<h3><?php _e( 'BuddyPress Group Hierarchy', 'bp-groups-civicrm-sync' ); ?></h3>
+
+			<p><?php _e( 'Depending on your use case, select whether you want your CiviCRM groups to be hierarchically organised in CiviCRM. If you do, then CiviCRM groups will be nested under one another, mirroring the BuddyPress Group Hierarchy. Again, please refer to <a href="http://book.civicrm.org/user/current/organising-your-data/groups-and-tags/">the documentation</a> to decide if this is useful to you or not.', 'bp-groups-civicrm-sync' ); ?></p>
+
+			<table class="form-table">
+
+				<tr>
+					<th scope="row"><label class="bp_groups_civicrm_sync_settings_label" for="bp_groups_civicrm_sync_settings_hierarchy"><?php _e( 'Use Hierarchy', 'bp-groups-civicrm-sync' ); ?></label></th>
+					<td>
+						<input type="checkbox" class="settings-checkbox" name="bp_groups_civicrm_sync_settings_hierarchy" id="bp_groups_civicrm_sync_settings_hierarchy" value="1"<?php echo $hierarchy_checked; ?> />
+						<label class="bp_groups_civicrm_sync_settings_label" for="bp_groups_civicrm_sync_settings_hierarchy"><?php _e( 'Nest CiviCRM groups hierarchically.', 'bp-groups-civicrm-sync' ); ?></label>
+					</td>
+				</tr>
+
+			</table>
+		<?php endif; ?>
 
 		<p class="submit">
 			<input class="button-primary" type="submit" id="bp_groups_civicrm_sync_settings_submit" name="bp_groups_civicrm_sync_settings_submit" value="<?php _e( 'Save Changes', 'bp-groups-civicrm-sync' ); ?>" />
