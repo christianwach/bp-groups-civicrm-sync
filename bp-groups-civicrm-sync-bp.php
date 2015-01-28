@@ -710,7 +710,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		);
 
 		// use clone of CRM_Bridge_OG_Drupal::og()
-		$this->civi->sync_group_member( $params, 'add' );
+		$this->civi->group_member_sync( $params, 'add' );
 
 		/*
 		print_r( array(
@@ -751,7 +751,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		);
 
 		// use clone of CRM_Bridge_OG_Drupal::og()
-		$this->civi->sync_group_member( $params, 'delete' );
+		$this->civi->group_member_sync( $params, 'delete' );
 
 	}
 
@@ -771,7 +771,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		$parent_id = isset( $group->vars['parent_id'] ) ? $group->vars['parent_id'] : 0;
 
 		// pass to CiviCRM object
-		$this->civi->update_civi_group_nesting( $group->id, $parent_id );
+		$this->civi->group_nesting_update( $group->id, $parent_id );
 
 	}
 

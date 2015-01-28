@@ -787,7 +787,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		if ( ! empty( $bp_groups_civicrm_sync_convert ) ) {
 
 			// try and convert OG groups to BP groups
-			$this->civi->convert_og_groups_to_bp_groups();
+			$this->civi->og_groups_to_bp_groups_convert();
 
 		}
 
@@ -885,7 +885,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 				// get the Civi group ID of this BuddyPress group
 				$civi_group_id = $this->civi->find_group_id(
-					$this->civi->get_group_sync_name( $group->id )
+					$this->civi->member_group_get_sync_name( $group->id )
 				);
 
 				/*
