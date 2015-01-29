@@ -695,43 +695,67 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// get existing option
 		$existing_parent_group = $this->setting_get( 'parent_group' );
 
+		// default to empty value
+		$settings_parent_group = 0;
+
 		// did we ask to enable parent group?
 		if ( isset( $_POST['bp_groups_civicrm_sync_settings_parent_group'] ) ) {
 
 			// yes, set flag
 			$settings_parent_group = absint( $_POST['bp_groups_civicrm_sync_settings_parent_group'] );
 
-		} else {
-
-			// no, set empty value
-			$settings_parent_group = 0;
-
 		}
 
 		// sanitise and set option
 		$this->setting_set( 'parent_group', ( $settings_parent_group ? 1 : 0 ) );
 
-		// get existing option
-		$existing_hierarchy = $this->setting_get( 'nesting' );
+		// test for presence BP Group Hierarchy plugin
+		if ( defined( 'BP_GROUP_HIERARCHY_IS_INSTALLED' ) ) {
 
-		// did we ask to enable parent group?
-		if ( isset( $_POST['bp_groups_civicrm_sync_settings_hierarchy'] ) ) {
+			// get existing option
+			$existing_hierarchy = $this->setting_get( 'nesting' );
 
-			// yes, set flag
-			$settings_hierarchy = absint( $_POST['bp_groups_civicrm_sync_settings_hierarchy'] );
-
-		} else {
-
-			// no, set empty value
+			// default to empty value
 			$settings_hierarchy = 0;
+
+			// did we ask to enable parent group?
+			if ( isset( $_POST['bp_groups_civicrm_sync_settings_hierarchy'] ) ) {
+
+				// yes, set flag
+				$settings_hierarchy = absint( $_POST['bp_groups_civicrm_sync_settings_hierarchy'] );
+
+			}
+
+			// sanitise and set option
+			$this->setting_set( 'nesting', ( $settings_hierarchy ? 1 : 0 ) );
 
 		}
 
-		// sanitise and set option
-		$this->setting_set( 'nesting', ( $settings_hierarchy ? 1 : 0 ) );
-
 		// save settings
 		$this->settings_save();
+
+		// test for presence BP Group Hierarchy plugin
+		if ( defined( 'BP_GROUP_HIERARCHY_IS_INSTALLED' ) ) {
+
+			// is the hierarchy setting changing?
+			if ( $existing_hierarchy != $settings_hierarchy ) {
+
+				// are we switching from "no hierarchy" to "use hierarchy"?
+				if ( $existing_hierarchy == 0 ) {
+
+					// build Civi group hierarchy
+					$this->civi->group_hierarchy_build();
+
+				} else {
+
+					// collapse Civi group hierarchy
+					$this->civi->group_hierarchy_collapse();
+
+				}
+
+			}
+
+		}
 
 		// is the parent group setting changing?
 		if ( $existing_parent_group != $settings_parent_group ) {
@@ -752,24 +776,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 				// delete "BuddyPress Groups" meta group
 				$this->civi->meta_group_delete();
-
-			}
-
-		}
-
-		// is the hierarchy setting changing?
-		if ( $existing_hierarchy != $settings_hierarchy ) {
-
-			// are we switching from "no hierarchy" to "use hierarchy"?
-			if ( $existing_hierarchy == 0 ) {
-
-				// build Civi group hierarchy
-				$this->civi->group_hierarchy_build();
-
-			} else {
-
-				// collapse Civi group hierarchy
-				$this->civi->group_hierarchy_collapse();
 
 			}
 

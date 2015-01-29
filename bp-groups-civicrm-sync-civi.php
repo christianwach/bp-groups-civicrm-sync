@@ -86,16 +86,16 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		add_action( 'civicrm_config', array( $this, 'register_directories' ), 10, 1 );
 
 		// intercept CiviCRM group create form
-		//add_action( 'civicrm_buildForm', array( $this, 'civi_group_form_create_options' ), 10, 2 );
+		//add_action( 'civicrm_buildForm', array( $this, 'form_create_bp_group_options' ), 10, 2 );
 
 		// intercept CiviCRM group create form submission
-		//add_action( 'civicrm_postProcess', array( $this, 'civi_group_form_create_process' ), 10, 2 );
+		//add_action( 'civicrm_postProcess', array( $this, 'form_create_bp_group_process' ), 10, 2 );
 
 		// intercept CiviCRM Drupal Organic Group edit form
-		add_action( 'civicrm_buildForm', array( $this, 'civi_group_form_edit_og_options' ), 10, 2 );
+		add_action( 'civicrm_buildForm', array( $this, 'form_edit_og_options' ), 10, 2 );
 
 		// intercept CiviCRM Drupal Organic Group edit form submission
-		add_action( 'civicrm_postProcess', array( $this, 'civi_group_form_edit_og_process' ), 10, 2 );
+		add_action( 'civicrm_postProcess', array( $this, 'form_edit_og_process' ), 10, 2 );
 
 		// intercept CiviCRM's add contacts to group
 		add_action( 'civicrm_pre', array( $this, 'group_contacts_added' ), 10, 4 );
@@ -848,6 +848,23 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 */
 	public function group_hierarchy_build() {
 
+		// init or die
+		if ( ! $this->is_active() ) return;
+
+		// get tree
+		$tree = BP_Groups_Hierarchy::get_tree();
+
+		// bail if we don't get one
+		if ( empty( $tree ) ) return;
+
+		// loop through tree
+		foreach( $tree AS $bp_group ) {
+
+			// update the nesting
+			$this->group_nesting_update( $bp_group->id, $bp_group->parent_id );
+
+		}
+
 	}
 
 
@@ -858,6 +875,23 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @return void
 	 */
 	public function group_hierarchy_collapse() {
+
+		// init or die
+		if ( ! $this->is_active() ) return;
+
+		// get tree
+		$tree = BP_Groups_Hierarchy::get_tree();
+
+		// bail if we don't get one
+		if ( empty( $tree ) ) return;
+
+		// loop through tree
+		foreach( $tree AS $bp_group ) {
+
+			// collapse nesting by assigning all to meta group
+			$this->group_nesting_update( $bp_group->id, 0 );
+
+		}
 
 	}
 
@@ -2355,7 +2389,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @param object $form The CiviCRM form object
 	 * @return void
 	 */
-	public function civi_group_form_create_options( $formName, &$form ) {
+	public function form_create_bp_group_options( $formName, &$form ) {
 
 		// is this the group edit form?
 		if ( $formName != 'CRM_Group_Form_Edit' ) return;
@@ -2397,7 +2431,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @param object $form The CiviCRM form object
 	 * @return void
 	 */
-	public function civi_group_form_create_process( $formName, &$form ) {
+	public function form_create_bp_group_process( $formName, &$form ) {
 
 		// kick out if not group edit form
 		if ( ! ( $form instanceof CRM_Group_Form_Edit ) ) return;
@@ -2424,7 +2458,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$civi_group = $form->getVar( '_group' );
 
 		// convert to BP group
-		$this->convert_civi_group_to_bp_group( $civi_group );
+		$this->civi_group_to_bp_group_convert( $civi_group );
 
 	}
 
@@ -2436,11 +2470,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @param object $civi_group The CiviCRM group object
 	 * @return void
 	 */
-	public function convert_civi_group_to_bp_group( $civi_group ) {
+	public function civi_group_to_bp_group_convert( $civi_group ) {
 
 		/*
 		$this->_debug( array(
-			'method' => 'convert_civi_group_to_bp_group',
+			'method' => 'civi_group_to_bp_group_convert',
 			'civi_group' => $civi_group,
 		) ); die();
 		*/
@@ -2537,7 +2571,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 			// debug
 			print_r( array(
-				'method' => 'convert_civi_group_to_bp_group',
+				'method' => 'civi_group_to_bp_group_convert',
 				'acl_group' => $acl_group,
 			) ); die();
 
@@ -2562,7 +2596,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 			// debug
 			print_r( array(
-				'method' => 'convert_civi_group_to_bp_group',
+				'method' => 'civi_group_to_bp_group_convert',
 				'member_group' => $member_group,
 			) ); die();
 
@@ -2582,6 +2616,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 
+	//##########################################################################
+
+
+
 	/**
 	 * Enable a BP group to be created from pre-existing Drupal OG groups in Civi
 	 *
@@ -2589,7 +2627,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @param object $form The CiviCRM form object
 	 * @return void
 	 */
-	public function civi_group_form_edit_og_options( $formName, &$form ) {
+	public function form_edit_og_options( $formName, &$form ) {
 
 		// is this the group edit form?
 		if ( $formName != 'CRM_Group_Form_Edit' ) return;
@@ -2641,7 +2679,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @param object $form The CiviCRM form object
 	 * @return void
 	 */
-	public function civi_group_form_edit_og_process( $formName, &$form ) {
+	public function form_edit_og_process( $formName, &$form ) {
 
 		/*
 		print_r( array(
@@ -2665,62 +2703,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// convert to BP group
 		$this->og_group_to_bp_group_convert( $civi_group );
-
-	}
-
-
-
-	/**
-	 * Do we have any legacy OG CiviCRM Groups?
-	 *
-	 * @return bool
-	 */
-	public function has_og_groups() {
-
-		// init or die
-		if ( ! $this->is_active() ) return;
-
-		// define get all groups params
-		$params = array(
-			'version' => 3,
-		);
-
-		// get all groups with no parent ID (get ALL for now)
-		$all_groups = civicrm_api( 'group', 'get', $params );
-
-		// if we got some...
-		if (
-
-			$all_groups['is_error'] == 0 AND
-			isset( $all_groups['values'] ) AND
-			count( $all_groups['values'] ) > 0
-
-		) {
-
-			// loop through them
-			foreach( $all_groups['values'] AS $civi_group ) {
-
-				// if "source" is not present, it's not an OG group
-				if ( ! isset( $civi_group['source'] ) OR is_null( $civi_group['source'] ) ) continue;
-
-				// get source
-				$source = $civi_group['source'];
-
-				// in Drupal, OG groups are synced with 'OG Sync Group :GID:'
-				// related OG ACL groups are synced with 'OG Sync Group ACL :GID:'
-
-				// is this an OG administrator group?
-				if ( strstr( $source, 'OG Sync Group ACL :' ) !== false ) return true;
-
-				// is this an OG member group?
-				if ( strstr( $source, 'OG Sync Group :' ) !== false ) return true;
-
-			}
-
-		}
-
-		// --<
-		return false;
 
 	}
 
@@ -2943,6 +2925,62 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			$this->group_nesting_update( $bp_group_id, '0' );
 
 		}
+
+	}
+
+
+
+	/**
+	 * Do we have any legacy OG CiviCRM Groups?
+	 *
+	 * @return bool
+	 */
+	public function has_og_groups() {
+
+		// init or die
+		if ( ! $this->is_active() ) return;
+
+		// define get all groups params
+		$params = array(
+			'version' => 3,
+		);
+
+		// get all groups with no parent ID (get ALL for now)
+		$all_groups = civicrm_api( 'group', 'get', $params );
+
+		// if we got some...
+		if (
+
+			$all_groups['is_error'] == 0 AND
+			isset( $all_groups['values'] ) AND
+			count( $all_groups['values'] ) > 0
+
+		) {
+
+			// loop through them
+			foreach( $all_groups['values'] AS $civi_group ) {
+
+				// if "source" is not present, it's not an OG group
+				if ( ! isset( $civi_group['source'] ) OR is_null( $civi_group['source'] ) ) continue;
+
+				// get source
+				$source = $civi_group['source'];
+
+				// in Drupal, OG groups are synced with 'OG Sync Group :GID:'
+				// related OG ACL groups are synced with 'OG Sync Group ACL :GID:'
+
+				// is this an OG administrator group?
+				if ( strstr( $source, 'OG Sync Group ACL :' ) !== false ) return true;
+
+				// is this an OG member group?
+				if ( strstr( $source, 'OG Sync Group :' ) !== false ) return true;
+
+			}
+
+		}
+
+		// --<
+		return false;
 
 	}
 
