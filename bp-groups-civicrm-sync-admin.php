@@ -1,46 +1,99 @@
-<?php /*
---------------------------------------------------------------------------------
-BP_Groups_CiviCRM_Sync_Admin Class
---------------------------------------------------------------------------------
-*/
-
-
+<?php
 
 /**
- * Class for encapsulating admin functionality
+ * BP Groups CiviCRM Sync Admin Class.
+ *
+ * A class that encapsulates admin functionality.
+ *
+ * @since 0.1
  */
 class BP_Groups_CiviCRM_Sync_Admin {
 
-	/**
-	 * Properties
-	 */
 
-	// parent object
+
+	/**
+	 * Plugin object.
+	 *
+	 * @since 0.1
+	 * @access public
+	 * @var object $parent_obj The plugin object
+	 */
 	public $parent_obj;
 
-	// BuddyPress utilities class
-	public $bp;
 
-	// CiviCRM utilities class
+
+	/**
+	 * CiviCRM utilities object.
+	 *
+	 * @since 0.1
+	 * @access public
+	 * @var object $civi The CiviCRM utilities object
+	 */
 	public $civi;
 
-	// admin pages
+
+
+	/**
+	 * BuddyPress utilities object.
+	 *
+	 * @since 0.1
+	 * @access public
+	 * @var object $bp The BuddyPress utilities object
+	 */
+	public $bp;
+
+
+
+	/**
+	 * Settings page reference.
+	 *
+	 * @since 0.1
+	 * @access public
+	 * @var str $settings The Settings page reference
+	 */
 	public $settings_page;
+
+
+
+	/**
+	 * Manual Sync page reference.
+	 *
+	 * @since 0.1
+	 * @access public
+	 * @var str $sync_page The Manual Sync page reference
+	 */
 	public $sync_page;
 
-	// plugin version
+
+
+	/**
+	 * Plugin version.
+	 *
+	 * @since 0.1
+	 * @access public
+	 * @var str $plugin_version The Plugin version
+	 */
 	public $plugin_version;
 
-	// settings
+
+
+	/**
+	 * Settings array.
+	 *
+	 * @since 0.1
+	 * @access public
+	 * @var array $settings The Settings array
+	 */
 	public $settings = array();
 
 
 
 	/**
-	 * Initialise this object
+	 * Initialise this object.
+	 *
+	 * @since 0.1
 	 *
 	 * @param object $parent_obj The parent object
-	 * @return object
 	 */
 	function __construct( $parent_obj ) {
 
@@ -50,18 +103,17 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// add action for admin init
 		add_action( 'plugins_loaded', array( $this, 'initialise' ) );
 
-		// --<
-		return $this;
-
 	}
 
 
 
 	/**
-	 * Set references to other objects
+	 * Set references to other objects.
+	 *
+	 * @since 0.1
 	 *
 	 * @param object $bp_object Reference to this plugin's BP object
-	 * @param object $civi_object Reference to this plugin's Civi object
+	 * @param object $civi_object Reference to this plugin's CiviCRM object
 	 * @return void
 	 */
 	public function set_references( &$bp_object, &$civi_object ) {
@@ -77,7 +129,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Perform activation tasks
+	 * Perform activation tasks.
+	 *
+	 * @since 0.1
 	 *
 	 * @return void
 	 */
@@ -99,7 +153,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Perform deactivation tasks
+	 * Perform deactivation tasks.
+	 *
+	 * @since 0.1
 	 *
 	 * @return void
 	 */
@@ -112,7 +168,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Initialise when all plugins are loaded
+	 * Initialise when all plugins are loaded.
+	 *
+	 * @since 0.1
 	 *
 	 * @return void
 	 */
@@ -150,7 +208,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Store the plugin version
+	 * Store the plugin version.
+	 *
+	 * @since 0.1
 	 *
 	 * @return void
 	 */
@@ -168,7 +228,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Add this plugin's Settings Page to the WordPress admin menu
+	 * Add this plugin's Settings Page to the WordPress admin menu.
+	 *
+	 * @since 0.1
 	 *
 	 * @return void
 	 */
@@ -185,36 +247,32 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 			// add the admin page to the Network Settings menu
 			$this->parent_page = add_submenu_page(
-
 				'settings.php',
 				__( 'BP Groups CiviCRM Sync', 'bp-groups-civicrm-sync' ),
 				__( 'BP Groups CiviCRM Sync', 'bp-groups-civicrm-sync' ),
 				'manage_options',
 				'bp_groups_civicrm_sync_parent',
 				array( $this, 'page_settings' )
-
 			);
 
 		} else {
 
 			// add the admin page to the Settings menu
 			$this->parent_page = add_options_page(
-
 				__( 'BP Groups CiviCRM Sync', 'bp-groups-civicrm-sync' ),
 				__( 'BP Groups CiviCRM Sync', 'bp-groups-civicrm-sync' ),
 				'manage_options',
 				'bp_groups_civicrm_sync_parent',
 				array( $this, 'page_settings' )
-
 			);
 
 		}
 
 		// add styles and scripts only on our admin page, see:
 		// http://codex.wordpress.org/Function_Reference/wp_enqueue_script#Load_scripts_only_on_plugin_pages
-		add_action( 'admin_print_styles-'.$this->parent_page, array( $this, 'admin_css' ) );
-		add_action( 'admin_head-'.$this->parent_page, array( $this, 'admin_head' ), 50 );
-		add_action( 'admin_head-'.$this->parent_page, array( $this, 'admin_menu_highlight' ), 50 );
+		add_action( 'admin_print_styles-' . $this->parent_page, array( $this, 'admin_css' ) );
+		add_action( 'admin_head-' . $this->parent_page, array( $this, 'admin_head' ), 50 );
+		add_action( 'admin_head-' . $this->parent_page, array( $this, 'admin_menu_highlight' ), 50 );
 
 		// add settings page
 		$this->settings_page = add_submenu_page(
@@ -228,9 +286,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		// add styles and scripts only on our admin page, see:
 		// http://codex.wordpress.org/Function_Reference/wp_enqueue_script#Load_scripts_only_on_plugin_pages
-		add_action( 'admin_print_styles-'.$this->settings_page, array( $this, 'admin_css' ) );
-		add_action( 'admin_head-'.$this->settings_page, array( $this, 'admin_head' ), 50 );
-		add_action( 'admin_head-'.$this->settings_page, array( $this, 'admin_menu_highlight' ), 50 );
+		add_action( 'admin_print_styles-' . $this->settings_page, array( $this, 'admin_css' ) );
+		add_action( 'admin_head-' . $this->settings_page, array( $this, 'admin_head' ), 50 );
+		add_action( 'admin_head-' . $this->settings_page, array( $this, 'admin_menu_highlight' ), 50 );
 
 		// add utilities page
 		$this->sync_page = add_submenu_page(
@@ -244,9 +302,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		// add styles and scripts only on our admin page, see:
 		// http://codex.wordpress.org/Function_Reference/wp_enqueue_script#Load_scripts_only_on_plugin_pages
-		add_action( 'admin_print_styles-'.$this->sync_page, array( $this, 'admin_css' ) );
-		add_action( 'admin_head-'.$this->sync_page, array( $this, 'admin_head' ), 50 );
-		add_action( 'admin_head-'.$this->sync_page, array( $this, 'admin_menu_highlight' ), 50 );
+		add_action( 'admin_print_styles-' . $this->sync_page, array( $this, 'admin_css' ) );
+		add_action( 'admin_head-' . $this->sync_page, array( $this, 'admin_head' ), 50 );
+		add_action( 'admin_head-' . $this->sync_page, array( $this, 'admin_menu_highlight' ), 50 );
 
 		// try and update options
 		$this->settings_update_router();
@@ -258,6 +316,8 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	/**
 	 * This tells WP to highlight the plugin's menu item, regardless of which
 	 * actual admin screen we are on.
+	 *
+	 * @since 0.1
 	 *
 	 * @global string $plugin_page
 	 * @global array $submenu
@@ -284,7 +344,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Initialise plugin help
+	 * Initialise plugin help.
+	 *
+	 * @since 0.1
 	 *
 	 * @return void
 	 */
@@ -301,7 +363,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Enqueue any styles and scripts needed by our admin page
+	 * Enqueue any styles and scripts needed by our admin page.
+	 *
+	 * @since 0.1
 	 *
 	 * @return void
 	 */
@@ -312,13 +376,11 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		// add admin css
 		wp_enqueue_style(
-
 			'bpcivisync-admin-style',
 			BP_GROUPS_CIVICRM_SYNC_URL . 'assets/css/admin.css',
 			null,
 			BP_GROUPS_CIVICRM_SYNC_VERSION,
 			'all' // media
-
 		);
 
 	}
@@ -326,7 +388,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Adds help copy to admin page
+	 * Adds help copy to admin page.
+	 *
+	 * @since 0.1
 	 *
 	 * @param object $screen The existing WordPress screen object
 	 * @return object $screen The amended WordPress screen object
@@ -348,23 +412,14 @@ class BP_Groups_CiviCRM_Sync_Admin {
 			$this->sync_page . $page,
 		);
 
-		/*
-		print_r( array(
-			'screen' => $screen,
-			'pages' => $pages,
-		) ); die();
-		*/
-
 		// kick out if not our screen
 		if ( ! in_array( $screen->id, $pages ) ) { return $screen; }
 
 		// add a tab - we can add more later
 		$screen->add_help_tab( array(
-
 			'id'      => 'bp_groups_civicrm_sync',
 			'title'   => __( 'BP Groups CiviCRM Sync', 'bp-groups-civicrm-sync' ),
 			'content' => $this->admin_help_text(),
-
 		));
 
 		// --<
@@ -375,13 +430,15 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Get help text
+	 * Get help text.
+	 *
+	 * @since 0.1
 	 *
 	 * @return string $help Help formatted as HTML
 	 */
 	public function admin_help_text() {
 
-		// stub help text, to be developed further...
+		// stub help text, to be developed further
 		$help = '<p>' . __( 'For further information about using BP Groups CiviCRM Sync, please refer to the readme.txt that comes with this plugin.', 'bp-groups-civicrm-sync' ) . '</p>';
 
 		// --<
@@ -392,7 +449,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Show settings page
+	 * Show settings page.
+	 *
+	 * @since 0.1
 	 *
 	 * @return void
 	 */
@@ -443,7 +502,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Show utilities page
+	 * Show utilities page.
+	 *
+	 * @since 0.1
 	 *
 	 * @return void
 	 */
@@ -484,7 +545,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 			}
 
-			// if we've updated...
+			// if we've updated
 			if ( isset( $_GET['updated'] ) ) {
 
 				// are we checking OG?
@@ -544,7 +605,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Get admin page URLs
+	 * Get admin page URLs.
+	 *
+	 * @since 0.1
 	 *
 	 * @return array $admin_urls The array of admin page URLs
 	 */
@@ -580,7 +643,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 	/**
 	 * Get the url to access a particular menu page based on the slug it was registered with.
-	 * If the slug hasn't been registered properly no url will be returned
+	 * If the slug hasn't been registered properly no url will be returned.
+	 *
+	 * @since 0.1
 	 *
 	 * @param string $menu_slug The slug name to refer to this menu by (should be unique for this menu)
 	 * @param bool $echo Whether or not to echo the url - default is true
@@ -600,7 +665,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 			$url = '';
 		}
 
-		$url = esc_url($url);
+		$url = esc_url( $url );
 
 		if ( $echo ) echo $url;
 
@@ -612,7 +677,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Get the URL for the form action
+	 * Get the URL for the form action.
+	 *
+	 * @since 0.1
 	 *
 	 * @return string $target_url The URL for the admin form action
 	 */
@@ -621,7 +688,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// sanitise admin page url
 		$target_url = $_SERVER['REQUEST_URI'];
 		$url_array = explode( '&', $target_url );
-		if ( $url_array ) { $target_url = htmlentities( $url_array[0].'&updated=true' ); }
+		if ( $url_array ) { $target_url = htmlentities( $url_array[0] . '&updated=true' ); }
 
 		// --<
 		return $target_url;
@@ -635,7 +702,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Get default plugin settings
+	 * Get default plugin settings.
+	 *
+	 * @since 0.1
 	 *
 	 * @return array $settings The array of settings, keyed by setting name
 	 */
@@ -658,7 +727,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Route settings updates to relevant methods
+	 * Route settings updates to relevant methods.
+	 *
+	 * @since 0.1
 	 *
 	 * @return void
 	 */
@@ -683,7 +754,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Update options supplied by our admin page
+	 * Update options supplied by our admin page.
+	 *
+	 * @since 0.1
 	 *
 	 * @return void
 	 */
@@ -743,12 +816,12 @@ class BP_Groups_CiviCRM_Sync_Admin {
 				// are we switching from "no hierarchy" to "use hierarchy"?
 				if ( $existing_hierarchy == 0 ) {
 
-					// build Civi group hierarchy
+					// build CiviCRM group hierarchy
 					$this->civi->group_hierarchy_build();
 
 				} else {
 
-					// collapse Civi group hierarchy
+					// collapse CiviCRM group hierarchy
 					$this->civi->group_hierarchy_collapse();
 
 				}
@@ -793,7 +866,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Do sync procedure, depending on which one has been selected
+	 * Do sync procedure, depending on which one has been selected.
+	 *
+	 * @since 0.1
 	 *
 	 * @return boolean True if sync performed, false otherwise
 	 */
@@ -810,18 +885,18 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// get variables
 		extract( $_POST );
 
-		// did we ask to sync existing BP groups with Civi?
+		// did we ask to sync existing BP groups with CiviCRM?
 		if ( ! empty( $bp_groups_civicrm_sync_bp_check ) ) {
 
-			// try and sync BP groups with Civi groups
+			// try and sync BP groups with CiviCRM groups
 			$this->sync_bp_and_civi();
 
 		}
 
-		// did we ask to check the sync of BP groups and Civi groups?
+		// did we ask to check the sync of BP groups and CiviCRM groups?
 		if ( ! empty( $bp_groups_civicrm_sync_bp_check_sync ) ) {
 
-			// check the sync between BP groups and Civi groups
+			// check the sync between BP groups and CiviCRM groups
 			$this->check_sync_between_bp_and_civi();
 
 		}
@@ -846,7 +921,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Save the plugin's settings array
+	 * Save the plugin's settings array.
+	 *
+	 * @since 0.1
 	 *
 	 * @return bool $result True if setting value has changed, false if not or if update failed
 	 */
@@ -860,7 +937,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Return a value for a specified setting
+	 * Return a value for a specified setting.
+	 *
+	 * @since 0.1
 	 *
 	 * @return mixed $setting The value of the setting
 	 */
@@ -879,7 +958,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Set a value for a specified setting
+	 * Set a value for a specified setting.
+	 *
+	 * @since 0.1
 	 *
 	 * @return void
 	 */
@@ -902,7 +983,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Sync BuddyPress groups to CiviCRM
+	 * Sync BuddyPress groups to CiviCRM.
+	 *
+	 * @since 0.1
 	 *
 	 * @return void
 	 */
@@ -914,32 +997,18 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// get all BP groups (batching to come later)
 		$groups = $this->bp->get_all_groups();
 
-		/*
-		print_r( array(
-			'groups' => $groups,
-		) ); die();
-		*/
-
 		// if we get some
 		if ( count( $groups ) > 0 ) {
 
-			// one at a time, then...
+			// one at a time, then
 			foreach( $groups AS $group ) {
 
-				// get the Civi group ID of this BuddyPress group
+				// get the CiviCRM group ID of this BuddyPress group
 				$civi_group_id = $this->civi->find_group_id(
 					$this->civi->member_group_get_sync_name( $group->id )
 				);
 
-				/*
-				print_r( array(
-					'group' => $group,
-					//'_group' => $_group,
-					'civi_group_id' => $civi_group_id,
-				) ); die();
-				*/
-
-				// if we don't get an ID, create the group...
+				// if we don't get an ID, create the group
 				if ( ! $civi_group_id ) {
 					$this->bp->create_civi_group( $group->id, null, $group );
 				} else {
@@ -958,7 +1027,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Sync BuddyPress group members to CiviCRM group membership
+	 * Sync BuddyPress group members to CiviCRM group membership.
+	 *
+	 * @since 0.1
 	 *
 	 * @return void
 	 */
@@ -974,7 +1045,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// query group members
 		if ( bp_group_has_members( $params ) ) {
 
-			// one by one...
+			// one by one
 			while ( bp_group_members() ) {
 
 				// set up member
@@ -995,7 +1066,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Check the Sync between BuddyPress groups and CiviCRM groups
+	 * Check the Sync between BuddyPress groups and CiviCRM groups.
+	 *
+	 * @since 0.1
 	 *
 	 * @return void
 	 */
@@ -1019,20 +1092,11 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// get all groups with no parent ID (get ALL for now)
 		$all_groups = civicrm_api( 'group', 'get', $params );
 
-		/*
-		print_r( array(
-			'method' => 'check_sync_between_bp_and_civi',
-			'all_groups' => $all_groups,
-		) ); die();
-		*/
-
-		// if we got some...
+		// if we got some
 		if (
-
 			$all_groups['is_error'] == 0 AND
 			isset( $all_groups['values'] ) AND
 			count( $all_groups['values'] ) > 0
-
 		) {
 
 			// loop through them
@@ -1041,7 +1105,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 				// is this group supposed to have a BP Group?
 				$has_group = $this->civi->has_bp_group( $civi_group );
 
-				// if so...
+				// if it does
 				if ( $has_group ) {
 
 					// get the ID of the BP group it was supposed to sync with

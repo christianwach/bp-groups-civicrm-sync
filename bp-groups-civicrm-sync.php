@@ -1,5 +1,4 @@
-<?php
-/*
+<?php /*
 --------------------------------------------------------------------------------
 Plugin Name: BP Groups CiviCRM Sync
 Plugin URI: https://github.com/christianwach/bp-groups-civicrm-sync
@@ -38,41 +37,59 @@ define( 'BP_GROUPS_CIVICRM_SYNC_DEBUG', false );
 
 
 
-/*
---------------------------------------------------------------------------------
-BP_Groups_CiviCRM_Sync Class
---------------------------------------------------------------------------------
-*/
-
+/**
+ * BP Groups CiviCRM Sync Class.
+ *
+ * A class that encapsulates plugin functionality.
+ *
+ * @since 0.1
+ */
 class BP_Groups_CiviCRM_Sync {
 
-	/**
-	 * Properties
-	 */
 
-	// CiviCRM utilities class
+
+	/**
+	 * CiviCRM utilities object.
+	 *
+	 * @since 0.1
+	 * @access public
+	 * @var object $civi The CiviCRM utilities object
+	 */
 	public $civi;
 
-	// BuddyPress utilities class
+
+
+	/**
+	 * BuddyPress utilities object.
+	 *
+	 * @since 0.1
+	 * @access public
+	 * @var object $bp The BuddyPress utilities object
+	 */
 	public $bp;
 
-	// Admin utilities class
+
+
+	/**
+	 * Admin utilities object.
+	 *
+	 * @since 0.1
+	 * @access public
+	 * @var object $admin The Admin utilities object
+	 */
 	public $admin;
 
 
 
 	/**
-	 * Initialises this object
+	 * Initialises this object.
 	 *
-	 * @return object
+	 * @since 0.1
 	 */
 	function __construct() {
 
 		// init loading process
 		$this->initialise();
-
-		// --<
-		return $this;
 
 	}
 
@@ -83,7 +100,9 @@ class BP_Groups_CiviCRM_Sync {
 
 
 	/**
-	 * Do stuff on plugin init
+	 * Do stuff on plugin init.
+	 *
+	 * @since 0.1
 	 *
 	 * @return void
 	 */
@@ -120,7 +139,9 @@ class BP_Groups_CiviCRM_Sync {
 
 
 	/**
-	 * Do stuff on plugin activation
+	 * Do stuff on plugin activation.
+	 *
+	 * @since 0.1
 	 *
 	 * @return void
 	 */
@@ -134,7 +155,9 @@ class BP_Groups_CiviCRM_Sync {
 
 
 	/**
-	 * Do stuff on plugin deactivation
+	 * Do stuff on plugin deactivation.
+	 *
+	 * @since 0.1
 	 *
 	 * @return void
 	 */
@@ -152,9 +175,12 @@ class BP_Groups_CiviCRM_Sync {
 
 
 	/**
-	 * Load translation files
+	 * Load translation files.
+	 *
 	 * A good reference on how to implement translation in WordPress:
 	 * http://ottopress.com/2012/internationalization-youre-probably-doing-it-wrong/
+	 *
+	 * @since 0.1
 	 *
 	 * @return void
 	 */
@@ -200,7 +226,9 @@ register_deactivation_hook( __FILE__, array( $bp_groups_civicrm_sync, 'deactivat
 
 
 /**
- * Utility to add link to settings page
+ * Utility to add link to settings page.
+ *
+ * @since 0.1
  *
  * @param array $links The existing links array
  * @param str $file The name of the plugin file
