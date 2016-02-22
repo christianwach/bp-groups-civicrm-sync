@@ -2222,6 +2222,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	public function has_bp_group( $civi_group ) {
 
 		// if the group source has no reference to BP, then it's not
+		if ( ! isset( $civi_group['source'] ) ) return false;
 		if ( strstr( $civi_group['source'], 'BP Sync Group' ) === false ) return false;
 
 		// --<
