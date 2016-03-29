@@ -353,6 +353,42 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
+	 * Get all members of a BuddyPress group.
+	 *
+	 * @since 0.2.2
+	 *
+	 * @param int $group_id The ID of the BuddyPress group
+	 * @return array $members The members of the group
+	 */
+	public function get_all_group_members( $group_id ) {
+
+		// init return as empty array
+		$members = array();
+
+		// params group members
+		$params = array(
+			'exclude_admins_mods' => 0,
+			'per_page' => 1000000,
+			'group_id' => $group_id,
+		);
+
+		// query group members
+		$has_members = bp_group_has_members( $params );
+
+		// access template
+		global $members_template;
+
+		// if we we get any, return them
+		if ( $has_members ) return $members_template->members;
+
+		// --<
+		return $members;
+
+	}
+
+
+
+	/**
 	 * Create BuddyPress Group Members given an array of CiviCRM contacts.
 	 *
 	 * @since 0.1
