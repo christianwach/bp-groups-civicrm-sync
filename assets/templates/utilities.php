@@ -27,7 +27,7 @@
 
 			<tr valign="top">
 				<th scope="row"><?php _e( 'Sync BP Groups to CiviCRM', 'bp-groups-civicrm-sync' ); ?></th>
-				<td><input type="submit" id="bp_groups_civicrm_sync_bp_check" name="bp_groups_civicrm_sync_bp_check" value="<?php _e( 'Sync Now', 'bp-groups-civicrm-sync' ); ?>" class="button-primary" /></td>
+				<td><input type="submit" id="bp_groups_civicrm_sync_bp_check" name="bp_groups_civicrm_sync_bp_check" value="<?php if ( 'fgffgs' == get_option( '_bgcs_groups_page', 'fgffgs' ) ) { _e( 'Sync Now', 'bp-groups-civicrm-sync' ); } else { _e( 'Sync Next', 'bp-groups-civicrm-sync' ); } ?>" class="button-primary" /><?php if ( 'fgffgs' == get_option( '_bgcs_groups_page', 'fgffgs' ) ) {} else { ?> <input type="submit" id="bp_groups_civicrm_sync_bp_stop" name="bp_groups_civicrm_sync_bp_stop" value="<?php _e( 'Stop Sync', 'bp-groups-civicrm-sync' ); ?>" class="button-secondary" /><?php } ?></td>
 			</tr>
 
 		</table>

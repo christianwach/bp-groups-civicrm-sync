@@ -740,6 +740,13 @@ class BP_Groups_CiviCRM_Sync_Admin {
 			$this->settings_update_options();
 		}
 
+	 	// was the "Stop Sync" button pressed?
+		if( isset( $_POST['bp_groups_civicrm_sync_bp_stop'] ) ) {
+			delete_option( '_bgcs_members_page' );
+			delete_option( '_bgcs_groups_page' );
+			return;
+		}
+
 		// were any sync operations requested?
 		if(
 			isset( $_POST[ 'bp_groups_civicrm_sync_bp_check' ] ) OR
@@ -985,6 +992,12 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	/**
 	 * Sync BuddyPress groups to CiviCRM.
 	 *
+	 * This method steps through all groups and all group members and syncs them
+	 * to CiviCRM. It has been overhauled since 0.1 to sync in "chunks" instead
+	 * of all at once. In the unlikely event that Javascript is disabled, there
+	 * will be two buttons displayed on the admin page - one to continue the
+	 * sync, one to stop the sync.
+	 *
 	 * @since 0.1
 	 *
 	 * @return void
@@ -994,70 +1007,95 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// init or die
 		if ( ! $this->civi->is_active() ) return;
 
-		// get all BP groups (batching to come later)
-		$groups = $this->bp->get_all_groups();
+		// if the groups paging value doesn't exist
+		if ( 'fgffgs' == get_option( '_bgcs_groups_page', 'fgffgs' ) ) {
 
-		// if we get some
-		if ( count( $groups ) > 0 ) {
+			// start at the beginning
+			$groups_page = 1;
+			add_option( '_bgcs_groups_page', '1' );
 
-			// one at a time, then
-			foreach( $groups AS $group ) {
+		} else {
+
+			// use the existing value
+			$groups_page = intval( get_option( '_bgcs_groups_page', '1' ) );
+
+		}
+
+		$group_params = array(
+			'type' => 'alphabetical',
+			'page' => $groups_page,
+			'per_page' => 1,
+			'populate_extras' => true,
+			'show_hidden' => true,
+		);
+
+		// query with our params
+		if ( bp_has_groups( $group_params ) ) {
+
+			// do the loop
+			while ( bp_groups() ) {
+
+				// set up group
+				bp_the_group();
+
+				// get group ID
+				$group_id = bp_get_group_id();
 
 				// get the CiviCRM group ID of this BuddyPress group
 				$civi_group_id = $this->civi->find_group_id(
-					$this->civi->member_group_get_sync_name( $group->id )
+					$this->civi->member_group_get_sync_name( $group_id )
 				);
 
 				// if we don't get an ID, create the group
 				if ( ! $civi_group_id ) {
-					$this->bp->create_civi_group( $group->id, null, $group );
+					$this->bp->create_civi_group( $group_id, null, $group );
 				} else {
-					$this->bp->update_civi_group( $group->id, $group );
+					$this->bp->update_civi_group( $group_id, $group );
 				}
 
-				// sync members
-				$this->sync_bp_and_civi_members( $group );
+				// get paging value, or start at the beginning if not present
+				$members_page = intval( get_option( '_bgcs_members_page', '1' ) );
 
-			}
+				$member_params = array(
+					'exclude_admins_mods' => 0,
+					'page' => $members_page,
+					'per_page' => 10,
+					'group_id' => $group_id,
+				);
 
-		}
+				// query with our params
+				if ( bp_group_has_members( $member_params ) ) {
 
-	}
+					// do the loop
+					while ( bp_group_members() ) {
 
+						// set up member
+						bp_group_the_member();
 
+						// update their membership
+						$this->bp->civi_update_group_membership( bp_get_group_member_id(), $group_id );
 
-	/**
-	 * Sync BuddyPress group members to CiviCRM group membership.
-	 *
-	 * @since 0.1
-	 *
-	 * @return void
-	 */
-	public function sync_bp_and_civi_members( $group ) {
+					} // end while
 
-		// params group members
-		$params = array(
-			'exclude_admins_mods' => 0,
-			'per_page' => 100000,
-			'group_id' => $group->id
-		);
+					// increment members paging option
+					update_option( '_bgcs_members_page', (string) ( $members_page + 1 ) );
 
-		// query group members
-		if ( bp_group_has_members( $params ) ) {
+				} else {
 
-			// one by one
-			while ( bp_group_members() ) {
+					// delete the members option to start from the beginning
+					delete_option( '_bgcs_members_page' );
 
-				// set up member
-				bp_group_the_member();
+					// increment groups paging option
+					update_option( '_bgcs_groups_page', (string) ( $groups_page + 1 ) );
 
-				// get user ID
-				$user_id = bp_get_group_member_id();
+				}
 
-				// update their membership
-				$this->bp->civi_update_group_membership( $user_id, $group->id );
+			} // end while
 
-			}
+		} else {
+
+			// delete the groups option to start from the beginning
+			delete_option( '_bgcs_groups_page' );
 
 		}
 
