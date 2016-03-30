@@ -927,9 +927,10 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			'is_admin' => $is_admin,
 		);
 
-		// first, remove the CiviCRM actions, otherwise we'll recurse
+		// first, remove the CiviCRM actions, otherwise we may recurse
 		remove_action( 'civicrm_pre', array( $this->civi, 'group_contacts_added' ), 10 );
 		remove_action( 'civicrm_pre', array( $this->civi, 'group_contacts_rejoined' ), 10 );
+		remove_action( 'civicrm_pre', array( $this->civi, 'group_contacts_deleted' ), 10 );
 
 		// use clone of CRM_Bridge_OG_Drupal::og()
 		$this->civi->group_contact_sync( $params, 'add' );
@@ -937,6 +938,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		// re-add the CiviCRM actions
 		add_action( 'civicrm_pre', array( $this->civi, 'group_contacts_added' ), 10, 4 );
 		add_action( 'civicrm_pre', array( $this->civi, 'group_contacts_rejoined' ), 10, 4 );
+		add_action( 'civicrm_pre', array( $this->civi, 'group_contacts_deleted' ), 10, 4 );
 
 	}
 
