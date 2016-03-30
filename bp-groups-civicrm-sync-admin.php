@@ -268,9 +268,10 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		}
 
-		// add styles and scripts only on our admin page, see:
-		// http://codex.wordpress.org/Function_Reference/wp_enqueue_script#Load_scripts_only_on_plugin_pages
-		add_action( 'admin_print_styles-' . $this->parent_page, array( $this, 'admin_css' ) );
+		// add styles and scripts only on our Settings admin page
+		// @see wp-admin/admin-header.php
+		//add_action( 'admin_print_styles-' . $this->parent_page, array( $this, 'admin_settings_styles' ) );
+		//add_action( 'admin_print_scripts-' . $this->parent_page, array( $this, 'admin_settings_scripts' ) );
 		add_action( 'admin_head-' . $this->parent_page, array( $this, 'admin_head' ), 50 );
 		add_action( 'admin_head-' . $this->parent_page, array( $this, 'admin_menu_highlight' ), 50 );
 
@@ -284,9 +285,10 @@ class BP_Groups_CiviCRM_Sync_Admin {
 			array( $this, 'page_settings' ) // callback
 		);
 
-		// add styles and scripts only on our admin page, see:
-		// http://codex.wordpress.org/Function_Reference/wp_enqueue_script#Load_scripts_only_on_plugin_pages
-		add_action( 'admin_print_styles-' . $this->settings_page, array( $this, 'admin_css' ) );
+		// add styles and scripts only on our Settings admin page
+		// @see wp-admin/admin-header.php
+		//add_action( 'admin_print_styles-' . $this->settings_page, array( $this, 'admin_settings_styles' ) );
+		//add_action( 'admin_print_scripts-' . $this->settings_page, array( $this, 'admin_settings_scripts' ) );
 		add_action( 'admin_head-' . $this->settings_page, array( $this, 'admin_head' ), 50 );
 		add_action( 'admin_head-' . $this->settings_page, array( $this, 'admin_menu_highlight' ), 50 );
 
@@ -300,9 +302,10 @@ class BP_Groups_CiviCRM_Sync_Admin {
 			array( $this, 'page_utilities' ) // callback
 		);
 
-		// add styles and scripts only on our admin page, see:
-		// http://codex.wordpress.org/Function_Reference/wp_enqueue_script#Load_scripts_only_on_plugin_pages
-		add_action( 'admin_print_styles-' . $this->sync_page, array( $this, 'admin_css' ) );
+		// add styles and scripts only on our Utilities admin page
+		// @see wp-admin/admin-header.php
+		add_action( 'admin_print_styles-' . $this->sync_page, array( $this, 'admin_utilities_styles' ) );
+		add_action( 'admin_print_scripts-' . $this->sync_page, array( $this, 'admin_utilities_scripts' ) );
 		add_action( 'admin_head-' . $this->sync_page, array( $this, 'admin_head' ), 50 );
 		add_action( 'admin_head-' . $this->sync_page, array( $this, 'admin_menu_highlight' ), 50 );
 
@@ -363,24 +366,42 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Enqueue any styles and scripts needed by our admin page.
+	 * Enqueue any styles needed by our Utilities admin page.
 	 *
-	 * @since 0.1
+	 * @since 0.2.2
 	 *
 	 * @return void
 	 */
-	public function admin_css() {
+	public function admin_utilities_styles() {
 
-		// disabled
-		return;
-
-		// add admin css
+		// enqueue css
 		wp_enqueue_style(
-			'bpcivisync-admin-style',
-			BP_GROUPS_CIVICRM_SYNC_URL . 'assets/css/admin.css',
+			'bgcs-utilities-style',
+			BP_GROUPS_CIVICRM_SYNC_URL . 'assets/css/bgcs-admin-utilities.css',
 			null,
 			BP_GROUPS_CIVICRM_SYNC_VERSION,
 			'all' // media
+		);
+
+	}
+
+
+
+	/**
+	 * Enqueue any scripts needed by our Utilities admin page.
+	 *
+	 * @since 0.2.2
+	 *
+	 * @return void
+	 */
+	public function admin_utilities_scripts() {
+
+		// enqueue javascript
+		wp_enqueue_script(
+			'bgcs-utilities-js',
+			BP_GROUPS_CIVICRM_SYNC_URL . 'assets/js/bgcs-admin-utilities.js',
+			array( 'jquery' ),
+			BP_GROUPS_CIVICRM_SYNC_VERSION
 		);
 
 	}
