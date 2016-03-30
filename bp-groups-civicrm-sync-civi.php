@@ -1447,7 +1447,18 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			if ( $params['is_admin'] ) {
 				$acl_group_contact = civicrm_api( 'GroupContact', 'Create', $groupParams );
 			} else {
+
+				/**
+				 * Unfortunately this will create a record that the contact was a member
+				 * of the ACL Group but has been removed - even if they have *never been*
+				 * a member of the group.
+				 *
+				 * Ideally the CiviCRM API should find out if the user was a member before
+				 * registering the deletion event, but we may have to check the membership
+				 * manually beforehand and skip this API call if the contact is not a member.
+				 */
 				$acl_group_contact = civicrm_api( 'GroupContact', 'Delete', $groupParams );
+
 			}
 
 		}
