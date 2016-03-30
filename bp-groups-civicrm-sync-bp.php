@@ -120,14 +120,19 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		add_action( 'groups_join_group', array( $this, 'member_just_joined_group' ), 5, 2 );
 		add_action( 'groups_leave_group', array( $this, 'civi_delete_group_membership' ), 5, 2 );
 
+		// group membership hooks: removed group membership
+		add_action( 'groups_removed_member', array( $this, 'member_removed_from_group' ), 10, 2 );
+
 		// group membership hooks: modified group membership
 		add_action( 'groups_promoted_member', array( $this, 'member_changed_status_group' ), 10, 2 );
 		add_action( 'groups_demoted_member', array( $this, 'member_changed_status_group' ), 10, 2 );
 		add_action( 'groups_unbanned_member', array( $this, 'member_changed_status_group' ), 10, 2 );
 		add_action( 'groups_banned_member', array( $this, 'member_changed_status_group' ), 10, 2 );
-		add_action( 'groups_removed_member', array( $this, 'member_changed_status_group' ), 10, 2 );
 		add_action( 'groups_membership_accepted', array( $this, 'member_changed_status_group' ), 10, 2 );
 		add_action( 'groups_accept_invite', array( $this, 'member_changed_status_group' ), 10, 2 );
+
+		// catch groups admin page load
+		add_action( 'bp_groups_admin_load', array( $this, 'groups_admin_load' ), 10, 1 );
 
 		// test for presence BP Group Hierarchy plugin
 		if ( defined( 'BP_GROUP_HIERARCHY_IS_INSTALLED' ) ) {
@@ -248,6 +253,38 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		$civi_groups = $this->civi->delete_civi_group( $group_id );
 
 		// we don't need to delete our meta, as BP will do so
+
+	}
+
+
+
+	/**
+	 * Add hooks when the Groups admin page is loaded.
+	 *
+	 * None of the "past tense" actions fire on the Groups admin page, so we
+	 * have to hook into the "present tense" actions and figure out what's going
+	 * on at that point.
+	 *
+	 * @since 0.2.2
+	 *
+	 * @param string $doaction Current $_GET action being performed in admin screen.
+	 * @return void
+	 */
+	public function groups_admin_load( $doaction ) {
+
+		// only add hooks if saving data
+		if ( $doaction AND $doaction == 'save' ) {
+
+			// group membership hooks: group membership status is being modified
+			add_action( 'groups_promote_member', array( $this, 'member_changing_status_group' ), 10, 3 );
+			add_action( 'groups_demote_member', array( $this, 'member_changing_status_group' ), 10, 2 );
+			add_action( 'groups_unban_member', array( $this, 'member_changing_status_group' ), 10, 2 );
+			add_action( 'groups_ban_member', array( $this, 'member_changing_status_group' ), 10, 2 );
+
+			// user is being removed from group
+			add_action( 'groups_remove_member', array( $this, 'civi_delete_group_membership' ), 10, 2 );
+
+		}
 
 	}
 
@@ -746,7 +783,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 */
 	public function member_just_joined_group( $group_id, $user_id ) {
 
-		// call upgrade method
+		// call update method
 		$this->civi_update_group_membership( $user_id, $group_id );
 
 	}
@@ -754,20 +791,105 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Called when user's group status changes.
+	 * Called when user's group status is about to change.
 	 *
-	 * Variable order for ($user_id, $group_id) is reversed for these hook other
-	 * than 'groups_join_group', so call a separate function.
+	 * Parameter order ($group_id, $user_id) is the opposite of the "past tense"
+	 * hooks. Compare, for example, 'groups_promoted_member'.
+	 *
+	 * @see $this->groups_admin_load()
+	 *
+	 * @since 0.2.2
+	 *
+	 * @param int $group_id The numeric ID of the BP group.
+	 * @param int $user_id The numeric ID of the WP user.
+	 * @param string $status New status being promoted to.
+	 * @return void
+	 */
+	public function member_changing_status_group( $group_id, $user_id, $status = '' ) {
+
+		// if we have no value for the status param, check if user is group admin
+		if ( empty( $status ) ) {
+			$status = groups_is_user_admin( $user_id, $group_id ) ? 'admin' : '';
+		}
+
+		// group admins cannot be banned
+		// @see BP_Groups_Member::ban()
+		if ( $status == 'admin' AND 'groups_ban_member' == current_action() ) return;
+
+		// if a group admin is being demoted, clear status
+		if ( $status == 'admin' AND 'groups_demote_member' == current_action() ) $status = '';
+
+		// make status numeric for CiviCRM
+		$is_admin = $status == 'admin' ? 1 : 0;
+
+		// assume active
+		$is_active = 1;
+
+		// is this user being banned?
+		if ( 'groups_ban_member' == current_action() ) $is_active = 0;
+
+		// update membership of CiviCRM group
+		$params = array(
+			'bp_group_id' => $group_id,
+			'uf_id' => $user_id,
+			'is_active' => $is_active,
+			'is_admin' => $is_admin,
+		);
+
+		// first, remove the CiviCRM actions, otherwise we may recurse
+		remove_action( 'civicrm_pre', array( $this->civi, 'group_contacts_added' ), 10 );
+		remove_action( 'civicrm_pre', array( $this->civi, 'group_contacts_rejoined' ), 10 );
+		remove_action( 'civicrm_pre', array( $this->civi, 'group_contacts_deleted' ), 10 );
+
+		// use clone of CRM_Bridge_OG_Drupal::og()
+		$this->civi->group_contact_sync( $params, 'add' );
+
+		// re-add the CiviCRM actions
+		add_action( 'civicrm_pre', array( $this->civi, 'group_contacts_added' ), 10, 4 );
+		add_action( 'civicrm_pre', array( $this->civi, 'group_contacts_rejoined' ), 10, 4 );
+		add_action( 'civicrm_pre', array( $this->civi, 'group_contacts_deleted' ), 10, 4 );
+
+	}
+
+
+
+	/**
+	 * Called when a user has been removed from a group.
+	 *
+	 * Parameter order ($user_id, $group_id) is reversed for this "past tense"
+	 * hook. Compare, for example, 'groups_join_group'.
+	 *
+	 * @since 0.2.2
+	 *
+	 * @param int $user_id The numeric ID of the WP user
+	 * @param int $group_id The numeric ID of the BP group
+	 * @return void
+	 */
+	public function member_removed_from_group( $user_id, $group_id ) {
+
+		// call delete method
+		$this->civi_delete_group_membership( $group_id, $user_id );
+
+	}
+
+
+
+	/**
+	 * Called when user's group status has changed.
+	 *
+	 * Parameter order ($user_id, $group_id) is reversed for these "past tense"
+	 * hooks. Compare, for example, 'groups_join_group', 'groups_promote_member'
+	 * and other "present tense" hooks.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group
 	 * @param int $user_id The numeric ID of the WP user
+	 * @param int $group_id The numeric ID of the BP group
 	 * @return void
 	 */
 	public function member_changed_status_group( $user_id, $group_id ) {
 
-		// call upgrade method
+		// call update method
 		$this->civi_update_group_membership( $user_id, $group_id );
 
 	}
@@ -797,7 +919,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		// is this user active?
 		if ( groups_is_user_banned( $user_id, $group_id ) ) $is_active = 0;
 
-		// update membership of CiviCRM groups
+		// update membership of CiviCRM group
 		$params = array(
 			'bp_group_id' => $group_id,
 			'uf_id' => $user_id,
@@ -805,8 +927,16 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			'is_admin' => $is_admin,
 		);
 
+		// first, remove the CiviCRM actions, otherwise we'll recurse
+		remove_action( 'civicrm_pre', array( $this->civi, 'group_contacts_added' ), 10 );
+		remove_action( 'civicrm_pre', array( $this->civi, 'group_contacts_rejoined' ), 10 );
+
 		// use clone of CRM_Bridge_OG_Drupal::og()
 		$this->civi->group_contact_sync( $params, 'add' );
+
+		// re-add the CiviCRM actions
+		add_action( 'civicrm_pre', array( $this->civi, 'group_contacts_added' ), 10, 4 );
+		add_action( 'civicrm_pre', array( $this->civi, 'group_contacts_rejoined' ), 10, 4 );
 
 	}
 
@@ -831,8 +961,14 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			'is_admin' => 0,
 		);
 
+		// first, remove the CiviCRM action, otherwise we'll recurse
+		remove_action( 'civicrm_pre', array( $this->civi, 'group_contacts_deleted' ), 10 );
+
 		// use clone of CRM_Bridge_OG_Drupal::og()
 		$this->civi->group_contact_sync( $params, 'delete' );
+
+		// re-add the CiviCRM action
+		add_action( 'civicrm_pre', array( $this->civi, 'group_contacts_deleted' ), 10, 4 );
 
 	}
 
