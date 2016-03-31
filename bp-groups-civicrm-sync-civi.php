@@ -1185,6 +1185,17 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			// okay, add it to our params
 			$params['group_id'] = $group['id'];
 
+		} else {
+
+			// log identifying data
+			error_log( print_r( array(
+				'method' => __METHOD__,
+				'message' => __( 'Could not create CiviCRM group', 'bp-groups-civicrm-sync' ),
+				'params' => $params,
+				'group' => $group,
+				'backtrace' => wp_debug_backtrace_summary(),
+			), true ) );
+
 		}
 
 		// because this is passed by reference, ditch the ID
@@ -1234,6 +1245,17 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 			// okay, add it to our params
 			$params['group_id'] = $group['id'];
+
+		} else {
+
+			// log identifying data
+			error_log( print_r( array(
+				'method' => __METHOD__,
+				'message' => __( 'Could not update CiviCRM group', 'bp-groups-civicrm-sync' ),
+				'params' => $params,
+				'group' => $group,
+				'backtrace' => wp_debug_backtrace_summary(),
+			), true ) );
 
 		}
 
