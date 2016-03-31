@@ -1,24 +1,24 @@
-# Copyright (C) 2015 BP Groups CiviCRM Sync
+# Copyright (C) 2016 BP Groups CiviCRM Sync
 # This file is distributed under the same license as the BP Groups CiviCRM Sync package.
 msgid ""
 msgstr ""
-"Project-Id-Version: BP Groups CiviCRM Sync 0.2\n"
-"Report-Msgid-Bugs-To: http://wordpress.org/tag/bp-groups-civicrm-sync\n"
-"POT-Creation-Date: 2015-01-29 13:12:12+00:00\n"
+"Project-Id-Version: BP Groups CiviCRM Sync 0.2.2\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bp-groups-civicrm-sync\n"
+"POT-Creation-Date: 2016-03-31 14:42:34+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2016-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
 #: assets/templates/settings.php:7 assets/templates/utilities.php:7
-#: bp-groups-civicrm-sync-admin.php:223 bp-groups-civicrm-sync.php:222
+#: bp-groups-civicrm-sync-admin.php:285 bp-groups-civicrm-sync.php:250
 msgid "Settings"
 msgstr ""
 
 #: assets/templates/settings.php:8 assets/templates/utilities.php:8
-#: bp-groups-civicrm-sync-admin.php:239
+#: bp-groups-civicrm-sync-admin.php:302
 msgid "Utilities"
 msgstr ""
 
@@ -66,113 +66,133 @@ msgstr ""
 msgid "BuddyPress to CiviCRM Sync"
 msgstr ""
 
-#: assets/templates/utilities.php:24 assets/templates/utilities.php:56
-msgid "WARNING: this will probably only work when there are a small number of groups. If you have lots of groups, it would be worth writing some kind of chunked update routine. I will upgrade this plugin to do so at some point."
-msgstr ""
-
-#: assets/templates/utilities.php:29
+#: assets/templates/utilities.php:27
 msgid "Sync BP Groups to CiviCRM"
 msgstr ""
 
-#: assets/templates/utilities.php:30
+#: assets/templates/utilities.php:28
 msgid "Sync Now"
 msgstr ""
 
-#: assets/templates/utilities.php:37
-msgid "Check BuddyPress and CiviCRM Sync"
+#: assets/templates/utilities.php:28
+msgid "Continue Sync"
 msgstr ""
 
-#: assets/templates/utilities.php:39
-msgid "Check this to find out if there are BuddyPress Groups with no CiviCRM Group and vice versa."
+#: assets/templates/utilities.php:28
+msgid "Stop Sync"
 msgstr ""
 
-#: assets/templates/utilities.php:44
-msgid "Check BP Groups and CiviCRM Groups"
-msgstr ""
-
-#: assets/templates/utilities.php:45 assets/templates/utilities.php:81
-msgid "Check Now"
-msgstr ""
-
-#: assets/templates/utilities.php:54
+#: assets/templates/utilities.php:56
 msgid "Convert OG groups in CiviCRM to BP groups"
 msgstr ""
 
-#: assets/templates/utilities.php:61
+#: assets/templates/utilities.php:58
+msgid "WARNING: this will probably only work when there are a small number of groups. If you have lots of groups, it would be worth writing some kind of chunked update routine. I will upgrade this plugin to do so at some point."
+msgstr ""
+
+#: assets/templates/utilities.php:63
 msgid "Convert OG groups to BP groups"
 msgstr ""
 
-#: assets/templates/utilities.php:62
+#: assets/templates/utilities.php:64
 msgid "Convert Now"
 msgstr ""
 
-#: assets/templates/utilities.php:69
+#: assets/templates/utilities.php:71
 msgid "CiviCRM to BuddyPress Sync"
 msgstr ""
 
-#: assets/templates/utilities.php:73
+#: assets/templates/utilities.php:75
 msgid "No OG Groups found"
 msgstr ""
 
-#: assets/templates/utilities.php:80
+#: assets/templates/utilities.php:82
 msgid "Check for OG groups"
 msgstr ""
 
-#: bp-groups-civicrm-sync-admin.php:190 bp-groups-civicrm-sync-admin.php:191
-#: bp-groups-civicrm-sync-admin.php:203 bp-groups-civicrm-sync-admin.php:204
-#: bp-groups-civicrm-sync-admin.php:365
+#: assets/templates/utilities.php:83
+msgid "Check Now"
+msgstr ""
+
+#: bp-groups-civicrm-sync-admin.php:254 bp-groups-civicrm-sync-admin.php:255
+#: bp-groups-civicrm-sync-admin.php:265 bp-groups-civicrm-sync-admin.php:266
+#: bp-groups-civicrm-sync-admin.php:472
 msgid "BP Groups CiviCRM Sync"
 msgstr ""
 
-#: bp-groups-civicrm-sync-admin.php:222
+#: bp-groups-civicrm-sync-admin.php:284
 msgid "BP Groups CiviCRM Sync: Settings"
 msgstr ""
 
-#: bp-groups-civicrm-sync-admin.php:238
+#: bp-groups-civicrm-sync-admin.php:301
 msgid "BP Groups CiviCRM Sync: Sync"
 msgstr ""
 
-#: bp-groups-civicrm-sync-admin.php:385
+#: bp-groups-civicrm-sync-admin.php:412
+msgid "{{total}} groups to sync..."
+msgstr ""
+
+#: bp-groups-civicrm-sync-admin.php:413
+msgid "Processing group \"{{name}}\""
+msgstr ""
+
+#: bp-groups-civicrm-sync-admin.php:414
+msgid "Processing group \"{{name}}\" complete"
+msgstr ""
+
+#: bp-groups-civicrm-sync-admin.php:415
+msgid "All done!"
+msgstr ""
+
+#: bp-groups-civicrm-sync-admin.php:493
 msgid "For further information about using BP Groups CiviCRM Sync, please refer to the readme.txt that comes with this plugin."
 msgstr ""
 
-#: bp-groups-civicrm-sync-admin.php:497
+#: bp-groups-civicrm-sync-admin.php:609
 msgid "OG Groups found. You can now choose to migrate them to BP."
 msgstr ""
 
-#: bp-groups-civicrm-sync-admin.php:502
+#: bp-groups-civicrm-sync-admin.php:614
 msgid "No OG Groups found."
 msgstr ""
 
-#: bp-groups-civicrm-sync-admin.php:871
+#: bp-groups-civicrm-sync-admin.php:1008
 msgid "You must supply a setting to setting_get()"
 msgstr ""
 
-#: bp-groups-civicrm-sync-admin.php:890
+#: bp-groups-civicrm-sync-admin.php:1029
 msgid "You must supply a setting to setting_set()"
 msgstr ""
 
-#: bp-groups-civicrm-sync-civi.php:205 bp-groups-civicrm-sync-civi.php:206
+#: bp-groups-civicrm-sync-civi.php:232 bp-groups-civicrm-sync-civi.php:233
 msgid "BuddyPress Groups"
 msgstr ""
 
-#: bp-groups-civicrm-sync-civi.php:207
+#: bp-groups-civicrm-sync-civi.php:234
 msgid "Container for all BuddyPress Groups"
 msgstr ""
 
-#: bp-groups-civicrm-sync-civi.php:1449
-msgid "No Civi Contact ID could be found in \"group_contact_sync\" for %d"
+#: bp-groups-civicrm-sync-civi.php:1193
+msgid "Could not create CiviCRM group"
 msgstr ""
 
-#: bp-groups-civicrm-sync-civi.php:1843
-msgid "No Civi Contact ID could be found in \"get_contact_id\" for %d"
+#: bp-groups-civicrm-sync-civi.php:1254
+msgid "Could not update CiviCRM group"
 msgstr ""
 
-#: bp-groups-civicrm-sync-civi.php:1957
-msgid "No Civi Group ID could be found for %s"
+#: bp-groups-civicrm-sync-civi.php:1399
+msgid "No CiviCRM Contact ID could be found in \"group_contact_sync\" for %d"
 msgstr ""
 
-#: bp-groups-civicrm-sync-civi.php:2416 bp-groups-civicrm-sync-civi.php:2664
+#: bp-groups-civicrm-sync-civi.php:1753
+msgid "No CiviCRM Contact ID could be found in \"get_contact_id\" for %d"
+msgstr ""
+
+#: bp-groups-civicrm-sync-civi.php:1862
+msgid "No CiviCRM Group ID could be found for %s"
+msgstr ""
+
+#: bp-groups-civicrm-sync-civi.php:2304 bp-groups-civicrm-sync-civi.php:2519
 msgid "Create BuddyPress Group"
 msgstr ""
 #. Plugin Name of the plugin/theme
