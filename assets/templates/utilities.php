@@ -34,6 +34,7 @@
 
 		<hr>
 
+		<?php /*
 		<h3><?php _e( 'Check BuddyPress and CiviCRM Sync', 'bp-groups-civicrm-sync' ); ?></h3>
 
 		<p><?php _e( 'Check this to find out if there are BuddyPress Groups with no CiviCRM Group and vice versa.', 'bp-groups-civicrm-sync' ); ?></p>
@@ -48,6 +49,7 @@
 		</table>
 
 		<hr>
+		*/ ?>
 
 		<?php if ( $og_to_bp_do_sync ) : ?>
 
