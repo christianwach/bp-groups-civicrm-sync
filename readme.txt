@@ -46,6 +46,12 @@ For versions of *CiviCRM* prior to 4.6-alpha1, this plugin requires the correspo
 
 == Changelog ==
 
+= 0.3 =
+
+* AJAX-driven BuddyPress to CiviCRM sync
+* Fixed sync recursion errors
+* Fixed sync when using Groups admin page
+
 = 0.2.1 =
 
 Set "Use Parent Group" to off by default
