@@ -188,6 +188,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// is this the back end?
 		if ( is_admin() ) {
 
+			// add AJAX handler
+			add_action( 'wp_ajax_sync_bp_and_civi', array( $this, 'sync_bp_and_civi' ) );
+
 			// multisite?
 			if ( is_multisite() ) {
 
@@ -400,8 +403,35 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		wp_enqueue_script(
 			'bgcs-utilities-js',
 			BP_GROUPS_CIVICRM_SYNC_URL . 'assets/js/bgcs-admin-utilities.js',
-			array( 'jquery' ),
+			array( 'jquery', 'jquery-ui-core', 'jquery-ui-progressbar' ),
 			BP_GROUPS_CIVICRM_SYNC_VERSION
+		);
+
+		// init localisation
+		$localisation = array(
+			'total' => __( '{{total}} groups to sync...', 'bp-groups-civicrm-sync' ),
+			'current' => __( 'Processing group "{{name}}"', 'bp-groups-civicrm-sync' ),
+			'complete' => __( 'Processing group "{{name}}" complete', 'bp-groups-civicrm-sync' ),
+			'done' => __( 'All done!', 'bp-groups-civicrm-sync' ),
+		);
+
+		// init settings
+		$settings = array(
+			'ajax_url' => admin_url( 'admin-ajax.php' ),
+			'total_groups' => groups_get_total_group_count(),
+		);
+
+		// localisation array
+		$vars = array(
+			'localisation' => $localisation,
+			'settings' => $settings,
+		);
+
+		// localise the WordPress way
+		wp_localize_script(
+			'bgcs-utilities-js',
+			'BP_Groups_CiviCRM_Sync_Utils',
+			$vars
 		);
 
 	}
@@ -1028,6 +1058,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// init or die
 		if ( ! $this->civi->is_active() ) return;
 
+		// init AJAX return
+		$data = array();
+
 		// if the groups paging value doesn't exist
 		if ( 'fgffgs' == get_option( '_bgcs_groups_page', 'fgffgs' ) ) {
 
@@ -1053,14 +1086,24 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// query with our params
 		if ( bp_has_groups( $group_params ) ) {
 
+			// set finished flag
+			$data['finished'] = 'false';
+
 			// do the loop
 			while ( bp_groups() ) {
 
 				// set up group
 				bp_the_group();
 
+				// get the group object
+				global $groups_template;
+				$group =& $groups_template->group;
+
 				// get group ID
 				$group_id = bp_get_group_id();
+
+				// get name of group
+				$data['group_name'] = bp_get_group_name();
 
 				// get the CiviCRM group ID of this BuddyPress group
 				$civi_group_id = $this->civi->find_group_id(
@@ -1087,6 +1130,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 				// query with our params
 				if ( bp_group_has_members( $member_params ) ) {
 
+					// set members flag
+					$data['members'] = (string) $members_page;
+
 					// do the loop
 					while ( bp_group_members() ) {
 
@@ -1103,6 +1149,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 				} else {
 
+					// set members flag
+					$data['members'] = 'done';
+
 					// delete the members option to start from the beginning
 					delete_option( '_bgcs_members_page' );
 
@@ -1117,6 +1166,25 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 			// delete the groups option to start from the beginning
 			delete_option( '_bgcs_groups_page' );
+
+			// set finished flag
+			$data['finished'] = 'true';
+
+		}
+
+		// is this an AJAX request?
+		if ( defined( 'DOING_AJAX' ) AND DOING_AJAX ) {
+
+			// set reasonable headers
+			header('Content-type: text/plain');
+			header("Cache-Control: no-cache");
+			header("Expires: -1");
+
+			// echo
+			echo json_encode( $data );
+
+			// die
+			exit();
 
 		}
 

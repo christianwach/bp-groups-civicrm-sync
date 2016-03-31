@@ -21,8 +21,6 @@
 
 		<h3><?php _e( 'BuddyPress to CiviCRM Sync', 'bp-groups-civicrm-sync' ); ?></h3>
 
-		<p><?php _e( 'WARNING: this will probably only work when there are a small number of groups. If you have lots of groups, it would be worth writing some kind of chunked update routine. I will upgrade this plugin to do so at some point.', 'bp-groups-civicrm-sync' ); ?></p>
-
 		<table class="form-table">
 
 			<tr valign="top">
@@ -31,6 +29,8 @@
 			</tr>
 
 		</table>
+
+		<div id="progress-bar"><div class="progress-label"></div></div>
 
 		<hr>
 
