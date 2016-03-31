@@ -320,7 +320,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	public function admin_menu_highlight() {
 
 		global $plugin_page, $submenu_file;
-		//print_r( array( $plugin_page, $submenu_file ) ); die();
 
 		// define subpages
 		$subpages = array(

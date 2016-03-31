@@ -374,14 +374,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		} else {
 
 			// debug
-			print_r( array(
-				'method' => 'meta_group_groups_assign',
+			error_log( print_r( array(
+				'method' => __METHOD__,
 				'all_groups' => $all_groups,
-			) ); die();
+				'backtrace' => wp_debug_backtrace_summary(),
+			), true ) );
 
 		}
-
-		//die();
 
 	}
 
@@ -466,10 +465,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		} else {
 
 			// debug
-			print_r( array(
-				'method' => 'meta_group_groups_assign',
+			error_log( print_r( array(
+				'method' => __METHOD__,
 				'all_groups' => $all_groups,
-			) ); die();
+				'backtrace' => wp_debug_backtrace_summary(),
+			), true ) );
 
 		}
 
@@ -861,11 +861,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $create_result['is_error'] == '1' ) {
 
 			// debug
-			trigger_error( print_r( array(
-				'method' => 'group_nesting_create',
+			error_log( print_r( array(
+				'method' => __METHOD__,
 				'create_params' => $create_params,
 				'create_result' => $create_result,
-			), true ), E_USER_ERROR ); die();
+				'backtrace' => wp_debug_backtrace_summary(),
+			), true ) );
 
 		}
 
@@ -1368,27 +1369,24 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			// what to do?
 			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
 
-				// construct error string
+				// construct verbose error string
 				$error = sprintf(
-					__( 'No CiviCRM Contact ID could be found in "group_contact_sync" for %d', 'bp-groups-civicrm-sync' ),
+					__( 'No CiviCRM Contact ID could be found for WordPress User ID %d', 'bp-groups-civicrm-sync' ),
 					$user_id
 				);
 
-				// whitespace
-				$error .= "\n\n<br><br>";
-
-				// add user
-				$error .= print_r( new WP_User( $user_id ), true );
-
-				// debug?
-				wp_die( $error );
-
-			} else {
-
-				// just return
-				return;
+				// log something
+				error_log( print_r( array(
+					'method' => __METHOD__,
+					'error' => $error,
+					'user' => print_r( new WP_User( $user_id ), true ),
+					'backtrace' => wp_debug_backtrace_summary(),
+				), true ) );
 
 			}
+
+			// bail
+			return;
 
 		}
 
@@ -1719,27 +1717,24 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				// what to do?
 				if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
 
-					// construct error string
+					// construct verbose error string
 					$error = sprintf(
-						__( 'No CiviCRM Contact ID could be found in "get_contact_id" for %d', 'bp-groups-civicrm-sync' ),
+						__( 'No CiviCRM Contact ID could be found for WordPress User ID %d', 'bp-groups-civicrm-sync' ),
 						$user_id
 					);
 
-					// whitespace
-					$error .= "\n\n<br><br>";
-
-					// add user
-					$error .= print_r( new WP_User( $user_id ), true );
-
-					// debug?
-					wp_die( $error );
-
-				} else {
-
-					// fallback
-					return false;
+					// log something
+					error_log( print_r( array(
+						'method' => __METHOD__,
+						'error' => $error,
+						'user' => print_r( new WP_User( $user_id ), true ),
+						'backtrace' => wp_debug_backtrace_summary(),
+					), true ) );
 
 				}
+
+				// fallback
+				return false;
 
 			}
 
@@ -1801,7 +1796,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @param string $source The sync name for the CiviCRM Group
 	 * @param string $title The title of the CiviCRM Group to search for
 	 * @param bool $abort Whether to die on failure or not
-	 * @return int $group_id
+	 * @return int|bool $group_id The ID of the CiviCRM group
 	 */
 	public function find_group_id( $source, $title = null, $abort = false ) {
 
@@ -1834,19 +1829,19 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				$source
 			);
 
-			/*
-			// construct meaningful error
-			$error .= "\n\n<br><br>";
-
 			// get the group object
-			$_group = groups_get_group( array( 'group_id' => $group->id, 'populate_extras' => true ) );
+			$group = groups_get_group( array( 'group_id' => $group->id, 'populate_extras' => true ) );
 
-			// construct meaningful error
-			$error .= print_r( $group, true );
-			*/
+			// log something
+			error_log( print_r( array(
+				'method' => __METHOD__,
+				'error' => $error,
+				'group' => print_r( $group, true ),
+				'backtrace' => wp_debug_backtrace_summary(),
+			), true ) );
 
-			// okay, die
-			wp_die( $error );
+			// harsh, but it's the CiviCRM way
+			die();
 
 		}
 
@@ -2403,10 +2398,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $acl_group['is_error'] == '1' ) {
 
 			// debug
-			print_r( array(
-				'method' => 'civi_group_to_bp_group_convert',
+			error_log( print_r( array(
+				'method' => __METHOD__,
 				'acl_group' => $acl_group,
-			) ); die();
+				'backtrace' => wp_debug_backtrace_summary(),
+			), true ) );
+
+			// bail
+			return;
 
 		}
 
@@ -2428,10 +2427,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $member_group['is_error'] == '1' ) {
 
 			// debug
-			print_r( array(
-				'method' => 'civi_group_to_bp_group_convert',
+			error_log( print_r( array(
+				'method' => __METHOD__,
 				'member_group' => $member_group,
-			) ); die();
+				'backtrace' => wp_debug_backtrace_summary(),
+			), true ) );
+
+			// bail
+			return;
 
 		}
 
@@ -2674,10 +2677,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $acl_group['is_error'] == '1' ) {
 
 			// debug
-			print_r( array(
-				'method' => 'og_group_to_bp_group_convert',
+			error_log( print_r( array(
+				'method' => __METHOD__,
 				'acl_group' => $acl_group,
-			) ); die();
+				'backtrace' => wp_debug_backtrace_summary(),
+			), true ) );
+
+			// bail
+			return;
 
 		}
 
@@ -2699,10 +2706,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $member_group['is_error'] == '1' ) {
 
 			// debug
-			print_r( array(
-				'method' => 'og_group_to_bp_group_convert',
+			error_log( print_r( array(
+				'method' => __METHOD__,
 				'member_group' => $member_group,
-			) ); die();
+				'backtrace' => wp_debug_backtrace_summary(),
+			), true ) );
+
+			// bail
+			return;
 
 		}
 
