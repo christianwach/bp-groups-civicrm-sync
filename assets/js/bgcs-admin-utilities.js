@@ -184,14 +184,14 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 		this.listeners = function() {
 
 			// declare vars
-			var form = $('#bp_groups_civicrm_sync_utilities_form');
+			var button = $('#bp_groups_civicrm_sync_bp_check');
 
 			/**
 			 * Add a click event listener to start sync.
 			 *
 			 * @param {Object} event The event object
 			 */
-			form.on( 'submit', function( event ) {
+			button.on( 'click', function( event ) {
 
 				// prevent form submission
 				if ( event.preventDefault ) {
