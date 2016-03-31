@@ -103,8 +103,6 @@ class BP_Groups_CiviCRM_Sync {
 	 * Do stuff on plugin init.
 	 *
 	 * @since 0.1
-	 *
-	 * @return void
 	 */
 	public function initialise() {
 
@@ -142,8 +140,6 @@ class BP_Groups_CiviCRM_Sync {
 	 * Do stuff on plugin activation.
 	 *
 	 * @since 0.1
-	 *
-	 * @return void
 	 */
 	public function activate() {
 
@@ -158,8 +154,6 @@ class BP_Groups_CiviCRM_Sync {
 	 * Do stuff on plugin deactivation.
 	 *
 	 * @since 0.1
-	 *
-	 * @return void
 	 */
 	public function deactivate() {
 
@@ -181,8 +175,6 @@ class BP_Groups_CiviCRM_Sync {
 	 * http://ottopress.com/2012/internationalization-youre-probably-doing-it-wrong/
 	 *
 	 * @since 0.1
-	 *
-	 * @return void
 	 */
 	public function enable_translation() {
 

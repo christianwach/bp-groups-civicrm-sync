@@ -114,7 +114,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @param object $bp_object Reference to this plugin's BP object
 	 * @param object $civi_object Reference to this plugin's CiviCRM object
-	 * @return void
 	 */
 	public function set_references( &$bp_object, &$civi_object ) {
 
@@ -132,8 +131,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * Perform activation tasks.
 	 *
 	 * @since 0.1
-	 *
-	 * @return void
 	 */
 	public function activate() {
 
@@ -156,8 +153,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * Perform deactivation tasks.
 	 *
 	 * @since 0.1
-	 *
-	 * @return void
 	 */
 	public function deactivate() {
 
@@ -171,8 +166,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * Initialise when all plugins are loaded.
 	 *
 	 * @since 0.1
-	 *
-	 * @return void
 	 */
 	public function initialise() {
 
@@ -214,8 +207,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * Store the plugin version.
 	 *
 	 * @since 0.1
-	 *
-	 * @return void
 	 */
 	public function store_version() {
 
@@ -234,8 +225,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * Add this plugin's Settings Page to the WordPress admin menu.
 	 *
 	 * @since 0.1
-	 *
-	 * @return void
 	 */
 	public function admin_menu() {
 
@@ -353,8 +342,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * Initialise plugin help.
 	 *
 	 * @since 0.1
-	 *
-	 * @return void
 	 */
 	public function admin_head() {
 
@@ -372,8 +359,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * Enqueue any styles needed by our Utilities admin page.
 	 *
 	 * @since 0.2.2
-	 *
-	 * @return void
 	 */
 	public function admin_utilities_styles() {
 
@@ -394,8 +379,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * Enqueue any scripts needed by our Utilities admin page.
 	 *
 	 * @since 0.2.2
-	 *
-	 * @return void
 	 */
 	public function admin_utilities_scripts() {
 
@@ -503,8 +486,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * Show settings page.
 	 *
 	 * @since 0.1
-	 *
-	 * @return void
 	 */
 	public function page_settings() {
 
@@ -556,8 +537,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * Show utilities page.
 	 *
 	 * @since 0.1
-	 *
-	 * @return void
 	 */
 	public function page_utilities() {
 
@@ -781,8 +760,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * Route settings updates to relevant methods.
 	 *
 	 * @since 0.1
-	 *
-	 * @return void
 	 */
 	public function settings_update_router() {
 
@@ -815,8 +792,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * Update options supplied by our admin page.
 	 *
 	 * @since 0.1
-	 *
-	 * @return void
 	 */
 	public function settings_update_options() {
 
@@ -1019,8 +994,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * Set a value for a specified setting.
 	 *
 	 * @since 0.1
-	 *
-	 * @return void
 	 */
 	public function setting_set( $setting_name = '', $value = '' ) {
 
@@ -1050,8 +1023,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * sync, one to stop the sync.
 	 *
 	 * @since 0.1
-	 *
-	 * @return void
 	 */
 	public function sync_bp_and_civi() {
 
@@ -1196,8 +1167,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * Check the Sync between BuddyPress groups and CiviCRM groups.
 	 *
 	 * @since 0.1
-	 *
-	 * @return void
 	 */
 	public function check_sync_between_bp_and_civi() {
 

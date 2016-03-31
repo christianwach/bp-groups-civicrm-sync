@@ -74,7 +74,7 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 		/**
 		 * Init localisation from settings object.
 		 *
-		 * @return void
+		 * @since 0.2.2
 		 */
 		this.init_localisation = function() {
 			if ( 'undefined' !== typeof BP_Groups_CiviCRM_Sync_Utils ) {
@@ -84,6 +84,8 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 
 		/**
 		 * Getter for localisation.
+		 *
+		 * @since 0.2.2
 		 *
 		 * @param {String} The identifier for the desired localisation string
 		 * @return {String} The localised string
@@ -98,7 +100,7 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 		/**
 		 * Init settings from settings object.
 		 *
-		 * @return void
+		 * @since 0.2.2
 		 */
 		this.init_settings = function() {
 			if ( 'undefined' !== typeof BP_Groups_CiviCRM_Sync_Utils ) {
@@ -108,6 +110,8 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 
 		/**
 		 * Getter for retrieving a setting.
+		 *
+		 * @since 0.2.2
 		 *
 		 * @param {String} The identifier for the desired setting
 		 * @return The value of the setting
