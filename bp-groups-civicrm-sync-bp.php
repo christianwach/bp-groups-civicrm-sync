@@ -1092,6 +1092,19 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	/**
 	 * Creates a WordPress User given a CiviCRM contact.
 	 *
+	 * If this is called because a Contact has been added with "New Contact" in
+	 * CiviCRM and some group has been chosen at the same time, then the call
+	 * will come via CRM_Contact_BAO_Contact::create(). Unfortunately, this
+	 * method adds the Contact to the Group _before_ the email has been stored
+	 * so the $civi_contact data does not contain it. WordPress will still let
+	 * a user be created but they will have no email address!
+	 *
+	 * In order to get around this, one of two things needs to happen: either
+	 * 1. the Contact needs to be added to the Group _after_ the email has been
+	 * stored (this requires raising a ticket on Jira and waiting to see what
+	 * happens) or 2. we try and recognise this state of affairs and listen for
+	 * the addition of the email address to the Contact.
+	 *
 	 * @since 0.1
 	 *
 	 * @param array $civi_contact The data for the CiviCRM contact
@@ -1129,6 +1142,20 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 				'last_name' => $civi_contact['last_name'],
 			) );
 
+			// is the email address empty?
+			if ( empty( $civi_contact['email'] ) ) {
+
+				// store this contact temporarily
+				$this->temp_contact = array(
+					'civi' => $civi_contact,
+					'user_id' => $user_id,
+				);
+
+				// add callback for the next "Email create" event
+				add_action( 'civicrm_post', array( $this, 'civi_email_updated' ), 10, 4 );
+
+			}
+
 			// re-add filters
 			$this->add_filters();
 
@@ -1147,6 +1174,87 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 		// return error
 		return false;
+
+	}
+
+
+
+	/**
+	 * Called when a CiviCRM contact's primary email address is updated.
+	 *
+	 * @since 0.3.1
+	 *
+	 * @param string $op The type of database operation
+	 * @param string $objectName The type of object
+	 * @param integer $objectId The ID of the object
+	 * @param object $objectRef The object
+	 */
+	public function civi_email_updated( $op, $objectName, $objectId, $objectRef ) {
+
+		// target our operation
+		if ( $op != 'create' ) return;
+
+		// target our object type
+		if ( $objectName != 'Email' ) return;
+
+		// remove callback even if subsequent checks fail
+		remove_action( 'civicrm_post', array( $this, 'civi_email_updated' ), 10, 4 );
+
+		// bail if we don't have a temp contact
+		if ( ! isset( $this->temp_contact ) ) return;
+		if ( ! is_array( $this->temp_contact ) ) {
+			unset( $this->temp_contact );
+			return;
+		}
+
+		// bail if we have no email or contact ID
+		if ( ! isset( $objectRef->email ) OR ! isset( $objectRef->contact_id ) ) {
+			unset( $this->temp_contact );
+			return;
+		}
+
+		// bail if this is not the same Contact as above
+		if ( $objectRef->contact_id != $this->temp_contact['civi']['contact_id'] ) {
+			unset( $this->temp_contact );
+			return;
+		}
+
+		// get user ID
+		$user_id = $this->temp_contact['user_id'];
+
+		// make sure there's an entry in the ufMatch table
+		$transaction = new CRM_Core_Transaction();
+
+		// create the UF Match record
+		$ufmatch             = new CRM_Core_DAO_UFMatch();
+		$ufmatch->domain_id  = CRM_Core_Config::domainID();
+		$ufmatch->uf_id      = $user_id;
+		$ufmatch->contact_id = $objectRef->contact_id;
+		$ufmatch->uf_name    = $objectRef->email;
+
+		if ( ! $ufmatch->find( true ) ) {
+			$ufmatch->save();
+			$ufmatch->free();
+			$transaction->commit();
+		}
+
+		// remove filters
+		$this->remove_filters();
+
+		// allow other plugins to be aware of what we're doing
+		do_action( 'bp_groups_civicrm_sync_before_update_user', $this->temp_contact, $objectRef, $user_id );
+
+		// update the WordPress user with this email address
+		$user_id = wp_update_user( array(
+			'ID' => $user_id,
+			'user_email' => $objectRef->email,
+		) );
+
+		// re-add filters
+		$this->add_filters();
+
+		// allow other plugins to be aware of what we've done
+		do_action( 'bp_groups_civicrm_sync_after_update_user', $this->temp_contact, $objectRef, $user_id );
 
 	}
 
