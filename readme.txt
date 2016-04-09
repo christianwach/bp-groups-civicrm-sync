@@ -46,6 +46,11 @@ For versions of *CiviCRM* prior to 4.6-alpha1, this plugin requires the correspo
 
 == Changelog ==
 
+= 0.3.1 =
+
+* Fixes empty WordPress user emails when Contacts are added to groups via "New Individual" form
+* Updates hook references for CiviCRM 4.7.x instances
+
 = 0.3 =
 
 * AJAX-driven BuddyPress to CiviCRM sync
