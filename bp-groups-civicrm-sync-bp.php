@@ -1113,7 +1113,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	public function wordpress_create_user( $civi_contact ) {
 
 		// create username from display name
-		$user_name = sanitize_user( $civi_contact['display_name'] );
+		$user_name = sanitize_title( sanitize_user( $civi_contact['display_name'] ) );
 
 		// check if we have a user with that username
 		$user_id = username_exists( $user_name );
