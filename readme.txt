@@ -46,6 +46,10 @@ For versions of *CiviCRM* prior to 4.6-alpha1, this plugin requires the correspo
 
 == Changelog ==
 
+= 0.3.3 =
+
+* Fixes CiviCRM "Mailing List" group type on BuddyPress group creation
+
 = 0.3.2 =
 
 * Make usernames URL-friendly
