@@ -1960,7 +1960,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $group_type == 'member' ) {
 
 			// define CiviCRM group type (Mailing List by default)
-			$type_data = apply_filters( 'bp_groups_civicrm_sync_member_group_type', array( '2' => 1 ) );
+			$type_data = apply_filters( 'bp_groups_civicrm_sync_member_group_type', array( '2' => 2 ) );
 
 		}
 
