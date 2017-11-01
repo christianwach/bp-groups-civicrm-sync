@@ -46,8 +46,6 @@ define( 'BP_GROUPS_CIVICRM_SYNC_DEBUG', false );
  */
 class BP_Groups_CiviCRM_Sync {
 
-
-
 	/**
 	 * CiviCRM utilities object.
 	 *
@@ -57,8 +55,6 @@ class BP_Groups_CiviCRM_Sync {
 	 */
 	public $civi;
 
-
-
 	/**
 	 * BuddyPress utilities object.
 	 *
@@ -67,8 +63,6 @@ class BP_Groups_CiviCRM_Sync {
 	 * @var object $bp The BuddyPress utilities object.
 	 */
 	public $bp;
-
-
 
 	/**
 	 * Admin utilities object.

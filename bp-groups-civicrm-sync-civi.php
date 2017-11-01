@@ -14,8 +14,6 @@
  */
 class BP_Groups_CiviCRM_Sync_CiviCRM {
 
-
-
 	/**
 	 * Plugin object.
 	 *
@@ -24,8 +22,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @var object $parent_obj The plugin object.
 	 */
 	public $parent_obj;
-
-
 
 	/**
 	 * BuddyPress utilities object.
@@ -36,8 +32,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 */
 	public $bp;
 
-
-
 	/**
 	 * Admin utilities object.
 	 *
@@ -46,8 +40,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @var object $admin The Admin utilities object.
 	 */
 	public $admin;
-
-
 
 	/**
 	 * Flag for overriding sync process.

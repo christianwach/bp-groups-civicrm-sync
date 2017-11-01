@@ -9,8 +9,6 @@
  */
 class BP_Groups_CiviCRM_Sync_Admin {
 
-
-
 	/**
 	 * Plugin object.
 	 *
@@ -19,8 +17,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * @var object $parent_obj The plugin object.
 	 */
 	public $parent_obj;
-
-
 
 	/**
 	 * CiviCRM utilities object.
@@ -31,8 +27,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 */
 	public $civi;
 
-
-
 	/**
 	 * BuddyPress utilities object.
 	 *
@@ -41,8 +35,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * @var object $bp The BuddyPress utilities object.
 	 */
 	public $bp;
-
-
 
 	/**
 	 * Settings page reference.
@@ -53,8 +45,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 */
 	public $settings_page;
 
-
-
 	/**
 	 * Manual Sync page reference.
 	 *
@@ -64,8 +54,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 */
 	public $sync_page;
 
-
-
 	/**
 	 * Plugin version.
 	 *
@@ -74,8 +62,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * @var str $plugin_version The Plugin version.
 	 */
 	public $plugin_version;
-
-
 
 	/**
 	 * Settings array.
