@@ -241,6 +241,10 @@ function bp_groups_civicrm_sync_plugin_action_links( $links, $file ) {
 		// add settings link
 		$links[] = '<a href="' . $link . '">' . esc_html__( 'Settings', 'bp-groups-civicrm-sync' ) . '</a>';
 
+		// add Paypal link
+		$paypal = 'https://www.paypal.me/interactivist';
+		$links[] = '<a href="' . $paypal . '" target="_blank">' . __( 'Donate!', 'civicrm-admin-utilities' ) . '</a>';
+
 	}
 
 	// --<
