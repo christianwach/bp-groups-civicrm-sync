@@ -16,7 +16,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $parent_obj The plugin object
+	 * @var object $parent_obj The plugin object.
 	 */
 	public $parent_obj;
 
@@ -27,7 +27,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $civi The CiviCRM utilities object
+	 * @var object $civi The CiviCRM utilities object.
 	 */
 	public $civi;
 
@@ -38,7 +38,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $bp The BuddyPress utilities object
+	 * @var object $bp The BuddyPress utilities object.
 	 */
 	public $bp;
 
@@ -49,7 +49,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var str $settings The Settings page reference
+	 * @var str $settings The Settings page reference.
 	 */
 	public $settings_page;
 
@@ -60,7 +60,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var str $sync_page The Manual Sync page reference
+	 * @var str $sync_page The Manual Sync page reference.
 	 */
 	public $sync_page;
 
@@ -71,7 +71,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var str $plugin_version The Plugin version
+	 * @var str $plugin_version The Plugin version.
 	 */
 	public $plugin_version;
 
@@ -82,7 +82,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var array $settings The Settings array
+	 * @var array $settings The Settings array.
 	 */
 	public $settings = array();
 
@@ -93,7 +93,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 *
-	 * @param object $parent_obj The parent object
+	 * @param object $parent_obj The parent object.
 	 */
 	function __construct( $parent_obj ) {
 
@@ -112,8 +112,8 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 *
-	 * @param object $bp_object Reference to this plugin's BP object
-	 * @param object $civi_object Reference to this plugin's CiviCRM object
+	 * @param object $bp_object Reference to this plugin's BP object.
+	 * @param object $civi_object Reference to this plugin's CiviCRM object.
 	 */
 	public function set_references( &$bp_object, &$civi_object ) {
 
@@ -314,8 +314,8 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 *
-	 * @global string $plugin_page
-	 * @global array $submenu
+	 * @global string $plugin_page The slug of the current page.
+	 * @global string $submenu_file The slug of the submenu file.
 	 */
 	public function admin_menu_highlight() {
 
@@ -425,8 +425,8 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 *
-	 * @param object $screen The existing WordPress screen object
-	 * @return object $screen The amended WordPress screen object
+	 * @param object $screen The existing WordPress screen object.
+	 * @return object $screen The amended WordPress screen object.
 	 */
 	public function admin_help( $screen ) {
 
@@ -467,7 +467,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 *
-	 * @return string $help Help formatted as HTML
+	 * @return string $help Help formatted as HTML.
 	 */
 	public function admin_help_text() {
 
@@ -638,7 +638,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 *
-	 * @return array $admin_urls The array of admin page URLs
+	 * @return array $admin_urls The array of admin page URLs.
 	 */
 	public function page_get_urls() {
 
@@ -676,9 +676,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 *
-	 * @param string $menu_slug The slug name to refer to this menu by (should be unique for this menu)
-	 * @param bool $echo Whether or not to echo the url - default is true
-	 * @return string $url The URL
+	 * @param string $menu_slug The slug name to refer to this menu by - should be unique for this menu.
+	 * @param bool $echo Whether or not to echo the url - default is true.
+	 * @return string $url The URL.
 	 */
 	public function network_menu_page_url( $menu_slug, $echo = true ) {
 		global $_parent_pages;
@@ -710,7 +710,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 *
-	 * @return string $target_url The URL for the admin form action
+	 * @return string $target_url The URL for the admin form action.
 	 */
 	public function admin_form_url_get() {
 
@@ -735,7 +735,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 *
-	 * @return array $settings The array of settings, keyed by setting name
+	 * @return array $settings The array of settings, keyed by setting name.
 	 */
 	public function settings_get_default() {
 
@@ -902,7 +902,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 *
-	 * @return boolean True if sync performed, false otherwise
+	 * @return boolean True if sync performed, false otherwise.
 	 */
 	public function settings_update_sync() {
 
@@ -957,7 +957,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 *
-	 * @return bool $result True if setting value has changed, false if not or if update failed
+	 * @return bool $result True if setting value has changed, false if not or if update failed.
 	 */
 	public function settings_save() {
 
@@ -973,7 +973,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 *
-	 * @return mixed $setting The value of the setting
+	 * @return mixed $setting The value of the setting.
 	 */
 	public function setting_get( $setting_name = '', $default = false ) {
 

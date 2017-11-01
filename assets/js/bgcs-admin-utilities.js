@@ -87,8 +87,8 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 		 *
 		 * @since 0.2.2
 		 *
-		 * @param {String} The identifier for the desired localisation string
-		 * @return {String} The localised string
+		 * @param {String} The identifier for the desired localisation string.
+		 * @return {String} The localised string.
 		 */
 		this.get_localisation = function( identifier ) {
 			return me.localisation[identifier];
@@ -113,8 +113,8 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 		 *
 		 * @since 0.2.2
 		 *
-		 * @param {String} The identifier for the desired setting
-		 * @return The value of the setting
+		 * @param {String} The identifier for the desired setting.
+		 * @return The value of the setting.
 		 */
 		this.get_setting = function( identifier ) {
 			return me.settings[identifier];
@@ -193,7 +193,7 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 			/**
 			 * Add a click event listener to start sync.
 			 *
-			 * @param {Object} event The event object
+			 * @param {Object} event The event object.
 			 */
 			button.on( 'click', function( event ) {
 
@@ -226,7 +226,7 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 		 *
 		 * @since 0.2.2
 		 *
-		 * @param {Array} data The data received from the server
+		 * @param {Array} data The data received from the server.
 		 */
 		this.update = function( data ) {
 

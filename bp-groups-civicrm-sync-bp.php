@@ -16,7 +16,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $parent_obj The plugin object
+	 * @var object $parent_obj The plugin object.
 	 */
 	public $parent_obj;
 
@@ -27,7 +27,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $civi The CiviCRM utilities object
+	 * @var object $civi The CiviCRM utilities object.
 	 */
 	public $civi;
 
@@ -38,7 +38,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $admin The Admin utilities object
+	 * @var object $admin The Admin utilities object.
 	 */
 	public $admin;
 
@@ -49,7 +49,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var bool $do_not_sync Flag for overriding sync process
+	 * @var bool $do_not_sync Flag for overriding sync process.
 	 */
 	public $do_not_sync = false;
 
@@ -60,7 +60,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param object $parent_obj The parent object
+	 * @param object $parent_obj The parent object.
 	 */
 	function __construct( $parent_obj ) {
 
@@ -79,8 +79,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param object $civi_object Reference to this plugin's CiviCRM object
-	 * @param object $admin_object Reference to this plugin's Admin object
+	 * @param object $civi_object Reference to this plugin's CiviCRM object.
+	 * @param object $admin_object Reference to this plugin's Admin object.
 	 */
 	public function set_references( &$civi_object, &$admin_object ) {
 
@@ -156,7 +156,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @return bool
+	 * @return bool|object False if BuddyPress could not be found, BuddyPress reference if successful.
 	 */
 	public function is_active() {
 
@@ -175,9 +175,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group
-	 * @param object $first_member WP user object
-	 * @param object $group The BP group object
+	 * @param int $group_id The numeric ID of the BP group.
+	 * @param object $first_member WP user object.
+	 * @param object $group The BP group object.
 	 */
 	public function create_civi_group( $group_id, $first_member, $group ) {
 
@@ -201,8 +201,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group
-	 * @param int $group The BP group object
+	 * @param int $group_id The numeric ID of the BP group.
+	 * @param int $group The BP group object.
 	 */
 	public function update_civi_group_details( $group_id ) {
 
@@ -221,8 +221,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group
-	 * @param int $group The BP group object
+	 * @param int $group_id The numeric ID of the BP group.
+	 * @param int $group The BP group object.
 	 */
 	public function update_civi_group( $group_id, $group ) {
 
@@ -238,7 +238,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group
+	 * @param int $group_id The numeric ID of the BP group.
 	 */
 	public function delete_civi_group( $group_id ) {
 
@@ -287,7 +287,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @return array $groups Array of BuddyPress group objects
+	 * @return array $groups Array of BuddyPress group objects.
 	 */
 	public function get_all_groups() {
 
@@ -323,10 +323,10 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param string $title The title of the BP group
-	 * @param string $description The description of the BP group
-	 * @param int $creator_id The numeric ID of the WP user
-	 * @return int $new_group_id The numeric ID of the new BP group
+	 * @param string $title The title of the BP group.
+	 * @param string $description The description of the BP group.
+	 * @param int $creator_id The numeric ID of the WP user.
+	 * @return int $new_group_id The numeric ID of the new BP group.
 	 */
 	public function create_group( $title, $description, $creator_id = null ) {
 
@@ -341,7 +341,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		// get current time
 		$time = current_time( 'mysql' );
 
-		/**
+		/*
 		 * Possible parameters (see function groups_create_group):
 		 *	'group_id'
 		 *	'creator_id'
@@ -386,8 +386,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.2.2
 	 *
-	 * @param int $group_id The ID of the BuddyPress group
-	 * @return array $members The members of the group
+	 * @param int $group_id The ID of the BuddyPress group.
+	 * @return array $members The members of the group.
 	 */
 	public function get_all_group_members( $group_id ) {
 
@@ -422,9 +422,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group
-	 * @param int $civi_users An array of CiviCRM contact data
-	 * @param bool $is_admin Makes this member a group admin
+	 * @param int $group_id The numeric ID of the BP group.
+	 * @param int $civi_users An array of CiviCRM contact data.
+	 * @param bool $is_admin Makes this member a group admin.
 	 */
 	public function create_group_members( $group_id, $civi_users, $is_admin = 0 ) {
 
@@ -474,10 +474,10 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group
-	 * @param int $user_id The numeric ID of the WP user
-	 * @param bool $is_admin Makes this member a group admin
-	 * @return bool $success True if successful, false if not
+	 * @param int $group_id The numeric ID of the BP group.
+	 * @param int $user_id The numeric ID of the WP user.
+	 * @param bool $is_admin Makes this member a group admin.
+	 * @return bool $success True if successful, false if not.
 	 */
 	public function create_group_member( $group_id, $user_id, $is_admin = 0 ) {
 
@@ -541,8 +541,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group
-	 * @param int $civi_users An array of CiviCRM contact data
+	 * @param int $group_id The numeric ID of the BP group.
+	 * @param int $civi_users An array of CiviCRM contact data.
 	 */
 	public function delete_group_members( $group_id, $civi_users ) {
 
@@ -587,9 +587,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group
-	 * @param int $user_id The numeric ID of the WP user
-	 * @return bool $success True if successful, false if not
+	 * @param int $group_id The numeric ID of the BP group.
+	 * @param int $user_id The numeric ID of the WP user.
+	 * @return bool $success True if successful, false if not.
 	 */
 	public function delete_group_member( $group_id, $user_id ) {
 
@@ -617,8 +617,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group
-	 * @param int $civi_users An array of CiviCRM contact data
+	 * @param int $group_id The numeric ID of the BP group.
+	 * @param int $civi_users An array of CiviCRM contact data.
 	 */
 	public function demote_group_members( $group_id, $civi_users ) {
 
@@ -660,9 +660,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group
-	 * @param int $user_id The numeric ID of the WP user
-	 * @return bool $success True if successful, false if not
+	 * @param int $group_id The numeric ID of the BP group.
+	 * @param int $user_id The numeric ID of the WP user.
+	 * @return bool $success True if successful, false if not.
 	 */
 	public function demote_group_member( $group_id, $user_id ) {
 
@@ -690,9 +690,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group
-	 * @param int $civi_users An array of CiviCRM contact data
-	 * @param string $status The status to which the members will be promoted
+	 * @param int $group_id The numeric ID of the BP group.
+	 * @param int $civi_users An array of CiviCRM contact data.
+	 * @param string $status The status to which the members will be promoted.
 	 */
 	public function promote_group_members( $group_id, $civi_users, $status ) {
 
@@ -734,10 +734,10 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group
-	 * @param int $user_id The numeric ID of the WP user
-	 * @param string $status The status to which the member will be promoted
-	 * @return bool $success True if successful, false if not
+	 * @param int $group_id The numeric ID of the BP group.
+	 * @param int $user_id The numeric ID of the WP user.
+	 * @param string $status The status to which the member will be promoted.
+	 * @return bool $success True if successful, false if not.
 	 */
 	public function promote_group_member( $group_id, $user_id, $status ) {
 
@@ -765,8 +765,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group
-	 * @param int $user_id The numeric ID of the WP user
+	 * @param int $group_id The numeric ID of the BP group.
+	 * @param int $user_id The numeric ID of the WP user.
 	 */
 	public function member_just_joined_group( $group_id, $user_id ) {
 
@@ -847,8 +847,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.2.2
 	 *
-	 * @param int $user_id The numeric ID of the WP user
-	 * @param int $group_id The numeric ID of the BP group
+	 * @param int $user_id The numeric ID of the WP user.
+	 * @param int $group_id The numeric ID of the BP group.
 	 */
 	public function member_removed_from_group( $user_id, $group_id ) {
 
@@ -868,8 +868,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $user_id The numeric ID of the WP user
-	 * @param int $group_id The numeric ID of the BP group
+	 * @param int $user_id The numeric ID of the WP user.
+	 * @param int $group_id The numeric ID of the BP group.
 	 */
 	public function member_changed_status_group( $user_id, $group_id ) {
 
@@ -885,8 +885,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $user_id The numeric ID of the WP user
-	 * @param int $group_id The numeric ID of the BP group
+	 * @param int $user_id The numeric ID of the WP user.
+	 * @param int $group_id The numeric ID of the BP group.
 	 */
 	public function civi_update_group_membership( $user_id, $group_id ) {
 
@@ -932,8 +932,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group
-	 * @param int $user_id The numeric ID of the WP user
+	 * @param int $group_id The numeric ID of the BP group.
+	 * @param int $user_id The numeric ID of the WP user.
 	 */
 	public function civi_delete_group_membership( $group_id, $user_id ) {
 
@@ -996,9 +996,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $user_id The numeric ID of the WP user
-	 * @param int $group_id The numeric ID of the BP group
-	 * @return string $user_group_status
+	 * @param int $user_id The numeric ID of the WP user.
+	 * @param int $group_id The numeric ID of the BP group.
+	 * @return string $user_group_status The membership status for a user.
 	 */
 	public function get_user_group_status( $user_id, $group_id ) {
 
@@ -1107,8 +1107,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param array $civi_contact The data for the CiviCRM contact
-	 * @return mixed $user WP user object or false on failure
+	 * @param array $civi_contact The data for the CiviCRM contact.
+	 * @return mixed $user WP user object or false on failure.
 	 */
 	public function wordpress_create_user( $civi_contact ) {
 
@@ -1184,10 +1184,10 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.3.1
 	 *
-	 * @param string $op The type of database operation
-	 * @param string $objectName The type of object
-	 * @param integer $objectId The ID of the object
-	 * @param object $objectRef The object
+	 * @param string $op The type of database operation.
+	 * @param string $objectName The type of object.
+	 * @param integer $objectId The ID of the object.
+	 * @param object $objectRef The object.
 	 */
 	public function civi_email_updated( $op, $objectName, $objectId, $objectRef ) {
 

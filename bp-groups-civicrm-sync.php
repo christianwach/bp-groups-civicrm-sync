@@ -53,7 +53,7 @@ class BP_Groups_CiviCRM_Sync {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $civi The CiviCRM utilities object
+	 * @var object $civi The CiviCRM utilities object.
 	 */
 	public $civi;
 
@@ -64,7 +64,7 @@ class BP_Groups_CiviCRM_Sync {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $bp The BuddyPress utilities object
+	 * @var object $bp The BuddyPress utilities object.
 	 */
 	public $bp;
 
@@ -75,7 +75,7 @@ class BP_Groups_CiviCRM_Sync {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $admin The Admin utilities object
+	 * @var object $admin The Admin utilities object.
 	 */
 	public $admin;
 
@@ -222,9 +222,9 @@ register_deactivation_hook( __FILE__, array( $bp_groups_civicrm_sync, 'deactivat
  *
  * @since 0.1
  *
- * @param array $links The existing links array
- * @param str $file The name of the plugin file
- * @return array $links The modified links array
+ * @param array $links The existing links array.
+ * @param str $file The name of the plugin file.
+ * @return array $links The modified links array.
  */
 function bp_groups_civicrm_sync_plugin_action_links( $links, $file ) {
 
