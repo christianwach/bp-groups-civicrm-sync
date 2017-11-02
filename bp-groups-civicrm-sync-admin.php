@@ -81,7 +81,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @param object $parent_obj The parent object.
 	 */
-	function __construct( $parent_obj ) {
+	public function __construct( $parent_obj ) {
 
 		// store reference to parent
 		$this->parent_obj = $parent_obj;

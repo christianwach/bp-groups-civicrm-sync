@@ -80,7 +80,7 @@ class BP_Groups_CiviCRM_Sync {
 	 *
 	 * @since 0.1
 	 */
-	function __construct() {
+	public function __construct() {
 
 		// init loading process
 		$this->initialise();

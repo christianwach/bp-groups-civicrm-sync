@@ -59,7 +59,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 *
 	 * @param object $parent_obj The parent object.
 	 */
-	function __construct( $parent_obj ) {
+	public function __construct( $parent_obj ) {
 
 		// store reference to parent
 		$this->parent_obj = $parent_obj;
@@ -1350,7 +1350,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @param array $params The array of CiviCRM API params.
 	 * @param string $op The type of CiviCRM operation.
 	 */
-	function group_contact_sync( &$params, $op ) {
+	public function group_contact_sync( &$params, $op ) {
 
 		// get the CiviCRM contact ID
 		$civi_contact_id = $this->get_contact_id( $params['uf_id'] );
@@ -1434,7 +1434,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				$acl_group_contact = civicrm_api( 'GroupContact', 'Create', $groupParams );
 			} else {
 
-				/**
+				/*
 				 * Unfortunately this will create a record that the contact was a member
 				 * of the ACL Group but has been removed - even if they have *never been*
 				 * a member of the group.
@@ -2790,7 +2790,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 *
 	 * @param object $user A WordPress user object.
 	 */
-	function _civi_contact_update( $user ) {
+	public function _civi_contact_update( $user ) {
 
 		// make sure CiviCRM file is included
 		require_once 'CRM/Core/BAO/UFMatch.php';
