@@ -227,9 +227,9 @@ function bp_groups_civicrm_sync_plugin_action_links( $links, $file ) {
 
 		// is this Network Admin?
 		if ( is_network_admin() ) {
-			$link = add_query_arg( array( 'page' => 'bp_groups_civicrm_sync_settings' ), network_admin_url( 'settings.php' ) );
+			$link = add_query_arg( array( 'page' => 'bp_groups_civicrm_sync_parent' ), network_admin_url( 'settings.php' ) );
 		} else {
-			$link = add_query_arg( array( 'page' => 'bp_groups_civicrm_sync_settings' ), admin_url( 'options-general.php' ) );
+			$link = add_query_arg( array( 'page' => 'bp_groups_civicrm_sync_parent' ), admin_url( 'options-general.php' ) );
 		}
 
 		// add settings link
