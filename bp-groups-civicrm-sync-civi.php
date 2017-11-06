@@ -1397,9 +1397,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// init CiviCRM group params
 		$groupParams = array(
+			'version' => 3,
 			'contact_id' => $civi_contact_id,
 			'group_id' => $civi_group_id,
-			'version' => 3,
 		);
 
 		/*
@@ -1436,10 +1436,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 			// define params
 			$groupParams = array(
+				'version' => 3,
 				'contact_id' => $civi_contact_id,
 				'group_id' => $civi_group_id,
 				'status' => $params['is_admin'] ? 'Added' : 'Removed',
-				'version' => 3,
 			);
 
 			// we have to call 'create'. WTF?
