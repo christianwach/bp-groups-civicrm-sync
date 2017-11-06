@@ -25,7 +25,7 @@ When a new user is added to (or joins) a *BuddyPress* group, they are automatica
 
 ### Requirements
 
-This plugin requires a minimum of *WordPress 3.9*, *BuddyPress 1.8* and *CiviCRM 4.6-alpha1*. Please refer to the installation page for how to use this plugin with versions of CiviCRM prior to 4.6-alpha1.
+This plugin requires a minimum of *WordPress 3.9*, *BuddyPress 1.8* and *CiviCRM 4.6*.
 
 ### Plugin Development
 
@@ -40,11 +40,14 @@ This plugin is in active development. For feature requests and bug reports (or i
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. In Multisite, it is recommended that you network-activate the plugin
 
-For versions of *CiviCRM* prior to 4.6-alpha1, this plugin requires the corresponding branch of the [CiviCRM WordPress plugin](https://github.com/civicrm/civicrm-wordpress) plus the custom WordPress.php hook file from the [CiviCRM Hook Tester repo on GitHub](https://github.com/christianwach/civicrm-wp-hook-tester) so that it overrides the built-in *CiviCRM* file. Please refer to the each repo for further instructions.
-
 
 
 == Changelog ==
+
+= 0.3.4 =
+
+* Drops support for CiviCRM 4.5
+* Fixes membership of ACL Group for BuddyPress group admins
 
 = 0.3.3 =
 
