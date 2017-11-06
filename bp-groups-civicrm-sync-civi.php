@@ -1329,11 +1329,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			'version' => 3,
 			'contact_id' => $civi_contact_id,
 			'group_id' => $civi_group_id,
-			'status' => 'Deleted',
+			'status' => 'Removed',
 		);
 
 		// call API
-		$group_contact = civicrm_api( 'GroupContact', 'Delete', $params );
+		$group_contact = civicrm_api( 'GroupContact', 'create', $params );
 
 		// --<
 		return $group_contact;
@@ -1402,14 +1402,27 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			'version' => 3,
 		);
 
-		// do the operation on the group
-		if ($op == 'add') {
+		/*
+		 * Removing a Contact from a Group has issues:
+		 *
+		 * When we try and "delete" a GroupContact, CiviCRM creates a record that
+		 * the contact was a member of the Group but has been removed - even if
+		 * they have *never been* a member of the group.
+		 *
+		 * Ideally the CiviCRM API should find out if the user was a member before
+		 * registering the "delete" event, but we may be able to pass "skip_undelete"
+		 * to the API to achieve the desired result. Needs testing.
+		 */
+
+		// set status based on operation type
+		if ( $op == 'add' ) {
 			$groupParams['status'] = $params['is_active'] ? 'Added' : 'Pending';
-			$group_contact = civicrm_api( 'GroupContact', 'Create', $groupParams );
 		} else {
 			$groupParams['status'] = 'Removed';
-			$group_contact = civicrm_api( 'GroupContact', 'Delete', $groupParams );
 		}
+
+		// we have to call 'create'. WTF?
+		$group_contact = civicrm_api( 'GroupContact', 'create', $groupParams );
 
 		// do we have an admin user?
 		if ( isset( $params['is_admin'] ) AND ! is_null( $params['is_admin'] ) ) {
@@ -1429,23 +1442,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				'version' => 3,
 			);
 
-			// either add or remove, depending on role
-			if ( $params['is_admin'] ) {
-				$acl_group_contact = civicrm_api( 'GroupContact', 'Create', $groupParams );
-			} else {
-
-				/*
-				 * Unfortunately this will create a record that the contact was a member
-				 * of the ACL Group but has been removed - even if they have *never been*
-				 * a member of the group.
-				 *
-				 * Ideally the CiviCRM API should find out if the user was a member before
-				 * registering the deletion event, but we may have to check the membership
-				 * manually beforehand and skip this API call if the contact is not a member.
-				 */
-				$acl_group_contact = civicrm_api( 'GroupContact', 'Delete', $groupParams );
-
-			}
+			// we have to call 'create'. WTF?
+			$acl_group_contact = civicrm_api( 'GroupContact', 'create', $groupParams );
 
 		}
 
