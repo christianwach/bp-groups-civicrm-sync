@@ -33,7 +33,9 @@ if ( ! defined( 'BP_GROUPS_CIVICRM_SYNC_PATH' ) ) {
 }
 
 // for debugging
-define( 'BP_GROUPS_CIVICRM_SYNC_DEBUG', false );
+if ( ! defined( 'BP_GROUPS_CIVICRM_SYNC_DEBUG' ) ) {
+	define( 'BP_GROUPS_CIVICRM_SYNC_DEBUG', false );
+}
 
 
 
