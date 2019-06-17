@@ -22,7 +22,7 @@ There are two ways to install from GitHub:
 
 ###### ZIP Download ######
 
-If you have downloaded *BuddyPress Groups CiviCRM Sync* as a ZIP file from the GitHub repository, do the following to install and activate the plugin and theme:
+If you have downloaded *BuddyPress Groups CiviCRM Sync* as a ZIP file from the GitHub repository, do the following to install and activate the plugin:
 
 1. Unzip the .zip file and, if needed, rename the enclosing folder so that the plugin's files are located directly inside `/wp-content/plugins/bp-groups-civicrm-sync`
 2. Activate the plugin
