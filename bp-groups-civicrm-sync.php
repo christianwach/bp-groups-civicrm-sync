@@ -14,25 +14,25 @@ Depends: CiviCRM
 
 
 
-// set our version here
+// Set our version here.
 define( 'BP_GROUPS_CIVICRM_SYNC_VERSION', '0.3.6' );
 
-// store reference to this file
+// Store reference to this file.
 if ( ! defined( 'BP_GROUPS_CIVICRM_SYNC_FILE' ) ) {
 	define( 'BP_GROUPS_CIVICRM_SYNC_FILE', __FILE__ );
 }
 
-// store URL to this plugin's directory
+// Store URL to this plugin's directory.
 if ( ! defined( 'BP_GROUPS_CIVICRM_SYNC_URL' ) ) {
 	define( 'BP_GROUPS_CIVICRM_SYNC_URL', plugin_dir_url( BP_GROUPS_CIVICRM_SYNC_FILE ) );
 }
 
-// store PATH to this plugin's directory
+// Store PATH to this plugin's directory.
 if ( ! defined( 'BP_GROUPS_CIVICRM_SYNC_PATH' ) ) {
 	define( 'BP_GROUPS_CIVICRM_SYNC_PATH', plugin_dir_path( BP_GROUPS_CIVICRM_SYNC_FILE ) );
 }
 
-// for debugging
+// For debugging.
 if ( ! defined( 'BP_GROUPS_CIVICRM_SYNC_DEBUG' ) ) {
 	define( 'BP_GROUPS_CIVICRM_SYNC_DEBUG', false );
 }
@@ -84,7 +84,7 @@ class BP_Groups_CiviCRM_Sync {
 	 */
 	public function __construct() {
 
-		// init loading process
+		// Init loading process
 		$this->initialise();
 
 	}
@@ -102,28 +102,28 @@ class BP_Groups_CiviCRM_Sync {
 	 */
 	public function initialise() {
 
-		// use translation files
+		// Use translation files.
 		add_action( 'plugins_loaded', array( $this, 'enable_translation' ) );
 
-		// load our cloned CiviCRM utility functions class
+		// Load our cloned CiviCRM utility functions class.
 		require( BP_GROUPS_CIVICRM_SYNC_PATH . 'bp-groups-civicrm-sync-civi.php' );
 
-		// instantiate
+		// Instantiate.
 		$this->civi = new BP_Groups_CiviCRM_Sync_CiviCRM( $this );
 
-		// load our BuddyPress utility functions class
+		// Load our BuddyPress utility functions class.
 		require( BP_GROUPS_CIVICRM_SYNC_PATH . 'bp-groups-civicrm-sync-bp.php' );
 
-		// instantiate
+		// Instantiate.
 		$this->bp = new BP_Groups_CiviCRM_Sync_BuddyPress( $this );
 
-		// load our Admin utility class
+		// Load our Admin utility class.
 		require( BP_GROUPS_CIVICRM_SYNC_PATH . 'bp-groups-civicrm-sync-admin.php' );
 
-		// instantiate
+		// Instantiate.
 		$this->admin = new BP_Groups_CiviCRM_Sync_Admin( $this );
 
-		// store references
+		// Store references.
 		$this->civi->set_references( $this->bp, $this->admin );
 		$this->bp->set_references( $this->civi, $this->admin );
 		$this->admin->set_references( $this->bp, $this->civi );
@@ -139,7 +139,7 @@ class BP_Groups_CiviCRM_Sync {
 	 */
 	public function activate() {
 
-		// setup plugin admin
+		// Setup plugin admin.
 		$this->admin->activate();
 
 	}
@@ -153,7 +153,7 @@ class BP_Groups_CiviCRM_Sync {
 	 */
 	public function deactivate() {
 
-		// tear down plugin admin
+		// Tear down plugin admin.
 		$this->admin->deactivate();
 
 	}
@@ -174,42 +174,35 @@ class BP_Groups_CiviCRM_Sync {
 	 */
 	public function enable_translation() {
 
-		// not used, as there are no translations as yet
+		// Load translations if there are any.
 		load_plugin_textdomain(
-
-			// unique name
-			'bp-groups-civicrm-sync',
-
-			// deprecated argument
-			false,
-
-			// relative path to directory containing translation files
-			dirname( plugin_basename( __FILE__ ) ) . '/languages/'
-
+			'bp-groups-civicrm-sync', // Unique name.
+			false, // Deprecated argument.
+			dirname( plugin_basename( __FILE__ ) ) . '/languages/' // Relative path to translation files.
 		);
 
 	}
 
 
 
-} // class ends
+} // Class ends
 
 
 
-// declare as global
+// Declare as global.
 global $bp_groups_civicrm_sync;
 
-// init plugin
+// Init plugin.
 $bp_groups_civicrm_sync = new BP_Groups_CiviCRM_Sync;
 
-// activation
+// Activation.
 register_activation_hook( __FILE__, array( $bp_groups_civicrm_sync, 'activate' ) );
 
-// deactivation
+// Deactivation.
 register_deactivation_hook( __FILE__, array( $bp_groups_civicrm_sync, 'deactivate' ) );
 
-// uninstall will use the 'uninstall.php' method when fully built
-// see: http://codex.wordpress.org/Function_Reference/register_uninstall_hook
+// Uninstall will use the 'uninstall.php' method when fully built.
+// See: http://codex.wordpress.org/Function_Reference/register_uninstall_hook
 
 
 
@@ -224,20 +217,20 @@ register_deactivation_hook( __FILE__, array( $bp_groups_civicrm_sync, 'deactivat
  */
 function bp_groups_civicrm_sync_plugin_action_links( $links, $file ) {
 
-	// add settings link
+	// Add settings link.
 	if ( $file == plugin_basename( dirname( __FILE__ ) . '/bp-groups-civicrm-sync.php' ) ) {
 
-		// is this Network Admin?
+		// Is this Network Admin?
 		if ( is_network_admin() ) {
 			$link = add_query_arg( array( 'page' => 'bp_groups_civicrm_sync_parent' ), network_admin_url( 'settings.php' ) );
 		} else {
 			$link = add_query_arg( array( 'page' => 'bp_groups_civicrm_sync_parent' ), admin_url( 'options-general.php' ) );
 		}
 
-		// add settings link
+		// Add settings link.
 		$links[] = '<a href="' . $link . '">' . esc_html__( 'Settings', 'bp-groups-civicrm-sync' ) . '</a>';
 
-		// add Paypal link
+		// Add Paypal link.
 		$paypal = 'https://www.paypal.me/interactivist';
 		$links[] = '<a href="' . $paypal . '" target="_blank">' . __( 'Donate!', 'civicrm-admin-utilities' ) . '</a>';
 
@@ -248,7 +241,7 @@ function bp_groups_civicrm_sync_plugin_action_links( $links, $file ) {
 
 }
 
-// add filters for the above
+// Add filters for the above.
 add_filter( 'network_admin_plugin_action_links', 'bp_groups_civicrm_sync_plugin_action_links', 10, 2 );
 add_filter( 'plugin_action_links', 'bp_groups_civicrm_sync_plugin_action_links', 10, 2 );
 

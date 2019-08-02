@@ -10,7 +10,7 @@
 
 	<?php
 
-	// if we've got any messages, show them...
+	// If we've got any messages, show them...
 	if ( isset( $messages ) AND ! empty( $messages ) ) echo $messages;
 
 	?>

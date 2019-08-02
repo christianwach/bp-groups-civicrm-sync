@@ -37,7 +37,7 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 	 */
 	BP_Groups_CiviCRM_Sync_Utilities.settings = new function() {
 
-		// prevent reference collisions
+		// Prevent reference collisions.
 		var me = this;
 
 		/**
@@ -49,10 +49,10 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 		 */
 		this.init = function() {
 
-			// init localisation
+			// Init localisation.
 			me.init_localisation();
 
-			// init settings
+			// Init settings.
 			me.init_settings();
 
 		};
@@ -68,7 +68,7 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 
 		};
 
-		// init localisation array
+		// Init localisation array.
 		me.localisation = [];
 
 		/**
@@ -94,7 +94,7 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 			return me.localisation[identifier];
 		};
 
-		// init settings array
+		// Init settings array.
 		me.settings = [];
 
 		/**
@@ -129,7 +129,7 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 	 */
 	BP_Groups_CiviCRM_Sync_Utilities.progress_bar = new function() {
 
-		// prevent reference collisions
+		// Prevent reference collisions.
 		var me = this;
 
 		/**
@@ -152,10 +152,10 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 		 */
 		this.dom_ready = function() {
 
-			// set up instance
+			// Set up instance.
 			me.setup();
 
-			// enable listeners
+			// Enable listeners.
 			me.listeners();
 
 		};
@@ -167,7 +167,7 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 		 */
 		this.setup = function() {
 
-			// assign properties
+			// Assign properties.
 			me.bar = $('#progress-bar');
 			me.label = $('#progress-bar .progress-label');
 			me.total = BP_Groups_CiviCRM_Sync_Utilities.settings.get_setting( 'total_groups' );
@@ -187,7 +187,7 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 		 */
 		this.listeners = function() {
 
-			// declare vars
+			// Declare vars.
 			var button = $('#bp_groups_civicrm_sync_bp_check');
 
 			/**
@@ -197,24 +197,24 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 			 */
 			button.on( 'click', function( event ) {
 
-				// prevent form submission
+				// Prevent form submission.
 				if ( event.preventDefault ) {
 					event.preventDefault();
 				}
 
-				// initialise progress bar
+				// Initialise progress bar.
 				me.bar.progressbar({
 					value: false,
 					max: me.total
 				});
 
-				// show progress bar if not already shown
+				// Show progress bar if not already shown.
 				me.bar.show();
 
-				// initialise progress bar label
+				// Initialise progress bar label.
 				me.label.html( me.label_init.replace( '{{total}}', me.total ) );
 
-				// send
+				// Send.
 				me.send();
 
 			});
@@ -230,47 +230,45 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 		 */
 		this.update = function( data ) {
 
-			// declare vars
+			// Declare vars.
 			var val;
 
-			// are we still in progress?
+			// Are we still in progress?
 			if ( data.finished == 'false' ) {
 
-				// console.log( data );
-
-				// get current value of progress bar
+				// Get current value of progress bar.
 				val = me.bar.progressbar( 'value' ) || 0;
 
-				// are we still syncing group members?
+				// Are we still syncing group members?
 				if ( data.members == 'done' ) {
 
-					// update progress bar label
+					// Update progress bar label.
 					me.label.html( me.label_complete.replace( '{{name}}', data.group_name ) );
 
-					// update progress bar
+					// Update progress bar.
 					me.bar.progressbar( 'value', val + 1 );
 
 				} else {
 
-					// update progress bar label
+					// Update progress bar label.
 					me.label.html( me.label_current.replace( '{{name}}', data.group_name ) );
 
-					// init progress bar if needed
+					// Init progress bar if needed.
 					if ( false === me.bar.progressbar( 'value' ) ) {
 						me.bar.progressbar( 'value', 0 );
 					}
 
 				}
 
-				// trigger next batch
+				// Trigger next batch.
 				me.send();
 
 			} else {
 
-				// update progress bar label
+				// Update progress bar label.
 				me.label.html( me.label_done );
 
-				// hide the progress bar
+				// Hide the progress bar.
 				setTimeout(function () {
 					me.bar.hide();
 				}, 2000 );
@@ -286,27 +284,27 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 		 */
 		this.send = function() {
 
-			// use jQuery post
+			// Use jQuery post.
 			$.post(
 
-				// URL to post to
+				// URL to post to.
 				BP_Groups_CiviCRM_Sync_Utilities.settings.get_setting( 'ajax_url' ),
 
-				// token received by WordPress
+				// Token received by WordPress.
 				{ action: 'sync_bp_and_civi' },
 
-				// callback
+				// Callback.
 				function( data, textStatus ) {
 
-					// if success
+					// If success.
 					if ( textStatus == 'success' ) {
 
-						// update progress bar
+						// Update progress bar.
 						me.update( data );
 
 					} else {
 
-						// show error
+						// Show error.
 						if ( console.log ) {
 							console.log( textStatus );
 						}
@@ -315,7 +313,7 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 
 				},
 
-				// expected format
+				// Expected format.
 				'json'
 
 			);
@@ -324,10 +322,10 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 
 	};
 
-	// init settings
+	// Init settings.
 	BP_Groups_CiviCRM_Sync_Utilities.settings.init();
 
-	// init Progress Bar
+	// Init Progress Bar.
 	BP_Groups_CiviCRM_Sync_Utilities.progress_bar.init();
 
 } )( jQuery );
@@ -341,11 +339,11 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
  */
 jQuery(document).ready(function($) {
 
-	// The DOM is loaded now
+	// The DOM is loaded now.
 	BP_Groups_CiviCRM_Sync_Utilities.settings.dom_ready();
 
-	// The DOM is loaded now
+	// The DOM is loaded now.
 	BP_Groups_CiviCRM_Sync_Utilities.progress_bar.dom_ready();
 
-}); // end document.ready()
+}); // End document.ready()
 
