@@ -105,28 +105,14 @@ class BP_Groups_CiviCRM_Sync {
 		// Use translation files.
 		add_action( 'plugins_loaded', array( $this, 'enable_translation' ) );
 
-		// Load our cloned CiviCRM utility functions class.
-		require( BP_GROUPS_CIVICRM_SYNC_PATH . 'bp-groups-civicrm-sync-civi.php' );
+		// Include files.
+		$this->include_files();
 
-		// Instantiate.
-		$this->civi = new BP_Groups_CiviCRM_Sync_CiviCRM( $this );
+		// Set up objects.
+		$this->setup_objects();
 
-		// Load our BuddyPress utility functions class.
-		require( BP_GROUPS_CIVICRM_SYNC_PATH . 'bp-groups-civicrm-sync-bp.php' );
-
-		// Instantiate.
-		$this->bp = new BP_Groups_CiviCRM_Sync_BuddyPress( $this );
-
-		// Load our Admin utility class.
-		require( BP_GROUPS_CIVICRM_SYNC_PATH . 'bp-groups-civicrm-sync-admin.php' );
-
-		// Instantiate.
-		$this->admin = new BP_Groups_CiviCRM_Sync_Admin( $this );
-
-		// Store references.
-		$this->civi->set_references( $this->bp, $this->admin );
-		$this->bp->set_references( $this->civi, $this->admin );
-		$this->admin->set_references( $this->bp, $this->civi );
+		// Set up references.
+		$this->setup_references();
 
 	}
 
@@ -185,7 +171,63 @@ class BP_Groups_CiviCRM_Sync {
 
 
 
-} // Class ends
+	/**
+	 * Include files.
+	 *
+	 * @since 0.3.6
+	 */
+	public function include_files() {
+
+		// Load our CiviCRM utility methods class.
+		require( BP_GROUPS_CIVICRM_SYNC_PATH . 'bp-groups-civicrm-sync-civi.php' );
+
+		// Load our BuddyPress utility methods class.
+		require( BP_GROUPS_CIVICRM_SYNC_PATH . 'bp-groups-civicrm-sync-bp.php' );
+
+		// Load our Admin utility class.
+		require( BP_GROUPS_CIVICRM_SYNC_PATH . 'bp-groups-civicrm-sync-admin.php' );
+
+	}
+
+
+
+	/**
+	 * Set up this plugin's objects.
+	 *
+	 * @since 0.3.6
+	 */
+	public function setup_objects() {
+
+		// Instantiate CiviCRM object.
+		$this->civi = new BP_Groups_CiviCRM_Sync_CiviCRM( $this );
+
+		// Instantiate BuddyPress object.
+		$this->bp = new BP_Groups_CiviCRM_Sync_BuddyPress( $this );
+
+		// Instantiate Admin object.
+		$this->admin = new BP_Groups_CiviCRM_Sync_Admin( $this );
+
+	}
+
+
+
+	/**
+	 * Set up references to other objects.
+	 *
+	 * @since 0.3.6
+	 */
+	public function setup_references() {
+
+		// Store references.
+		$this->civi->set_references( $this->bp, $this->admin );
+		$this->bp->set_references( $this->civi, $this->admin );
+		$this->admin->set_references( $this->bp, $this->civi );
+
+	}
+
+
+
+} // Class ends.
 
 
 
