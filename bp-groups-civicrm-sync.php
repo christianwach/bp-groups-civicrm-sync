@@ -231,17 +231,36 @@ class BP_Groups_CiviCRM_Sync {
 
 
 
-// Declare as global.
-global $bp_groups_civicrm_sync;
+/**
+ * Utility for retrieving a reference to this plugin.
+ *
+ * @since 0.3.6
+ *
+ * @return object $bp_groups_civicrm_sync The plugin reference.
+ */
+function bp_groups_civicrm_sync() {
+
+	// Hold the plugin instance in a global variable.
+	global $bp_groups_civicrm_sync;
+
+	// Instantiate plugin if not yet instantiated.
+	if ( ! isset( $bp_groups_civicrm_sync ) ) {
+		$bp_groups_civicrm_sync = new BP_Groups_CiviCRM_Sync();
+	}
+
+	// --<
+	return $bp_groups_civicrm_sync;
+
+}
 
 // Init plugin.
-$bp_groups_civicrm_sync = new BP_Groups_CiviCRM_Sync;
+bp_groups_civicrm_sync();
 
 // Activation.
-register_activation_hook( __FILE__, array( $bp_groups_civicrm_sync, 'activate' ) );
+register_activation_hook( __FILE__, array( bp_groups_civicrm_sync(), 'activate' ) );
 
 // Deactivation.
-register_deactivation_hook( __FILE__, array( $bp_groups_civicrm_sync, 'deactivate' ) );
+register_deactivation_hook( __FILE__, array( bp_groups_civicrm_sync(), 'deactivate' ) );
 
 // Uninstall will use the 'uninstall.php' method when fully built.
 // See: http://codex.wordpress.org/Function_Reference/register_uninstall_hook
