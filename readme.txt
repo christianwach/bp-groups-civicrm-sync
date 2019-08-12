@@ -44,6 +44,11 @@ This plugin is in active development. For feature requests and bug reports (or i
 
 == Changelog ==
 
+= 0.3.6 =
+
+* Improves plugin loading procedure
+* Better code documentation
+
 = 0.3.5 =
 
 * Fixes sync procedure hanging when errors are encountered
