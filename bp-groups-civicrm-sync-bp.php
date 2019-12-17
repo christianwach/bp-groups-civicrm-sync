@@ -442,6 +442,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 */
 	public function create_group_members( $group_id, $civi_users, $is_admin = 0 ) {
 
+		// Bail if sync should not happen for this group.
+		if ( ! $this->group_should_be_synced( $group_id ) ) return;
+
 		// Do we have any members?
 		if ( ! isset( $civi_users ) OR count( $civi_users ) == 0 ) return;
 
@@ -511,6 +514,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 */
 	public function create_group_member( $group_id, $user_id, $is_admin = 0 ) {
 
+		// Bail if sync should not happen for this group.
+		if ( ! $this->group_should_be_synced( $group_id ) ) return false;
+
 		// Check existing membership.
 		$is_member = groups_is_user_member( $user_id, $group_id );
 
@@ -576,6 +582,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 */
 	public function delete_group_members( $group_id, $civi_users ) {
 
+		// Bail if sync should not happen for this group.
+		if ( ! $this->group_should_be_synced( $group_id ) ) return;
+
 		// Do we have any members?
 		if ( ! isset( $civi_users ) OR count( $civi_users ) == 0 ) return;
 
@@ -637,6 +646,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 */
 	public function delete_group_member( $group_id, $user_id ) {
 
+		// Bail if sync should not happen for this group.
+		if ( ! $this->group_should_be_synced( $group_id ) ) return false;
+
 		// Bail if user is not a member.
 		if ( ! groups_is_user_member( $user_id, $group_id ) ) return false;
 
@@ -675,6 +687,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 * @param int $civi_users An array of CiviCRM contact data.
 	 */
 	public function demote_group_members( $group_id, $civi_users ) {
+
+		// Bail if sync should not happen for this group.
+		if ( ! $this->group_should_be_synced( $group_id ) ) return;
 
 		// Do we have any members?
 		if ( ! isset( $civi_users ) OR count( $civi_users ) == 0 ) return;
@@ -734,6 +749,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 */
 	public function demote_group_member( $group_id, $user_id ) {
 
+		// Bail if sync should not happen for this group.
+		if ( ! $this->group_should_be_synced( $group_id ) ) return false;
+
 		// Bail if user is not a member.
 		if ( ! groups_is_user_member( $user_id, $group_id ) ) return false;
 
@@ -773,6 +791,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 * @param string $status The status to which the members will be promoted.
 	 */
 	public function promote_group_members( $group_id, $civi_users, $status ) {
+
+		// Bail if sync should not happen for this group.
+		if ( ! $this->group_should_be_synced( $group_id ) ) return;
 
 		// Do we have any members?
 		if ( ! isset( $civi_users ) OR count( $civi_users ) == 0 ) return;
@@ -832,6 +853,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 * @return bool $success True if successful, false if not.
 	 */
 	public function promote_group_member( $group_id, $user_id, $status ) {
+
+		// Bail if sync should not happen for this group.
+		if ( ! $this->group_should_be_synced( $group_id ) ) return false;
 
 		// Bail if user is not a member.
 		if ( ! groups_is_user_member( $user_id, $group_id ) ) return false;
@@ -993,6 +1017,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 */
 	public function civi_update_group_membership( $user_id, $group_id ) {
 
+		// Bail if sync should not happen for this group.
+		if ( ! $this->group_should_be_synced( $group_id ) ) return;
+
 		// Get current user status.
 		$status = $this->get_user_group_status( $user_id, $group_id );
 
@@ -1039,6 +1066,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 * @param int $user_id The numeric ID of the WP user.
 	 */
 	public function civi_delete_group_membership( $group_id, $user_id ) {
+
+		// Bail if sync should not happen for this group.
+		if ( ! $this->group_should_be_synced( $group_id ) ) return;
 
 		// Update membership of CiviCRM groups.
 		$params = array(
