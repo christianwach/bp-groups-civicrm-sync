@@ -1065,6 +1065,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 				// Get group ID.
 				$group_id = bp_get_group_id();
 
+				// Skip to next if sync should not happen for this group.
+				if ( ! $this->bp->group_should_be_synced( $group_id ) ) continue;
+
 				// Get name of group.
 				$data['group_name'] = bp_get_group_name();
 

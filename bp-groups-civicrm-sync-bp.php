@@ -177,6 +177,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 */
 	public function create_civi_group( $group_id, $first_member, $group ) {
 
+		// Bail if sync should not happen.
+		if ( ! $this->group_should_be_synced( $group_id ) ) return;
+
 		// Pass to CiviCRM to create groups.
 		$civi_groups = $this->civi->create_civi_group( $group_id, $group );
 
@@ -202,6 +205,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 */
 	public function update_civi_group_details( $group_id ) {
 
+		// Bail if sync should not happen.
+		if ( ! $this->group_should_be_synced( $group_id ) ) return;
+
 		// Get the group object.
 		$group = groups_get_group( array( 'group_id' => $group_id ) );
 
@@ -222,6 +228,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 */
 	public function update_civi_group( $group_id, $group ) {
 
+		// Bail if sync should not happen.
+		if ( ! $this->group_should_be_synced( $group_id ) ) return;
+
 		// Pass to CiviCRM to update groups.
 		$civi_groups = $this->civi->update_civi_group( $group_id, $group );
 
@@ -237,6 +246,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 * @param int $group_id The numeric ID of the BP group.
 	 */
 	public function delete_civi_group( $group_id ) {
+
+		// Bail if sync should not happen.
+		if ( ! $this->group_should_be_synced( $group_id ) ) return;
 
 		// Pass to CiviCRM to delete groups.
 		$civi_groups = $this->civi->delete_civi_group( $group_id );
@@ -1447,6 +1459,34 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			add_action( 'user_register', array( $civicrm_wp_profile_sync, 'wordpress_contact_updated' ), 100, 1 );
 			add_action( 'profile_update', array( $civicrm_wp_profile_sync, 'wordpress_contact_updated' ), 100, 1 );
 		}
+
+	}
+
+
+
+	/**
+	 * Check if a group should by synced.
+	 *
+	 * @since 0.3.6
+	 *
+	 * @param int $group_id The numeric ID of the BP group.
+	 * @return bool $should_be_synced Whether or not the group should be synced.
+	 */
+	public function group_should_be_synced( $group_id ) {
+
+		// Assume user should be synced.
+		$should_be_synced = true;
+
+		/**
+		 * Let other plugins override whether a group should be synced.
+		 *
+		 * @since 0.3.6
+		 *
+		 * @param bool $should_be_synced True if the group should be synced, false otherwise.
+		 * @param int $group_id The numeric ID of the BP group.
+		 * @return bool $should_be_synced The modified value of the sync flag.
+		 */
+		return apply_filters( 'bp_groups_civicrm_sync_group_should_be_synced', $should_be_synced, $group_id );
 
 	}
 
