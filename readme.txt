@@ -44,6 +44,10 @@ This plugin is in active development. For feature requests and bug reports (or i
 
 == Changelog ==
 
+= 0.3.7 =
+
+* Add filter to exclude BuddyPress groups from sync
+
 = 0.3.6 =
 
 * Improves plugin loading procedure
