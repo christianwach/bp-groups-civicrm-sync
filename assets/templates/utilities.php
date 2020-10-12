@@ -8,12 +8,9 @@
 		<a href="<?php echo $urls['utilities']; ?>" class="nav-tab nav-tab-active"><?php _e( 'Utilities', 'bp-groups-civicrm-sync' ); ?></a>
 	</h2>
 
-	<?php
-
-	// If we've got any messages, show them...
-	if ( isset( $messages ) AND ! empty( $messages ) ) echo $messages;
-
-	?>
+	<?php if ( ! empty( $messages ) ) : ?>
+		<?php echo $messages; ?>
+	<?php endif; ?>
 
 	<form method="post" id="bp_groups_civicrm_sync_utilities_form" action="<?php echo $this->admin_form_url_get(); ?>">
 

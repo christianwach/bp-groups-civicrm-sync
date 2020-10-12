@@ -123,12 +123,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// Store version for later reference.
 		$this->store_version();
 
-		// Add settings option only if it does not exist.
+		// Add default settings option only if it does not exist.
 		if ( 'fgffgs' == get_option( 'bp_groups_civicrm_sync_settings', 'fgffgs' ) ) {
-
-			// Store default settings.
 			add_option( 'bp_groups_civicrm_sync_settings', $this->settings_get_default() );
-
 		}
 
 	}
@@ -159,7 +156,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		$this->plugin_version = get_option( 'bp_groups_civicrm_sync_version', false );
 
 		// Upgrade version if needed.
-		if ( $this->plugin_version != BP_GROUPS_CIVICRM_SYNC_VERSION ) $this->store_version();
+		if ( $this->plugin_version != BP_GROUPS_CIVICRM_SYNC_VERSION ) {
+			$this->store_version();
+		}
 
 		// Load settings array.
 		$this->settings = get_option( 'bp_groups_civicrm_sync_settings', $this->settings );
@@ -170,17 +169,11 @@ class BP_Groups_CiviCRM_Sync_Admin {
 			// Add AJAX handler.
 			add_action( 'wp_ajax_sync_bp_and_civi', [ $this, 'sync_bp_and_civi' ] );
 
-			// Multisite?
+			// Add menu to Network or Settings submenu.
 			if ( is_multisite() ) {
-
-				// Add menu to Network submenu.
 				add_action( 'network_admin_menu', [ $this, 'admin_menu' ], 30 );
-
 			} else {
-
-				// Add menu to Network submenu.
 				add_action( 'admin_menu', [ $this, 'admin_menu' ], 30 );
-
 			}
 
 		}
@@ -215,10 +208,14 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	public function admin_menu() {
 
 		// We must be network admin in multisite.
-		if ( is_multisite() AND ! is_super_admin() ) { return false; }
+		if ( is_multisite() AND ! is_super_admin() ) {
+			return false;
+		}
 
 		// Check user permissions.
-		if ( ! current_user_can('manage_options') ) { return false; }
+		if ( ! current_user_can('manage_options') ) {
+			return false;
+		}
 
 		// Multisite?
 		if ( is_multisite() ) {
@@ -432,7 +429,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		];
 
 		// Kick out if not our screen.
-		if ( ! in_array( $screen->id, $pages ) ) { return $screen; }
+		if ( ! in_array( $screen->id, $pages ) ) {
+			return $screen;
+		}
 
 		// Add a tab - we can add more later.
 		$screen->add_help_tab([
@@ -475,44 +474,44 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	public function page_settings() {
 
 		// Check user permissions.
-		if ( current_user_can( 'manage_options' ) ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
 
-			// Get admin page URLs.
-			$urls = $this->page_get_urls();
+		// Get admin page URLs.
+		$urls = $this->page_get_urls();
+
+		// Get our settings.
+		$parent_group = absint( $this->setting_get( 'parent_group' ) );
+
+		// Checked by default.
+		$checked = ' checked="checked"';
+		if ( isset( $parent_group ) AND $parent_group === 0 ) {
+			$checked = '';
+		}
+
+		// Assume no BP Group Hierarchy plugin.
+		$bp_group_hierarchy = false;
+
+		// Test for presence BP Group Hierarchy plugin.
+		if ( defined( 'BP_GROUP_HIERARCHY_IS_INSTALLED' ) ) {
+
+			// Set flag.
+			$bp_group_hierarchy = true;
 
 			// Get our settings.
-			$parent_group = absint( $this->setting_get( 'parent_group' ) );
+			$hierarchy = absint( $this->setting_get( 'nesting' ) );
 
 			// Checked by default.
-			$checked = ' checked="checked"';
-			if ( isset( $parent_group ) AND $parent_group === 0 ) {
-				$checked = '';
+			$hierarchy_checked = ' checked="checked"';
+			if ( isset( $hierarchy ) AND $hierarchy === 0 ) {
+				$hierarchy_checked = '';
 			}
-
-			// Assume no BP Group Hierarchy plugin.
-			$bp_group_hierarchy = false;
-
-			// Test for presence BP Group Hierarchy plugin.
-			if ( defined( 'BP_GROUP_HIERARCHY_IS_INSTALLED' ) ) {
-
-				// Set flag.
-				$bp_group_hierarchy = true;
-
-				// Get our settings.
-				$hierarchy = absint( $this->setting_get( 'nesting' ) );
-
-				// Checked by default.
-				$hierarchy_checked = ' checked="checked"';
-				if ( isset( $hierarchy ) AND $hierarchy === 0 ) {
-					$hierarchy_checked = '';
-				}
-
-			}
-
-			// Include template file.
-			include( BP_GROUPS_CIVICRM_SYNC_PATH . 'assets/templates/settings.php' );
 
 		}
+
+		// Include template file.
+		include BP_GROUPS_CIVICRM_SYNC_PATH . 'assets/templates/settings.php';
 
 	}
 
@@ -526,90 +525,65 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	public function page_utilities() {
 
 		// Check user permissions.
-		if ( current_user_can( 'manage_options' ) ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
 
-			// Get admin page URLs.
-			$urls = $this->page_get_urls();
+		// Get admin page URLs.
+		$urls = $this->page_get_urls();
 
-			// Init messages.
-			$messages = '';
+		// Init messages.
+		$messages = '';
 
-			// Init BP flags.
-			$checking_bp = false;
+		// Did we ask to check for group sync integrity?
+		$checking_bp = false;
+		if ( ! empty( $_POST['bp_groups_civicrm_sync_bp_check'] ) ) {
+			$checking_bp = true;
+		}
 
-			// Did we ask to check for group sync integrity?
-			if ( isset( $_POST['bp_groups_civicrm_sync_bp_check'] ) AND ! empty( $_POST['bp_groups_civicrm_sync_bp_check'] ) ) {
+		// Did we ask to check for OG groups?
+		$checking_og = false;
+		$has_og_groups = false;
+		if ( ! empty( $_POST['bp_groups_civicrm_sync_og_check'] ) ) {
+			$checking_og = true;
+			$has_og_groups = $this->civi->has_og_groups();
+		}
 
-				// Set flag.
-				$checking_bp = true;
+		// If we've updated.
+		if ( isset( $_GET['updated'] ) ) {
 
-			}
+			// Are we checking OG?
+			if ( $checking_og ) {
 
-			// Init OG flags.
-			$checking_og = false;
-			$has_og_groups = false;
-
-			// Did we ask to check for OG groups?
-			if ( isset( $_POST['bp_groups_civicrm_sync_og_check'] ) AND ! empty( $_POST['bp_groups_civicrm_sync_og_check'] ) ) {
-
-				// Set flag.
-				$checking_og = true;
-
-				// Do we have any OG groups?
-				$has_og_groups = $this->civi->has_og_groups();
-
-			}
-
-			// If we've updated.
-			if ( isset( $_GET['updated'] ) ) {
-
-				// Are we checking OG?
-				if ( $checking_og ) {
-
-					// Yes, did we get any?
-					if ( $has_og_groups !== false ) {
-
-						// Show settings updated message.
-						$messages .= '<div id="message" class="updated"><p>' . __( 'OG Groups found. You can now choose to migrate them to BP.', 'bp-groups-civicrm-sync' ) . '</p></div>';
-
-					} else {
-
-						// Show settings updated message.
-						$messages .= '<div id="message" class="updated"><p>' . __( 'No OG Groups found.', 'bp-groups-civicrm-sync' ) . '</p></div>';
-
-					}
-
+				// Show settings updated message.
+				if ( $has_og_groups !== false ) {
+					$messages .= '<div id="message" class="updated"><p>' . __( 'OG Groups found. You can now choose to migrate them to BP.', 'bp-groups-civicrm-sync' ) . '</p></div>';
 				} else {
+					// Show settings updated message.
+					$messages .= '<div id="message" class="updated"><p>' . __( 'No OG Groups found.', 'bp-groups-civicrm-sync' ) . '</p></div>';
+				}
 
-					// Are we checking BP?
-					if ( $checking_bp ) {
+			} else {
 
-					} else {
-
-						// Show settings updated message.
-						//$messages .= '<div id="message" class="updated"><p>' . __( 'Options saved.', 'bp-groups-civicrm-sync' ) . '</p></div>';
-
-					}
-
+				// Are we checking BP?
+				if ( $checking_bp ) {
+				} else {
+					// Show settings updated message.
+					//$messages .= '<div id="message" class="updated"><p>' . __( 'Options saved.', 'bp-groups-civicrm-sync' ) . '</p></div>';
 				}
 
 			}
 
-			// OG to BP flags.
-			$og_to_bp_do_sync = false;
-
-			// Do we have any OG groups?
-			if ( $checking_og AND $has_og_groups ) {
-
-				// Show OG to BP.
-				$og_to_bp_do_sync = true;
-
-			}
-
-			// Include template file.
-			include( BP_GROUPS_CIVICRM_SYNC_PATH . 'assets/templates/utilities.php' );
-
 		}
+
+		// Show OG to BP if we have any OG groups.
+		$og_to_bp_do_sync = false;
+		if ( $checking_og AND $has_og_groups ) {
+			$og_to_bp_do_sync = true;
+		}
+
+		// Include template file.
+		include BP_GROUPS_CIVICRM_SYNC_PATH . 'assets/templates/utilities.php';
 
 	}
 
@@ -629,7 +603,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	public function page_get_urls() {
 
 		// Only calculate once.
-		if ( isset( $this->urls ) ) { return $this->urls; }
+		if ( isset( $this->urls ) ) {
+			return $this->urls;
+		}
 
 		// Init return.
 		$this->urls = [];
@@ -667,6 +643,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * @return string $url The URL.
 	 */
 	public function network_menu_page_url( $menu_slug, $echo = true ) {
+
 		global $_parent_pages;
 
 		if ( isset( $_parent_pages[$menu_slug] ) ) {
@@ -682,7 +659,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		$url = esc_url( $url );
 
-		if ( $echo ) echo $url;
+		if ( $echo ) {
+			echo $url;
+		}
 
 		// --<
 		return $url;
@@ -703,7 +682,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// Sanitise admin page url.
 		$target_url = $_SERVER['REQUEST_URI'];
 		$url_array = explode( '&', $target_url );
-		if ( $url_array ) { $target_url = htmlentities( $url_array[0] . '&updated=true' ); }
+		if ( $url_array ) {
+			$target_url = htmlentities( $url_array[0] . '&updated=true' );
+		}
 
 		// --<
 		return $target_url;
@@ -793,15 +774,10 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// Get existing option.
 		$existing_parent_group = $this->setting_get( 'parent_group' );
 
-		// Default to empty value.
-		$settings_parent_group = 0;
-
 		// Did we ask to enable parent group?
+		$settings_parent_group = 0;
 		if ( isset( $_POST['bp_groups_civicrm_sync_settings_parent_group'] ) ) {
-
-			// Yes, set flag.
 			$settings_parent_group = absint( $_POST['bp_groups_civicrm_sync_settings_parent_group'] );
-
 		}
 
 		// Sanitise and set option.
@@ -813,15 +789,10 @@ class BP_Groups_CiviCRM_Sync_Admin {
 			// Get existing option.
 			$existing_hierarchy = $this->setting_get( 'nesting' );
 
-			// Default to empty value.
+			// Did we ask to enable hierarchy?
 			$settings_hierarchy = 0;
-
-			// Did we ask to enable parent group?
 			if ( isset( $_POST['bp_groups_civicrm_sync_settings_hierarchy'] ) ) {
-
-				// Yes, set flag.
 				$settings_hierarchy = absint( $_POST['bp_groups_civicrm_sync_settings_hierarchy'] );
-
 			}
 
 			// Sanitise and set option.
@@ -912,26 +883,17 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		// Did we ask to sync existing BP groups with CiviCRM?
 		if ( ! empty( $bp_groups_civicrm_sync_bp_check ) ) {
-
-			// Try and sync BP groups with CiviCRM groups.
 			$this->sync_bp_and_civi();
-
 		}
 
 		// Did we ask to check the sync of BP groups and CiviCRM groups?
 		if ( ! empty( $bp_groups_civicrm_sync_bp_check_sync ) ) {
-
-			// Check the sync between BP groups and CiviCRM groups.
 			$this->check_sync_between_bp_and_civi();
-
 		}
 
 		// Did we ask to convert OG groups?
 		if ( ! empty( $bp_groups_civicrm_sync_convert ) ) {
-
-			// Try and convert OG groups to BP groups.
 			$this->civi->og_groups_to_bp_groups_convert();
-
 		}
 
 		// Get admin URLs.
@@ -1019,7 +981,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	public function sync_bp_and_civi() {
 
 		// Init or bail.
-		if ( ! $this->civi->is_active() ) return;
+		if ( ! $this->civi->is_active() ) {
+			return;
+		}
 
 		// Init AJAX return.
 		$data = [];
@@ -1066,7 +1030,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 				$group_id = bp_get_group_id();
 
 				// Skip to next if sync should not happen for this group.
-				if ( ! $this->bp->group_should_be_synced( $group_id ) ) continue;
+				if ( ! $this->bp->group_should_be_synced( $group_id ) ) {
+					continue;
+				}
 
 				// Get name of group.
 				$data['group_name'] = bp_get_group_name();
@@ -1169,7 +1135,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		return;
 
 		// Init or die.
-		if ( ! $this->civi->is_active() ) return;
+		if ( ! $this->civi->is_active() ) {
+			return;
+		}
 
 		// Define get all groups params.
 		$params = [
