@@ -60,7 +60,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		$this->parent_obj = $parent_obj;
 
 		// Add actions for plugin init on BuddyPress init.
-		add_action( 'bp_setup_globals', array( $this, 'register_hooks' ), 11 );
+		add_action( 'bp_setup_globals', [ $this, 'register_hooks' ], 11 );
 
 	}
 
@@ -94,41 +94,41 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	public function register_hooks() {
 
 		// Intercept BuddyPress group creation, late as we can.
-		add_action( 'groups_create_group', array( $this, 'create_civi_group' ), 100, 3 );
+		add_action( 'groups_create_group', [ $this, 'create_civi_group' ], 100, 3 );
 
 		// Intercept group details update.
-		add_action( 'groups_details_updated', array( $this, 'update_civi_group_details' ), 100, 1 );
+		add_action( 'groups_details_updated', [ $this, 'update_civi_group_details' ], 100, 1 );
 
 		// Intercept BuddyPress group updates, late as we can.
-		add_action( 'groups_update_group', array( $this, 'update_civi_group' ), 100, 2 );
+		add_action( 'groups_update_group', [ $this, 'update_civi_group' ], 100, 2 );
 
 		// Intercept prior to BuddyPress group deletion so we still have group data.
-		add_action( 'groups_before_delete_group', array( $this, 'delete_civi_group' ), 100, 1 );
+		add_action( 'groups_before_delete_group', [ $this, 'delete_civi_group' ], 100, 1 );
 
 		// Group membership hooks: user joins or leaves group.
-		add_action( 'groups_join_group', array( $this, 'member_just_joined_group' ), 5, 2 );
-		add_action( 'groups_leave_group', array( $this, 'civi_delete_group_membership' ), 5, 2 );
+		add_action( 'groups_join_group', [ $this, 'member_just_joined_group' ], 5, 2 );
+		add_action( 'groups_leave_group', [ $this, 'civi_delete_group_membership' ], 5, 2 );
 
 		// Group membership hooks: removed group membership.
-		add_action( 'groups_removed_member', array( $this, 'member_removed_from_group' ), 10, 2 );
+		add_action( 'groups_removed_member', [ $this, 'member_removed_from_group' ], 10, 2 );
 
 		// Group membership hooks: modified group membership.
-		add_action( 'groups_promoted_member', array( $this, 'member_changed_status_group' ), 10, 2 );
-		add_action( 'groups_demoted_member', array( $this, 'member_changed_status_group' ), 10, 2 );
-		add_action( 'groups_unbanned_member', array( $this, 'member_changed_status_group' ), 10, 2 );
-		add_action( 'groups_banned_member', array( $this, 'member_changed_status_group' ), 10, 2 );
-		add_action( 'groups_membership_accepted', array( $this, 'member_changed_status_group' ), 10, 2 );
-		add_action( 'groups_accept_invite', array( $this, 'member_changed_status_group' ), 10, 2 );
+		add_action( 'groups_promoted_member', [ $this, 'member_changed_status_group' ], 10, 2 );
+		add_action( 'groups_demoted_member', [ $this, 'member_changed_status_group' ], 10, 2 );
+		add_action( 'groups_unbanned_member', [ $this, 'member_changed_status_group' ], 10, 2 );
+		add_action( 'groups_banned_member', [ $this, 'member_changed_status_group' ], 10, 2 );
+		add_action( 'groups_membership_accepted', [ $this, 'member_changed_status_group' ], 10, 2 );
+		add_action( 'groups_accept_invite', [ $this, 'member_changed_status_group' ], 10, 2 );
 
 		// Catch groups admin page load.
-		add_action( 'bp_groups_admin_load', array( $this, 'groups_admin_load' ), 10, 1 );
+		add_action( 'bp_groups_admin_load', [ $this, 'groups_admin_load' ], 10, 1 );
 
 		// Test for presence BP Group Hierarchy plugin.
 		if ( defined( 'BP_GROUP_HIERARCHY_IS_INSTALLED' ) ) {
 
 			// The following action allows us to know that the hierarchy has been altered.
-			add_action( 'bp_group_hierarchy_before_save', array( $this, 'hierarchy_before_change' ) );
-			add_action( 'bp_group_hierarchy_after_save', array( $this, 'hierarchy_after_change' ) );
+			add_action( 'bp_group_hierarchy_before_save', [ $this, 'hierarchy_before_change' ] );
+			add_action( 'bp_group_hierarchy_after_save', [ $this, 'hierarchy_after_change' ] );
 
 		}
 
@@ -209,7 +209,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		if ( ! $this->group_should_be_synced( $group_id ) ) return;
 
 		// Get the group object.
-		$group = groups_get_group( array( 'group_id' => $group_id ) );
+		$group = groups_get_group( [ 'group_id' => $group_id ] );
 
 		// Pass to CiviCRM to update groups.
 		$civi_groups = $this->civi->update_civi_group( $group_id, $group );
@@ -276,13 +276,13 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		if ( $doaction AND $doaction == 'save' ) {
 
 			// Group membership hooks: group membership status is being modified.
-			add_action( 'groups_promote_member', array( $this, 'member_changing_status_group' ), 10, 3 );
-			add_action( 'groups_demote_member', array( $this, 'member_changing_status_group' ), 10, 2 );
-			add_action( 'groups_unban_member', array( $this, 'member_changing_status_group' ), 10, 2 );
-			add_action( 'groups_ban_member', array( $this, 'member_changing_status_group' ), 10, 2 );
+			add_action( 'groups_promote_member', [ $this, 'member_changing_status_group' ], 10, 3 );
+			add_action( 'groups_demote_member', [ $this, 'member_changing_status_group' ], 10, 2 );
+			add_action( 'groups_unban_member', [ $this, 'member_changing_status_group' ], 10, 2 );
+			add_action( 'groups_ban_member', [ $this, 'member_changing_status_group' ], 10, 2 );
 
 			// User is being removed from group.
-			add_action( 'groups_remove_member', array( $this, 'civi_delete_group_membership' ), 10, 2 );
+			add_action( 'groups_remove_member', [ $this, 'civi_delete_group_membership' ], 10, 2 );
 
 		}
 
@@ -300,15 +300,15 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	public function get_all_groups() {
 
 		// Init return as empty array.
-		$groups = array();
+		$groups = [];
 
 		// Init with unlikely per_page value so we get all.
-		$params = array(
+		$params = [
 			'type' => 'alphabetical',
 			'per_page' => 100000,
 			'populate_extras' => true,
 			'show_hidden' => true,
-		);
+		];
 
 		// Query with our params.
 		$has_groups = bp_has_groups( $params );
@@ -360,7 +360,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		 *	'enable_forum'
 		 *	'date_created'
 		 */
-		$args = array(
+		$args = [
 			// Group_id is not passed so that we create a group.
 			'creator_id' => $creator_id,
 			'name' => $title,
@@ -369,7 +369,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			'status' => 'public',
 			'enable_forum' => 0,
 			'date_created' => $time,
-		);
+		];
 
 		// Let BuddyPress do the work.
 		$new_group_id = groups_create_group( $args );
@@ -406,14 +406,14 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	public function get_all_group_members( $group_id ) {
 
 		// Init return as empty array.
-		$members = array();
+		$members = [];
 
 		// Params group members.
-		$params = array(
+		$params = [
 			'exclude_admins_mods' => 0,
 			'per_page' => 1000000,
 			'group_id' => $group_id,
-		);
+		];
 
 		// Query group members.
 		$has_members = bp_group_has_members( $params );
@@ -542,13 +542,13 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		}
 
 		// Unhook our action to prevent BP->CiviCRM sync.
-		remove_action( 'groups_join_group', array( $this, 'member_just_joined_group' ), 5 );
+		remove_action( 'groups_join_group', [ $this, 'member_just_joined_group' ], 5 );
 
 		// Use BuddyPress function.
 		$success = groups_join_group( $group_id, $user_id );
 
 		// Re-hook our action to enable BP->CiviCRM sync.
-		add_action( 'groups_join_group', array( $this, 'member_just_joined_group' ), 5, 2 );
+		add_action( 'groups_join_group', [ $this, 'member_just_joined_group' ], 5, 2 );
 
 		/*
 		// Set up member.
@@ -942,25 +942,25 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		if ( 'groups_ban_member' == current_action() ) $is_active = 0;
 
 		// Update membership of CiviCRM group.
-		$params = array(
+		$params = [
 			'bp_group_id' => $group_id,
 			'uf_id' => $user_id,
 			'is_active' => $is_active,
 			'is_admin' => $is_admin,
-		);
+		];
 
 		// First, remove the CiviCRM actions, otherwise we may recurse.
-		remove_action( 'civicrm_pre', array( $this->civi, 'group_contacts_added' ), 10 );
-		remove_action( 'civicrm_pre', array( $this->civi, 'group_contacts_rejoined' ), 10 );
-		remove_action( 'civicrm_pre', array( $this->civi, 'group_contacts_deleted' ), 10 );
+		remove_action( 'civicrm_pre', [ $this->civi, 'group_contacts_added' ], 10 );
+		remove_action( 'civicrm_pre', [ $this->civi, 'group_contacts_rejoined' ], 10 );
+		remove_action( 'civicrm_pre', [ $this->civi, 'group_contacts_deleted' ], 10 );
 
 		// Use clone of CRM_Bridge_OG_Drupal::og().
 		$this->civi->group_contact_sync( $params, 'add' );
 
 		// Re-add the CiviCRM actions.
-		add_action( 'civicrm_pre', array( $this->civi, 'group_contacts_added' ), 10, 4 );
-		add_action( 'civicrm_pre', array( $this->civi, 'group_contacts_rejoined' ), 10, 4 );
-		add_action( 'civicrm_pre', array( $this->civi, 'group_contacts_deleted' ), 10, 4 );
+		add_action( 'civicrm_pre', [ $this->civi, 'group_contacts_added' ], 10, 4 );
+		add_action( 'civicrm_pre', [ $this->civi, 'group_contacts_rejoined' ], 10, 4 );
+		add_action( 'civicrm_pre', [ $this->civi, 'group_contacts_deleted' ], 10, 4 );
 
 	}
 
@@ -1033,25 +1033,25 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		if ( groups_is_user_banned( $user_id, $group_id ) ) $is_active = 0;
 
 		// Update membership of CiviCRM group.
-		$params = array(
+		$params = [
 			'bp_group_id' => $group_id,
 			'uf_id' => $user_id,
 			'is_active' => $is_active,
 			'is_admin' => $is_admin,
-		);
+		];
 
 		// First, remove the CiviCRM actions, otherwise we may recurse.
-		remove_action( 'civicrm_pre', array( $this->civi, 'group_contacts_added' ), 10 );
-		remove_action( 'civicrm_pre', array( $this->civi, 'group_contacts_rejoined' ), 10 );
-		remove_action( 'civicrm_pre', array( $this->civi, 'group_contacts_deleted' ), 10 );
+		remove_action( 'civicrm_pre', [ $this->civi, 'group_contacts_added' ], 10 );
+		remove_action( 'civicrm_pre', [ $this->civi, 'group_contacts_rejoined' ], 10 );
+		remove_action( 'civicrm_pre', [ $this->civi, 'group_contacts_deleted' ], 10 );
 
 		// Use clone of CRM_Bridge_OG_Drupal::og().
 		$this->civi->group_contact_sync( $params, 'add' );
 
 		// Re-add the CiviCRM actions.
-		add_action( 'civicrm_pre', array( $this->civi, 'group_contacts_added' ), 10, 4 );
-		add_action( 'civicrm_pre', array( $this->civi, 'group_contacts_rejoined' ), 10, 4 );
-		add_action( 'civicrm_pre', array( $this->civi, 'group_contacts_deleted' ), 10, 4 );
+		add_action( 'civicrm_pre', [ $this->civi, 'group_contacts_added' ], 10, 4 );
+		add_action( 'civicrm_pre', [ $this->civi, 'group_contacts_rejoined' ], 10, 4 );
+		add_action( 'civicrm_pre', [ $this->civi, 'group_contacts_deleted' ], 10, 4 );
 
 	}
 
@@ -1071,21 +1071,21 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		if ( ! $this->group_should_be_synced( $group_id ) ) return;
 
 		// Update membership of CiviCRM groups.
-		$params = array(
+		$params = [
 			'bp_group_id' => $group_id,
 			'uf_id' => $user_id,
 			'is_active' => 0,
 			'is_admin' => 0,
-		);
+		];
 
 		// First, remove the CiviCRM action, otherwise we'll recurse.
-		remove_action( 'civicrm_pre', array( $this->civi, 'group_contacts_deleted' ), 10 );
+		remove_action( 'civicrm_pre', [ $this->civi, 'group_contacts_deleted' ], 10 );
 
 		// Use clone of CRM_Bridge_OG_Drupal::og().
 		$this->civi->group_contact_sync( $params, 'delete' );
 
 		// Re-add the CiviCRM action.
-		add_action( 'civicrm_pre', array( $this->civi, 'group_contacts_deleted' ), 10, 4 );
+		add_action( 'civicrm_pre', [ $this->civi, 'group_contacts_deleted' ], 10, 4 );
 
 	}
 
@@ -1148,7 +1148,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 			// It's tricky to walk through the admin/mod lists over and over, so let's format.
 			if ( empty( $bp->groups->current_group->adminlist ) ) {
-				$bp->groups->current_group->adminlist = array();
+				$bp->groups->current_group->adminlist = [];
 				if ( isset( $bp->groups->current_group->admins ) ) {
 					foreach( (array)$bp->groups->current_group->admins as $admin ) {
 						if ( isset( $admin->user_id ) ) {
@@ -1159,7 +1159,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			}
 
 			if ( empty( $bp->groups->current_group->modlist ) ) {
-				$bp->groups->current_group->modlist = array();
+				$bp->groups->current_group->modlist = [];
 				if ( isset( $bp->groups->current_group->mods ) ) {
 					foreach( (array)$bp->groups->current_group->mods as $mod ) {
 						if ( isset( $mod->user_id ) ) {
@@ -1273,25 +1273,25 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			do_action( 'bp_groups_civicrm_sync_before_insert_user', $civi_contact );
 
 			// Create the user.
-			$user_id = wp_insert_user( array(
+			$user_id = wp_insert_user( [
 				'user_login' => $user_name,
 				'user_pass' => $random_password,
 				'user_email' => $civi_contact['email'],
 				'first_name' => $civi_contact['first_name'],
 				'last_name' => $civi_contact['last_name'],
-			) );
+			] );
 
 			// Is the email address empty?
 			if ( empty( $civi_contact['email'] ) ) {
 
 				// Store this contact temporarily.
-				$this->temp_contact = array(
+				$this->temp_contact = [
 					'civi' => $civi_contact,
 					'user_id' => $user_id,
-				);
+				];
 
 				// Add callback for the next "Email create" event.
-				add_action( 'civicrm_post', array( $this, 'civi_email_updated' ), 10, 4 );
+				add_action( 'civicrm_post', [ $this, 'civi_email_updated' ], 10, 4 );
 
 			}
 
@@ -1344,7 +1344,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		if ( $objectName != 'Email' ) return;
 
 		// Remove callback even if subsequent checks fail.
-		remove_action( 'civicrm_post', array( $this, 'civi_email_updated' ), 10, 4 );
+		remove_action( 'civicrm_post', [ $this, 'civi_email_updated' ], 10, 4 );
 
 		// Bail if we don't have a temp contact.
 		if ( ! isset( $this->temp_contact ) ) return;
@@ -1399,10 +1399,10 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		do_action( 'bp_groups_civicrm_sync_before_update_user', $this->temp_contact, $objectRef, $user_id );
 
 		// Update the WordPress user with this email address.
-		$user_id = wp_update_user( array(
+		$user_id = wp_update_user( [
 			'ID' => $user_id,
 			'user_email' => $objectRef->email,
-		) );
+		] );
 
 		// Re-add filters.
 		$this->add_filters();
@@ -1436,22 +1436,22 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		if ( method_exists( $civi, 'update_user' ) ) {
 
 			// Remove previous CiviCRM plugin filters.
-			remove_action( 'user_register', array( civi_wp(), 'update_user' ) );
-			remove_action( 'profile_update', array( civi_wp(), 'update_user' ) );
+			remove_action( 'user_register', [ civi_wp(), 'update_user' ] );
+			remove_action( 'profile_update', [ civi_wp(), 'update_user' ] );
 
 		} else {
 
 			// Remove current CiviCRM plugin filters.
-			remove_action( 'user_register', array( civi_wp()->users, 'update_user' ) );
-			remove_action( 'profile_update', array( civi_wp()->users, 'update_user' ) );
+			remove_action( 'user_register', [ civi_wp()->users, 'update_user' ] );
+			remove_action( 'profile_update', [ civi_wp()->users, 'update_user' ] );
 
 		}
 
 		// Remove CiviCRM WordPress Profile Sync filters.
 		global $civicrm_wp_profile_sync;
 		if ( is_object( $civicrm_wp_profile_sync ) ) {
-			remove_action( 'user_register', array( $civicrm_wp_profile_sync, 'wordpress_contact_updated' ), 100 );
-			remove_action( 'profile_update', array( $civicrm_wp_profile_sync, 'wordpress_contact_updated' ), 100 );
+			remove_action( 'user_register', [ $civicrm_wp_profile_sync, 'wordpress_contact_updated' ], 100 );
+			remove_action( 'profile_update', [ $civicrm_wp_profile_sync, 'wordpress_contact_updated' ], 100 );
 		}
 
 	}
@@ -1472,22 +1472,22 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		if ( method_exists( $civi, 'update_user' ) ) {
 
 			// Re-add previous CiviCRM plugin filters.
-			add_action( 'user_register', array( civi_wp(), 'update_user' ) );
-			add_action( 'profile_update', array( civi_wp(), 'update_user' ) );
+			add_action( 'user_register', [ civi_wp(), 'update_user' ] );
+			add_action( 'profile_update', [ civi_wp(), 'update_user' ] );
 
 		} else {
 
 			// Re-add current CiviCRM plugin filters.
-			add_action( 'user_register', array( civi_wp()->users, 'update_user' ) );
-			add_action( 'profile_update', array( civi_wp()->users, 'update_user' ) );
+			add_action( 'user_register', [ civi_wp()->users, 'update_user' ] );
+			add_action( 'profile_update', [ civi_wp()->users, 'update_user' ] );
 
 		}
 
 		// Re-add CiviCRM WordPress Profile Sync filters.
 		global $civicrm_wp_profile_sync;
 		if ( is_object( $civicrm_wp_profile_sync ) ) {
-			add_action( 'user_register', array( $civicrm_wp_profile_sync, 'wordpress_contact_updated' ), 100, 1 );
-			add_action( 'profile_update', array( $civicrm_wp_profile_sync, 'wordpress_contact_updated' ), 100, 1 );
+			add_action( 'user_register', [ $civicrm_wp_profile_sync, 'wordpress_contact_updated' ], 100, 1 );
+			add_action( 'profile_update', [ $civicrm_wp_profile_sync, 'wordpress_contact_updated' ], 100, 1 );
 		}
 
 	}

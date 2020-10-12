@@ -65,7 +65,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$this->parent_obj = $parent_obj;
 
 		// Add actions for plugin init on CiviCRM init.
-		add_action( 'civicrm_instance_loaded', array( $this, 'register_hooks' ) );
+		add_action( 'civicrm_instance_loaded', [ $this, 'register_hooks' ] );
 
 	}
 
@@ -99,28 +99,28 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	public function register_hooks() {
 
 		// Allow plugins to register php and template directories.
-		add_action( 'civicrm_config', array( $this, 'register_directories' ), 10, 1 );
+		add_action( 'civicrm_config', [ $this, 'register_directories' ], 10, 1 );
 
 		// Intercept CiviCRM group create form.
-		//add_action( 'civicrm_buildForm', array( $this, 'form_create_bp_group_options' ), 10, 2 );
+		add_action( 'civicrm_buildForm', [ $this, 'form_create_bp_group_options' ], 10, 2 );
 
 		// Intercept CiviCRM group create form submission.
-		//add_action( 'civicrm_postProcess', array( $this, 'form_create_bp_group_process' ), 10, 2 );
+		add_action( 'civicrm_postProcess', [ $this, 'form_create_bp_group_process' ], 10, 2 );
 
 		// Intercept CiviCRM Drupal Organic Group edit form.
-		add_action( 'civicrm_buildForm', array( $this, 'form_edit_og_options' ), 10, 2 );
+		add_action( 'civicrm_buildForm', [ $this, 'form_edit_og_options' ], 10, 2 );
 
 		// Intercept CiviCRM Drupal Organic Group edit form submission.
-		add_action( 'civicrm_postProcess', array( $this, 'form_edit_og_process' ), 10, 2 );
+		add_action( 'civicrm_postProcess', [ $this, 'form_edit_og_process' ], 10, 2 );
 
 		// Intercept CiviCRM's add contacts to group.
-		add_action( 'civicrm_pre', array( $this, 'group_contacts_added' ), 10, 4 );
+		add_action( 'civicrm_pre', [ $this, 'group_contacts_added' ], 10, 4 );
 
 		// Intercept CiviCRM's delete contacts from group.
-		add_action( 'civicrm_pre', array( $this, 'group_contacts_deleted' ), 10, 4 );
+		add_action( 'civicrm_pre', [ $this, 'group_contacts_deleted' ], 10, 4 );
 
 		// Intercept CiviCRM's rejoin contacts to group.
-		add_action( 'civicrm_pre', array( $this, 'group_contacts_rejoined' ), 10, 4 );
+		add_action( 'civicrm_pre', [ $this, 'group_contacts_rejoined' ], 10, 4 );
 
 		/**
 		 * Broadcast that this object is loaded.
@@ -211,15 +211,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		} else {
 
 			// Define group.
-			$params = array(
+			$params = [
 				'name' => __( 'BuddyPress Groups', 'bp-groups-civicrm-sync' ),
 				'title' => __( 'BuddyPress Groups', 'bp-groups-civicrm-sync' ),
 				'description' => __( 'Container for all BuddyPress Groups', 'bp-groups-civicrm-sync' ),
 				'is_active' => 1,
-			);
+			];
 
 			// Set inscrutable group type (Access Control).
-			$params['group_type'] = array( '1' => 1 );
+			$params['group_type'] = [ '1' => 1 ];
 
 			// Get "source" for the CiviCRM group.
 			$params['source'] = $this->meta_group_get_source();
@@ -291,13 +291,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( ! $civi_meta_group_id ) return;
 
 		// Define get "all with no parent" params.
-		$params = array(
+		$params = [
 			'version' => 3,
 			// Define stupidly high limit, because API defaults to 25.
-			'options' => array(
+			'options' => [
 				'limit' => '10000',
-			),
-		);
+			],
+		];
 
 		// Get all groups with no parent ID (get ALL for now).
 		$all_groups = civicrm_api( 'group', 'get', $params );
@@ -356,11 +356,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		} else {
 
 			// Debug.
-			error_log( print_r( array(
+			error_log( print_r( [
 				'method' => __METHOD__,
 				'all_groups' => $all_groups,
 				'backtrace' => wp_debug_backtrace_summary(),
-			), true ) );
+			], true ) );
 
 		}
 
@@ -387,13 +387,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( ! $civi_meta_group_id ) return;
 
 		// Define get "all with no parent" params.
-		$params = array(
+		$params = [
 			'version' => 3,
 			// Define stupidly high limit, because API defaults to 25.
-			'options' => array(
+			'options' => [
 				'limit' => '10000',
-			),
-		);
+			],
+		];
 
 		// Get all groups with no parent ID (get ALL for now).
 		$all_groups = civicrm_api( 'group', 'get', $params );
@@ -445,11 +445,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		} else {
 
 			// Debug.
-			error_log( print_r( array(
+			error_log( print_r( [
 				'method' => __METHOD__,
 				'all_groups' => $all_groups,
 				'backtrace' => wp_debug_backtrace_summary(),
-			), true ) );
+			], true ) );
 
 		}
 
@@ -495,7 +495,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( ! $this->is_active() ) return false;
 
 		// Init return.
-		$return = array();
+		$return = [];
 
 
 
@@ -503,13 +503,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$transaction = new CRM_Core_Transaction();
 
 		// Define group.
-		$params = array(
+		$params = [
 			'bp_group_id' => $bp_group_id,
 			'name' => stripslashes( $bp_group->name ),
 			'title' => stripslashes( $bp_group->name ),
 			'description' => stripslashes( $bp_group->description ),
 			'is_active' => 1,
-		);
+		];
 
 
 
@@ -575,12 +575,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	    $transaction->commit();
 
 		// Add the creator to the groups.
-		$params = array(
+		$params = [
 			'bp_group_id' => $bp_group_id,
 			'uf_id' => $bp_group->creator_id,
 			'is_active' => 1,
 			'is_admin' => 1,
-		);
+		];
 
 		// Use clone of CRM_Bridge_OG_Drupal::og().
 		$this->group_contact_sync( $params, 'add' );
@@ -609,7 +609,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( ! $this->is_active() ) return false;
 
 		// Init return.
-		$return = array();
+		$return = [];
 
 
 
@@ -617,13 +617,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$transaction = new CRM_Core_Transaction();
 
 		// Define group.
-		$params = array(
+		$params = [
 			'bp_group_id' => $group_id,
 			'name' => stripslashes( $group->name ),
 			'title' => stripslashes( $group->name ),
 			'description' => stripslashes( $group->description ),
 			'is_active' => 1,
-		);
+		];
 
 
 
@@ -713,15 +713,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$transaction = new CRM_Core_Transaction();
 
 		// Get the group object.
-		$group = groups_get_group( array( 'group_id' => $group_id ) );
+		$group = groups_get_group( [ 'group_id' => $group_id ] );
 
 		// Define group.
-		$params = array(
+		$params = [
 			'bp_group_id' => $group_id,
 			'name' => $group->name,
 			'title' => $group->name,
 			'is_active' => 1,
-		);
+		];
 
 
 
@@ -843,11 +843,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		//$transaction = new CRM_Core_Transaction();
 
 		// Define new group nesting.
-		$create_params = array(
+		$create_params = [
 			'version' => 3,
 			'child_group_id' => $civi_group_id,
 			'parent_group_id' => $civi_parent_id,
-		);
+		];
 
 		// Create CiviCRM group nesting under meta group.
 		$create_result = civicrm_api( 'group_nesting', 'create', $create_params );
@@ -856,12 +856,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $create_result['is_error'] == '1' ) {
 
 			// Debug.
-			error_log( print_r( array(
+			error_log( print_r( [
 				'method' => __METHOD__,
 				'create_params' => $create_params,
 				'create_result' => $create_result,
 				'backtrace' => wp_debug_backtrace_summary(),
-			), true ) );
+			], true ) );
 
 		}
 
@@ -906,14 +906,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			);
 
 			// Log identifying data.
-			error_log( print_r( array(
+			error_log( print_r( [
 				'method' => __METHOD__,
 				'message' => $message,
 				'bp_group_id' => $bp_group_id,
 				'bp_parent_id' => $bp_parent_id,
 				'source' => $source,
 				'backtrace' => wp_debug_backtrace_summary(),
-			), true ) );
+			], true ) );
 
 			return;
 
@@ -939,11 +939,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 		// Define group.
-		$group_params = array(
+		$group_params = [
 			'bp_group_id' => $bp_group_id,
 			'id' => $civi_group_id,
 			'is_active' => 1,
-		);
+		];
 
 		// Get name for the CiviCRM group.
 		$group_params['source'] = $source;
@@ -983,11 +983,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$this->group_nesting_create( $civi_acl_group_id, $civi_acl_parent_id, 'acl' );
 
 		// Define group for update.
-		$group_params = array(
+		$group_params = [
 			'bp_group_id' => $bp_group_id,
 			'id' => $civi_acl_group_id,
 			'is_active' => 1,
-		);
+		];
 
 		// Get name for the CiviCRM ACL group.
 		$group_params['source'] = $acl_source;
@@ -1007,11 +1007,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		/*
 		// Define group.
-		$params = array(
+		$params = [
 			'version' => 3,
 			'id' => $civi_group_id,
 			'is_active' => 1,
-		);
+		];
 
 		// Use API to inspect group.
 		$group = civicrm_api( 'group', 'get', $params );
@@ -1040,11 +1040,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	public function group_nesting_delete( $civi_group_id, $civi_parent_id ) {
 
 		// Define existing group nesting.
-		$existing_params = array(
+		$existing_params = [
 			'version' => 3,
 			'parent_group_id' => $civi_parent_id,
 			'child_group_id' => $civi_group_id,
-		);
+		];
 
 		// Get existing group nesting.
 		$existing_result = civicrm_api( 'group_nesting', 'get', $existing_params );
@@ -1056,10 +1056,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			foreach( $existing_result['values'] AS $existing_group_nesting ) {
 
 				// Construct delete array.
-				$delete_params = array(
+				$delete_params = [
 					'version' => 3,
 					'id' => $existing_group_nesting['id'],
-				);
+				];
 
 				// Clear existing group nesting.
 				$delete_result = civicrm_api( 'group_nesting', 'delete', $delete_params );
@@ -1162,13 +1162,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		} else {
 
 			// Log identifying data.
-			error_log( print_r( array(
+			error_log( print_r( [
 				'method' => __METHOD__,
 				'message' => __( 'Could not create CiviCRM group', 'bp-groups-civicrm-sync' ),
 				'params' => $params,
 				'group' => $group,
 				'backtrace' => wp_debug_backtrace_summary(),
-			), true ) );
+			], true ) );
 
 			// Set flag.
 			$success = false;
@@ -1226,13 +1226,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		} else {
 
 			// Log identifying data.
-			error_log( print_r( array(
+			error_log( print_r( [
 				'method' => __METHOD__,
 				'message' => __( 'Could not update CiviCRM group', 'bp-groups-civicrm-sync' ),
 				'params' => $params,
 				'group' => $group,
 				'backtrace' => wp_debug_backtrace_summary(),
-			), true ) );
+			], true ) );
 
 			// Set flag.
 			$success = false;
@@ -1305,12 +1305,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	public function group_contact_create( $civi_group_id, $civi_contact_id ) {
 
 		// Init API params.
-		$params = array(
+		$params = [
 			'version' => 3,
 			'contact_id' => $civi_contact_id,
 			'group_id' => $civi_group_id,
 			'status' => 'Added',
-		);
+		];
 
 		// Call API.
 		$group_contact = civicrm_api( 'GroupContact', 'Create', $params );
@@ -1334,12 +1334,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	public function group_contact_delete( $civi_group_id, $civi_contact_id ) {
 
 		// Init API params.
-		$params = array(
+		$params = [
 			'version' => 3,
 			'contact_id' => $civi_contact_id,
 			'group_id' => $civi_group_id,
 			'status' => 'Removed',
-		);
+		];
 
 		// Call API.
 		$group_contact = civicrm_api( 'GroupContact', 'create', $params );
@@ -1377,12 +1377,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				);
 
 				// Log something.
-				error_log( print_r( array(
+				error_log( print_r( [
 					'method' => __METHOD__,
 					'error' => $error,
 					'user' => print_r( new WP_User( $user_id ), true ),
 					'backtrace' => wp_debug_backtrace_summary(),
-				), true ) );
+				], true ) );
 
 			}
 
@@ -1397,11 +1397,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		);
 
 		// Init CiviCRM group params.
-		$groupParams = array(
+		$groupParams = [
 			'version' => 3,
 			'contact_id' => $civi_contact_id,
 			'group_id' => $civi_group_id,
-		);
+		];
 
 		/*
 		 * Removing a Contact from a Group has issues:
@@ -1434,12 +1434,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			);
 
 			// Define params.
-			$groupParams = array(
+			$groupParams = [
 				'version' => 3,
 				'contact_id' => $civi_contact_id,
 				'group_id' => $civi_group_id,
 				'status' => $params['is_admin'] ? 'Added' : 'Removed',
-			);
+			];
 
 			// We have to call 'create'. WTF?
 			$acl_group_contact = civicrm_api( 'GroupContact', 'create', $groupParams );
@@ -1512,7 +1512,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $is_admin == 0 ) return;
 
 		// First, remove this action, otherwise we'll recurse.
-		remove_action( 'civicrm_pre', array( $this, 'group_contacts_added' ), 10 );
+		remove_action( 'civicrm_pre', [ $this, 'group_contacts_added' ], 10 );
 
 		// Get the CiviCRM group ID of the member group.
 		$civi_group_id = $this->find_group_id(
@@ -1530,7 +1530,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		}
 
 		// Re-add this action.
-		add_action( 'civicrm_pre', array( $this, 'group_contacts_added' ), 10, 4 );
+		add_action( 'civicrm_pre', [ $this, 'group_contacts_added' ], 10, 4 );
 
 	}
 
@@ -1594,7 +1594,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$this->bp->delete_group_members( $bp_group_id, $contacts );
 
 		// First, remove this action, otherwise we'll recurse.
-		remove_action( 'civicrm_pre', array( $this, 'group_contacts_deleted' ), 10 );
+		remove_action( 'civicrm_pre', [ $this, 'group_contacts_deleted' ], 10 );
 
 		// Get the group ID of the acl group.
 		$civi_group_id = $this->find_group_id(
@@ -1612,7 +1612,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		}
 
 		// Re-add this action.
-		add_action( 'civicrm_pre', array( $this, 'group_contacts_deleted' ), 10, 4 );
+		add_action( 'civicrm_pre', [ $this, 'group_contacts_deleted' ], 10, 4 );
 
 	}
 
@@ -1641,7 +1641,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $object_name != 'GroupContact' ) return;
 
 		// First, remove this action, in case we recurse.
-		remove_action( 'civicrm_pre', array( $this, 'group_contacts_rejoined' ), 10 );
+		remove_action( 'civicrm_pre', [ $this, 'group_contacts_rejoined' ], 10 );
 
 		// Set op to 'create'.
 		$op = 'create';
@@ -1650,7 +1650,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$this->group_contacts_added( $op, $object_name, $civi_group_id, $contact_ids );
 
 		// Re-add this action.
-		add_action( 'civicrm_pre', array( $this, 'group_contacts_rejoined' ), 10, 4 );
+		add_action( 'civicrm_pre', [ $this, 'group_contacts_rejoined' ], 10, 4 );
 
 	}
 
@@ -1707,12 +1707,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 					);
 
 					// Log something.
-					error_log( print_r( array(
+					error_log( print_r( [
 						'method' => __METHOD__,
 						'error' => $error,
 						'user' => print_r( new WP_User( $user_id ), true ),
 						'backtrace' => wp_debug_backtrace_summary(),
-					), true ) );
+					], true ) );
 
 				}
 
@@ -1744,10 +1744,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	public function get_contact_by_contact_id( $contact_id ) {
 
 		// Get all contact data.
-		$params = array(
+		$params = [
 			'version' => 3,
 			'contact_id' => $contact_id,
-		);
+		];
 
 		// Use API.
 		$contact_data = civicrm_api( 'contact', 'get', $params );
@@ -1786,7 +1786,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$query = "SELECT id FROM civicrm_group WHERE source = %1";
 
 		// Define replacement.
-		$params = array( 1 => array( $source, 'String' ) );
+		$params = [ 1 => [ $source, 'String' ] ];
 
 		// Add title search, if present.
 		if ( ! empty( $title ) ) {
@@ -1795,7 +1795,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			$query .= " OR title = %2";
 
 			// Add to replacements.
-			$params[2] = array( $title, 'String' );
+			$params[2] = [ $title, 'String' ];
 
 		}
 
@@ -1823,17 +1823,17 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 			// Get the group object if we get an ID.
 			if ( $group_id ) {
-				$group = groups_get_group( array( 'group_id' => $group_id, 'populate_extras' => true ) );
+				$group = groups_get_group( [ 'group_id' => $group_id, 'populate_extras' => true ] );
 				$group_data = print_r( $group, true );
 			}
 
 			// Log something.
-			error_log( print_r( array(
+			error_log( print_r( [
 				'method' => __METHOD__,
 				'error' => $error,
 				'group' => $group_data,
 				'backtrace' => wp_debug_backtrace_summary(),
-			), true ) );
+			], true ) );
 
 		}
 
@@ -1855,10 +1855,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	public function get_civi_group_by_id( $civi_group_id ) {
 
 		// Define get "all with no parent" params.
-		$params = array(
+		$params = [
 			'version' => 3,
 			'group_id' => $civi_group_id,
-		);
+		];
 
 		// Get group.
 		$civi_group = civicrm_api( 'group', 'get', $params );
@@ -1961,7 +1961,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			 * @param array The existing CiviCRM group type array.
 			 * @return array The modified CiviCRM group type array.
 			 */
-			$type_data = apply_filters( 'bp_groups_civicrm_sync_member_group_type', array( '2' => 2 ) );
+			$type_data = apply_filters( 'bp_groups_civicrm_sync_member_group_type', [ '2' => 2 ] );
 
 		}
 
@@ -1978,7 +1978,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			 * @param array The existing CiviCRM group type array.
 			 * @return array The modified CiviCRM group type array.
 			 */
-			$type_data = apply_filters( 'bp_groups_civicrm_sync_acl_group_type', array( '1' => 1 ) );
+			$type_data = apply_filters( 'bp_groups_civicrm_sync_acl_group_type', [ '1' => 1 ] );
 
 		}
 
@@ -2147,7 +2147,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$dao->label = $params['title'];
 		$dao->is_active = 1;
 
-		$weightParams = array('option_group_id' => $optionGroupID);
+		$weightParams = [ 'option_group_id' => $optionGroupID ];
 		$dao->weight = CRM_Utils_Weight::getDefaultWeight(
 			'CRM_Core_DAO_OptionValue',
 			$weightParams
@@ -2166,10 +2166,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			AND v.description     = %2
 		";
 
-		$queryParams = array(
-			1 => array($optionGroupID, 'Integer'),
-			2 => array($params['source'], 'String'),
-		);
+		$queryParams = [
+			1 => [ $optionGroupID, 'Integer' ],
+			2 => [ $params['source'], 'String' ],
+		];
 
 		$dao->id = CRM_Core_DAO::singleValueQuery( $query, $queryParams );
 
@@ -2275,9 +2275,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$form->add( 'checkbox', 'bpgroupscivicrmsynccreatefromnew', __( 'Create BuddyPress Group', 'bp-groups-civicrm-sync' ) );
 
 		// Dynamically insert a template block in the page.
-		CRM_Core_Region::instance('page-body')->add( array(
+		CRM_Core_Region::instance('page-body')->add( [
 			'template' => 'bp-groups-civicrm-sync-new.tpl'
-		));
+		] );
 
 	}
 
@@ -2308,6 +2308,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Get CiviCRM group.
 		$civi_group = $form->getVar( '_group' );
 
+		$e = new Exception;
+		$trace = $e->getTraceAsString();
+		error_log( print_r( [
+			'method' => __METHOD__,
+			'values' => $values,
+			'civi_group' => $civi_group,
+			//'backtrace' => $trace,
+		], true ) );
+
 		// Convert to BP group.
 		$this->civi_group_to_bp_group_convert( $civi_group );
 
@@ -2327,22 +2336,30 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Set flag so that we don't act on the 'groups_create_group' action.
 		$this->do_not_sync = true;
 
+		$e = new Exception;
+		$trace = $e->getTraceAsString();
+		error_log( print_r( [
+			'method' => __METHOD__,
+			'civi_group' => $civi_group,
+			//'backtrace' => $trace,
+		], true ) );
+
 		// Remove hooks.
-		remove_action( 'groups_create_group', array( $this->bp, 'create_civi_group' ), 100 );
-		remove_action( 'groups_details_updated', array( $this->bp, 'update_civi_group_details' ), 100 );
+		remove_action( 'groups_create_group', [ $this->bp, 'create_civi_group' ], 100 );
+		remove_action( 'groups_details_updated', [ $this->bp, 'update_civi_group_details' ], 100 );
 
 		// Create the BuddyPress group.
 		$bp_group_id = $this->bp->create_group( $civi_group->title, $civi_group->description );
 
 		// Re-add hooks.
-		add_action( 'groups_create_group', array( $this->bp, 'create_civi_group' ), 100, 3 );
-		add_action( 'groups_details_updated', array( $this->bp, 'update_civi_group_details' ), 100, 1 );
+		add_action( 'groups_create_group', [ $this->bp, 'create_civi_group' ], 100, 3 );
+		add_action( 'groups_details_updated', [ $this->bp, 'update_civi_group_details' ], 100, 1 );
 
 		// Get all contacts in this group.
-		$params = array(
+		$params = [
 			'version' => 3,
 			'group' => $civi_group->id,
-		);
+		];
 
 		// Use API to get members.
 		$group_admins = civicrm_api( 'contact', 'get', $params );
@@ -2369,10 +2386,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		);
 
 		// Get all contacts in this group.
-		$params = array(
+		$params = [
 			'version' => 3,
 			'group' => $civi_group_id,
-		);
+		];
 
 		// Use API to get members.
 		$group_members = civicrm_api( 'contact', 'get', $params );
@@ -2393,10 +2410,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Update the "source" field for both CiviCRM groups.
 
 		// Define CiviCRM ACL group.
-		$acl_group_params = array(
+		$acl_group_params = [
 			'version' => 3,
 			'id' => $civi_group->id,
-		);
+		];
 
 		// Get name for the CiviCRM group.
 		$acl_group_params['source'] = $this->acl_group_get_sync_name( $bp_group_id );
@@ -2408,11 +2425,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $acl_group['is_error'] == '1' ) {
 
 			// Debug.
-			error_log( print_r( array(
+			error_log( print_r( [
 				'method' => __METHOD__,
 				'acl_group' => $acl_group,
 				'backtrace' => wp_debug_backtrace_summary(),
-			), true ) );
+			], true ) );
 
 			// Bail.
 			return;
@@ -2422,10 +2439,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 		// Define CiviCRM group.
-		$member_group_params = array(
+		$member_group_params = [
 			'version' => 3,
 			'id' => $civi_group_id,
-		);
+		];
 
 		// Get name for the CiviCRM group.
 		$member_group_params['source'] = $this->member_group_get_sync_name( $bp_group_id );
@@ -2437,11 +2454,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $member_group['is_error'] == '1' ) {
 
 			// Debug.
-			error_log( print_r( array(
+			error_log( print_r( [
 				'method' => __METHOD__,
 				'member_group' => $member_group,
 				'backtrace' => wp_debug_backtrace_summary(),
-			), true ) );
+			], true ) );
 
 			// Bail.
 			return;
@@ -2495,9 +2512,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$form->add( 'checkbox', 'bpgroupscivicrmsynccreatefromog', __( 'Create BuddyPress Group', 'bp-groups-civicrm-sync' ) );
 
 		// Dynamically insert a template block in the page.
-		CRM_Core_Region::instance('page-body')->add( array(
+		CRM_Core_Region::instance('page-body')->add( [
 			'template' => 'bp-groups-civicrm-sync-og.tpl'
-		));
+		] );
 
 	}
 
@@ -2544,13 +2561,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( ! $this->is_active() ) return;
 
 		// Define get all groups params.
-		$params = array(
+		$params = [
 			'version' => 3,
 			// Define stupidly high limit, because API defaults to 25.
-			'options' => array(
+			'options' => [
 				'limit' => '10000',
-			),
-		);
+			],
+		];
 
 		// Get all groups with no parent ID (get ALL for now).
 		$all_groups = civicrm_api( 'group', 'get', $params );
@@ -2601,8 +2618,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$this->do_not_sync = true;
 
 		// Remove hooks.
-		remove_action( 'groups_create_group', array( $this->bp, 'create_civi_group' ), 100 );
-		remove_action( 'groups_details_updated', array( $this->bp, 'update_civi_group_details' ), 100 );
+		remove_action( 'groups_create_group', [ $this->bp, 'create_civi_group' ], 100 );
+		remove_action( 'groups_details_updated', [ $this->bp, 'update_civi_group_details' ], 100 );
 
 		// Sanitise title by stripping suffix.
 		$bp_group_title = array_shift( explode( ': Administrator', $civi_group->title ) );
@@ -2611,16 +2628,16 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$bp_group_id = $this->bp->create_group( $bp_group_title, $civi_group->description );
 
 		// Re-add hooks.
-		add_action( 'groups_create_group', array( $this->bp, 'create_civi_group' ), 100, 3 );
-		add_action( 'groups_details_updated', array( $this->bp, 'update_civi_group_details' ), 100, 1 );
+		add_action( 'groups_create_group', [ $this->bp, 'create_civi_group' ], 100, 3 );
+		add_action( 'groups_details_updated', [ $this->bp, 'update_civi_group_details' ], 100, 1 );
 
 
 
 		// Get all contacts in this group.
-		$params = array(
+		$params = [
 			'version' => 3,
 			'group' => $civi_group->id,
-		);
+		];
 
 		// Use API to get members.
 		$group_admins = civicrm_api( 'contact', 'get', $params );
@@ -2644,10 +2661,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		);
 
 		// Get all contacts in this group.
-		$params = array(
+		$params = [
 			'version' => 3,
 			'group' => $civi_group_id,
-		);
+		];
 
 		// Use API to get members.
 		$group_members = civicrm_api( 'contact', 'get', $params );
@@ -2668,10 +2685,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Update the "source" field for both CiviCRM groups.
 
 		// Define CiviCRM ACL group.
-		$acl_group_params = array(
+		$acl_group_params = [
 			'version' => 3,
 			'id' => $civi_group->id,
-		);
+		];
 
 		// Get name for the CiviCRM group.
 		$acl_group_params['source'] = $this->acl_group_get_sync_name( $bp_group_id );
@@ -2683,11 +2700,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $acl_group['is_error'] == '1' ) {
 
 			// Debug.
-			error_log( print_r( array(
+			error_log( print_r( [
 				'method' => __METHOD__,
 				'acl_group' => $acl_group,
 				'backtrace' => wp_debug_backtrace_summary(),
-			), true ) );
+			], true ) );
 
 			// Bail.
 			return;
@@ -2697,10 +2714,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 		// Define CiviCRM group.
-		$member_group_params = array(
+		$member_group_params = [
 			'version' => 3,
 			'id' => $civi_group_id,
-		);
+		];
 
 		// Get name for the CiviCRM group.
 		$member_group_params['source'] = $this->member_group_get_sync_name( $bp_group_id );
@@ -2712,11 +2729,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $member_group['is_error'] == '1' ) {
 
 			// Debug.
-			error_log( print_r( array(
+			error_log( print_r( [
 				'method' => __METHOD__,
 				'member_group' => $member_group,
 				'backtrace' => wp_debug_backtrace_summary(),
-			), true ) );
+			], true ) );
 
 			// Bail.
 			return;
@@ -2750,9 +2767,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( ! $this->is_active() ) return;
 
 		// Define get all groups params.
-		$params = array(
+		$params = [
 			'version' => 3,
-		);
+		];
 
 		// Get all groups with no parent ID (get ALL for now).
 		$all_groups = civicrm_api( 'group', 'get', $params );

@@ -103,7 +103,7 @@ class BP_Groups_CiviCRM_Sync {
 	public function initialise() {
 
 		// Use translation files.
-		add_action( 'plugins_loaded', array( $this, 'enable_translation' ) );
+		add_action( 'plugins_loaded', [ $this, 'enable_translation' ] );
 
 		// Include files.
 		$this->include_files();
@@ -257,10 +257,10 @@ function bp_groups_civicrm_sync() {
 bp_groups_civicrm_sync();
 
 // Activation.
-register_activation_hook( __FILE__, array( bp_groups_civicrm_sync(), 'activate' ) );
+register_activation_hook( __FILE__, [ bp_groups_civicrm_sync(), 'activate' ] );
 
 // Deactivation.
-register_deactivation_hook( __FILE__, array( bp_groups_civicrm_sync(), 'deactivate' ) );
+register_deactivation_hook( __FILE__, [ bp_groups_civicrm_sync(), 'deactivate' ] );
 
 // Uninstall will use the 'uninstall.php' method when fully built.
 // See: http://codex.wordpress.org/Function_Reference/register_uninstall_hook
@@ -283,9 +283,9 @@ function bp_groups_civicrm_sync_plugin_action_links( $links, $file ) {
 
 		// Is this Network Admin?
 		if ( is_network_admin() ) {
-			$link = add_query_arg( array( 'page' => 'bp_groups_civicrm_sync_parent' ), network_admin_url( 'settings.php' ) );
+			$link = add_query_arg( [ 'page' => 'bp_groups_civicrm_sync_parent' ], network_admin_url( 'settings.php' ) );
 		} else {
-			$link = add_query_arg( array( 'page' => 'bp_groups_civicrm_sync_parent' ), admin_url( 'options-general.php' ) );
+			$link = add_query_arg( [ 'page' => 'bp_groups_civicrm_sync_parent' ], admin_url( 'options-general.php' ) );
 		}
 
 		// Add settings link.
