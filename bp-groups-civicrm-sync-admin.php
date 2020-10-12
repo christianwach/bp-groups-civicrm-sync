@@ -98,7 +98,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 *
-	 * @param object $bp_object Reference to this plugin's BP object.
+	 * @param object $bp_object Reference to this plugin's BuddyPress object.
 	 * @param object $civi_object Reference to this plugin's CiviCRM object.
 	 */
 	public function set_references( &$bp_object, &$civi_object ) {
@@ -292,8 +292,8 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * This tells WP to highlight the plugin's menu item, regardless of which
-	 * actual admin screen we are on.
+	 * This tells WordPress to highlight the plugin's menu item, regardless of
+	 * which actual admin screen we are on.
 	 *
 	 * @since 0.1
 	 *
@@ -434,11 +434,11 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		}
 
 		// Add a tab - we can add more later.
-		$screen->add_help_tab([
+		$screen->add_help_tab( [
 			'id'      => 'bp_groups_civicrm_sync',
 			'title'   => __( 'BP Groups CiviCRM Sync', 'bp-groups-civicrm-sync' ),
 			'content' => $this->admin_help_text(),
-		]);
+		] );
 
 		// --<
 		return $screen;
@@ -490,10 +490,10 @@ class BP_Groups_CiviCRM_Sync_Admin {
 			$checked = '';
 		}
 
-		// Assume no BP Group Hierarchy plugin.
+		// Assume no BuddyPress Group Hierarchy plugin.
 		$bp_group_hierarchy = false;
 
-		// Test for presence BP Group Hierarchy plugin.
+		// Test for presence BuddyPress Group Hierarchy plugin.
 		if ( defined( 'BP_GROUP_HIERARCHY_IS_INSTALLED' ) ) {
 
 			// Set flag.
@@ -535,13 +535,13 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// Init messages.
 		$messages = '';
 
-		// Did we ask to check for group sync integrity?
+		// Did we ask to check for Group Sync integrity?
 		$checking_bp = false;
 		if ( ! empty( $_POST['bp_groups_civicrm_sync_bp_check'] ) ) {
 			$checking_bp = true;
 		}
 
-		// Did we ask to check for OG groups?
+		// Did we ask to check for Organic Groups?
 		$checking_og = false;
 		$has_og_groups = false;
 		if ( ! empty( $_POST['bp_groups_civicrm_sync_og_check'] ) ) {
@@ -557,15 +557,15 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 				// Show settings updated message.
 				if ( $has_og_groups !== false ) {
-					$messages .= '<div id="message" class="updated"><p>' . __( 'OG Groups found. You can now choose to migrate them to BP.', 'bp-groups-civicrm-sync' ) . '</p></div>';
+					$messages .= '<div id="message" class="updated"><p>' . __( 'Organic Groups found. You can now choose to migrate them to BuddyPress.', 'bp-groups-civicrm-sync' ) . '</p></div>';
 				} else {
 					// Show settings updated message.
-					$messages .= '<div id="message" class="updated"><p>' . __( 'No OG Groups found.', 'bp-groups-civicrm-sync' ) . '</p></div>';
+					$messages .= '<div id="message" class="updated"><p>' . __( 'No Organic Groups found.', 'bp-groups-civicrm-sync' ) . '</p></div>';
 				}
 
 			} else {
 
-				// Are we checking BP?
+				// Are we checking BuddyPress?
 				if ( $checking_bp ) {
 				} else {
 					// Show settings updated message.
@@ -576,7 +576,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		}
 
-		// Show OG to BP if we have any OG groups.
+		// Show "Organic Group to BuddyPress Sync" if we have Organic Groups.
 		$og_to_bp_do_sync = false;
 		if ( $checking_og AND $has_og_groups ) {
 			$og_to_bp_do_sync = true;
@@ -709,10 +709,10 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// Init return.
 		$settings = [];
 
-		// Set default parent group setting.
+		// Set default Parent Group setting.
 		$settings['parent_group'] = 0;
 
-		// Set default nesting setting for when BP Group Hierarchy is installed.
+		// Set default nesting setting for when BuddyPress Group Hierarchy is installed.
 		$settings['nesting'] = 1;
 
 		/**
@@ -774,7 +774,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// Get existing option.
 		$existing_parent_group = $this->setting_get( 'parent_group' );
 
-		// Did we ask to enable parent group?
+		// Did we ask to enable Parent Group?
 		$settings_parent_group = 0;
 		if ( isset( $_POST['bp_groups_civicrm_sync_settings_parent_group'] ) ) {
 			$settings_parent_group = absint( $_POST['bp_groups_civicrm_sync_settings_parent_group'] );
@@ -783,7 +783,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// Sanitise and set option.
 		$this->setting_set( 'parent_group', ( $settings_parent_group ? 1 : 0 ) );
 
-		// Test for presence BP Group Hierarchy plugin.
+		// Test for presence BuddyPress Group Hierarchy plugin.
 		if ( defined( 'BP_GROUP_HIERARCHY_IS_INSTALLED' ) ) {
 
 			// Get existing option.
@@ -803,7 +803,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// Save settings.
 		$this->settings_save();
 
-		// Test for presence BP Group Hierarchy plugin.
+		// Test for presence BuddyPress Group Hierarchy plugin.
 		if ( defined( 'BP_GROUP_HIERARCHY_IS_INSTALLED' ) ) {
 
 			// Is the hierarchy setting changing?
@@ -812,12 +812,12 @@ class BP_Groups_CiviCRM_Sync_Admin {
 				// Are we switching from "no hierarchy" to "use hierarchy"?
 				if ( $existing_hierarchy == 0 ) {
 
-					// Build CiviCRM group hierarchy.
+					// Build CiviCRM Group hierarchy.
 					$this->civi->group_hierarchy_build();
 
 				} else {
 
-					// Collapse CiviCRM group hierarchy.
+					// Collapse CiviCRM Group hierarchy.
 					$this->civi->group_hierarchy_collapse();
 
 				}
@@ -826,24 +826,24 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		}
 
-		// Is the parent group setting changing?
+		// Is the Parent Group setting changing?
 		if ( $existing_parent_group != $settings_parent_group ) {
 
-			// Are we switching from "no parent group"?
+			// Are we switching from "No Parent Group"?
 			if ( $existing_parent_group == 0 ) {
 
-				// Create a meta group to hold all BuddyPress groups.
+				// Create a Meta Group to hold all BuddyPress Groups.
 				$this->civi->meta_group_create();
 
-				// Assign BP Sync Groups with no parent to the meta group.
+				// Assign BuddyPress Sync Groups with no parent to the Meta Group.
 				$this->civi->meta_group_groups_assign();
 
 			} else {
 
-				// Remove top-level BP Sync Groups from the "BuddyPress Groups" container group.
+				// Remove top-level BuddyPress Sync Groups from the "BuddyPress Groups" container Group.
 				$this->civi->meta_group_groups_remove();
 
-				// Delete "BuddyPress Groups" meta group.
+				// Delete "BuddyPress Groups" Meta Group.
 				$this->civi->meta_group_delete();
 
 			}
@@ -881,17 +881,17 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// Get variables.
 		extract( $_POST );
 
-		// Did we ask to sync existing BP groups with CiviCRM?
+		// Did we ask to sync existing BuddyPress Groups with CiviCRM?
 		if ( ! empty( $bp_groups_civicrm_sync_bp_check ) ) {
 			$this->sync_bp_and_civi();
 		}
 
-		// Did we ask to check the sync of BP groups and CiviCRM groups?
+		// Did we ask to check the sync of BuddyPress Groups and CiviCRM Groups?
 		if ( ! empty( $bp_groups_civicrm_sync_bp_check_sync ) ) {
 			$this->check_sync_between_bp_and_civi();
 		}
 
-		// Did we ask to convert OG groups?
+		// Did we ask to convert Organic Groups?
 		if ( ! empty( $bp_groups_civicrm_sync_convert ) ) {
 			$this->civi->og_groups_to_bp_groups_convert();
 		}
@@ -968,9 +968,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Sync BuddyPress groups to CiviCRM.
+	 * Sync BuddyPress Groups to CiviCRM.
 	 *
-	 * This method steps through all groups and all group members and syncs them
+	 * This method steps through all Groups and all Group Members and syncs them
 	 * to CiviCRM. It has been overhauled since 0.1 to sync in "chunks" instead
 	 * of all at once. In the unlikely event that Javascript is disabled, there
 	 * will be two buttons displayed on the admin page - one to continue the
@@ -988,7 +988,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// Init AJAX return.
 		$data = [];
 
-		// If the groups paging value doesn't exist.
+		// If the Groups paging value doesn't exist.
 		if ( 'fgffgs' == get_option( '_bgcs_groups_page', 'fgffgs' ) ) {
 
 			// Start at the beginning.
@@ -1019,30 +1019,30 @@ class BP_Groups_CiviCRM_Sync_Admin {
 			// Do the loop.
 			while ( bp_groups() ) {
 
-				// Set up group.
+				// Set up Group.
 				bp_the_group();
 
-				// Get the group object.
+				// Get the Group object.
 				global $groups_template;
 				$group =& $groups_template->group;
 
-				// Get group ID.
+				// Get Group ID.
 				$group_id = bp_get_group_id();
 
-				// Skip to next if sync should not happen for this group.
+				// Skip to next if sync should not happen for this Group.
 				if ( ! $this->bp->group_should_be_synced( $group_id ) ) {
 					continue;
 				}
 
-				// Get name of group.
+				// Get name of Group.
 				$data['group_name'] = bp_get_group_name();
 
-				// Get the CiviCRM group ID of this BuddyPress group.
+				// Get the CiviCRM Group ID of this BuddyPress Group.
 				$civi_group_id = $this->civi->find_group_id(
 					$this->civi->member_group_get_sync_name( $group_id )
 				);
 
-				// If we don't get an ID, create the group.
+				// If we don't get an ID, create the Group.
 				if ( ! $civi_group_id ) {
 					$this->bp->create_civi_group( $group_id, null, $group );
 				} else {
@@ -1062,32 +1062,32 @@ class BP_Groups_CiviCRM_Sync_Admin {
 				// Query with our params.
 				if ( bp_group_has_members( $member_params ) ) {
 
-					// Set members flag.
+					// Set Members flag.
 					$data['members'] = (string) $members_page;
 
 					// Do the loop.
 					while ( bp_group_members() ) {
 
-						// Set up member.
+						// Set up Member.
 						bp_group_the_member();
 
-						// Update their membership.
+						// Update their Membership.
 						$this->bp->civi_update_group_membership( bp_get_group_member_id(), $group_id );
 
 					} // End while.
 
-					// Increment members paging option.
+					// Increment Members paging option.
 					update_option( '_bgcs_members_page', (string) ( $members_page + 1 ) );
 
 				} else {
 
-					// Set members flag.
+					// Set Members flag.
 					$data['members'] = 'done';
 
-					// Delete the members option to start from the beginning.
+					// Delete the Members option to start from the beginning.
 					delete_option( '_bgcs_members_page' );
 
-					// Increment groups paging option.
+					// Increment Groups paging option.
 					update_option( '_bgcs_groups_page', (string) ( $groups_page + 1 ) );
 
 				}
@@ -1096,7 +1096,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		} else {
 
-			// Delete the groups option to start from the beginning.
+			// Delete the Groups option to start from the beginning.
 			delete_option( '_bgcs_groups_page' );
 
 			// Set finished flag.
@@ -1125,7 +1125,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Check the Sync between BuddyPress groups and CiviCRM groups.
+	 * Check the Sync between BuddyPress Groups and CiviCRM Groups.
 	 *
 	 * @since 0.1
 	 */
@@ -1139,40 +1139,40 @@ class BP_Groups_CiviCRM_Sync_Admin {
 			return;
 		}
 
-		// Define get all groups params.
+		// Define params to get all Groups.
 		$params = [
 			'version' => 3,
-			// Define stupidly high limit, because API defaults to 25.
 			'options' => [
-				'limit' => '10000',
+				'limit' => '0', // API defaults to 25.
 			],
 		];
 
-		// Get all groups with no parent ID (get ALL for now)
-		$all_groups = civicrm_api( 'group', 'get', $params );
+		// Get all Groups with no parent ID (get ALL for now)
+		$result = civicrm_api( 'Group', 'get', $params );
 
-		// If we got some.
-		if (
-			$all_groups['is_error'] == 0 AND
-			isset( $all_groups['values'] ) AND
-			count( $all_groups['values'] ) > 0
-		) {
+		// Bail if there's an error.
+		if ( ! empty( $result['is_error'] ) AND $result['is_error'] == 1 ) {
+			return;
+		}
 
-			// Loop through them.
-			foreach( $all_groups['values'] AS $civi_group ) {
+		// Bail if there are no results.
+		if ( empty( $result['values'] ) ) {
+			return;
+		}
 
-				// Is this group supposed to have a BP Group?
-				$has_group = $this->civi->has_bp_group( $civi_group );
+		// Loop through them.
+		foreach( $all_groups['values'] AS $civi_group ) {
 
-				// If it is.
-				if ( $has_group ) {
+			// Is this Group supposed to have a BuddyPress Group?
+			$has_group = $this->civi->has_bp_group( $civi_group );
 
-					// Get the ID of the BP group it was supposed to sync with.
-					$group_id = $this->civi->get_bp_group_id_by_civi_group( $civi_group );
+			// If it is.
+			if ( $has_group ) {
 
-					// Does this group exist?
+				// Get the ID of the BuddyPress Group it was supposed to sync with.
+				$group_id = $this->civi->get_bp_group_id_by_civi_group( $civi_group );
 
-				}
+				// Does this Group exist?
 
 			}
 

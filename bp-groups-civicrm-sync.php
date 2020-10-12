@@ -2,7 +2,7 @@
 --------------------------------------------------------------------------------
 Plugin Name: BP Groups CiviCRM Sync
 Plugin URI: https://github.com/christianwach/bp-groups-civicrm-sync
-Description: A port of the Drupal civicrm_og_sync module for WordPress that enables two-way synchronisation between BuddyPress groups and CiviCRM groups.
+Description: A port of the Drupal civicrm_og_sync module for WordPress that enables two-way synchronisation between BuddyPress Groups and CiviCRM Groups.
 Author: Christian Wach
 Version: 0.3.7
 Author URI: http://haystack.co.uk
@@ -178,13 +178,9 @@ class BP_Groups_CiviCRM_Sync {
 	 */
 	public function include_files() {
 
-		// Load our CiviCRM utility methods class.
+		// Load our class files.
 		require( BP_GROUPS_CIVICRM_SYNC_PATH . 'bp-groups-civicrm-sync-civi.php' );
-
-		// Load our BuddyPress utility methods class.
 		require( BP_GROUPS_CIVICRM_SYNC_PATH . 'bp-groups-civicrm-sync-bp.php' );
-
-		// Load our Admin utility class.
 		require( BP_GROUPS_CIVICRM_SYNC_PATH . 'bp-groups-civicrm-sync-admin.php' );
 
 	}
@@ -198,13 +194,9 @@ class BP_Groups_CiviCRM_Sync {
 	 */
 	public function setup_objects() {
 
-		// Instantiate CiviCRM object.
+		// Instantiate objects.
 		$this->civi = new BP_Groups_CiviCRM_Sync_CiviCRM( $this );
-
-		// Instantiate BuddyPress object.
 		$this->bp = new BP_Groups_CiviCRM_Sync_BuddyPress( $this );
-
-		// Instantiate Admin object.
 		$this->admin = new BP_Groups_CiviCRM_Sync_Admin( $this );
 
 	}

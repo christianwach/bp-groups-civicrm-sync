@@ -93,34 +93,34 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 */
 	public function register_hooks() {
 
-		// Intercept BuddyPress group creation, late as we can.
+		// Intercept BuddyPress Group creation, late as we can.
 		add_action( 'groups_create_group', [ $this, 'create_civi_group' ], 100, 3 );
 
-		// Intercept group details update.
+		// Intercept Group details update.
 		add_action( 'groups_details_updated', [ $this, 'update_civi_group_details' ], 100, 1 );
 
-		// Intercept BuddyPress group updates, late as we can.
+		// Intercept BuddyPress Group updates, late as we can.
 		add_action( 'groups_update_group', [ $this, 'update_civi_group' ], 100, 2 );
 
-		// Intercept prior to BuddyPress group deletion so we still have group data.
+		// Intercept prior to BuddyPress Group deletion so we still have Group data.
 		add_action( 'groups_before_delete_group', [ $this, 'delete_civi_group' ], 100, 1 );
 
-		// Group membership hooks: user joins or leaves group.
+		// Group Membership hooks: User joins or leaves Group.
 		add_action( 'groups_join_group', [ $this, 'member_just_joined_group' ], 5, 2 );
 		add_action( 'groups_leave_group', [ $this, 'civi_delete_group_membership' ], 5, 2 );
 
-		// Group membership hooks: removed group membership.
+		// Group Membership hooks: removed Group Membership.
 		add_action( 'groups_removed_member', [ $this, 'member_removed_from_group' ], 10, 2 );
 
-		// Group membership hooks: modified group membership.
-		add_action( 'groups_promoted_member', [ $this, 'member_changed_status_group' ], 10, 2 );
-		add_action( 'groups_demoted_member', [ $this, 'member_changed_status_group' ], 10, 2 );
-		add_action( 'groups_unbanned_member', [ $this, 'member_changed_status_group' ], 10, 2 );
-		add_action( 'groups_banned_member', [ $this, 'member_changed_status_group' ], 10, 2 );
-		add_action( 'groups_membership_accepted', [ $this, 'member_changed_status_group' ], 10, 2 );
-		add_action( 'groups_accept_invite', [ $this, 'member_changed_status_group' ], 10, 2 );
+		// Group Membership hooks: modified Group Membership.
+		add_action( 'groups_promoted_member', [ $this, 'member_changed_status' ], 10, 2 );
+		add_action( 'groups_demoted_member', [ $this, 'member_changed_status' ], 10, 2 );
+		add_action( 'groups_unbanned_member', [ $this, 'member_changed_status' ], 10, 2 );
+		add_action( 'groups_banned_member', [ $this, 'member_changed_status' ], 10, 2 );
+		add_action( 'groups_membership_accepted', [ $this, 'member_changed_status' ], 10, 2 );
+		add_action( 'groups_accept_invite', [ $this, 'member_changed_status' ], 10, 2 );
 
-		// Catch groups admin page load.
+		// Catch Groups admin page load.
 		add_action( 'bp_groups_admin_load', [ $this, 'groups_admin_load' ], 10, 1 );
 
 		// Test for presence BP Group Hierarchy plugin.
@@ -169,13 +169,13 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Creates a CiviCRM Group when a BuddyPress group is created.
+	 * Creates a CiviCRM Group when a BuddyPress Group is created.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group.
-	 * @param object $first_member WP user object.
-	 * @param object $group The BP group object.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @param object $first_member WordPress User object.
+	 * @param object $group The BuddyPress Group object.
 	 */
 	public function create_civi_group( $group_id, $first_member, $group ) {
 
@@ -184,28 +184,28 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			return;
 		}
 
-		// Pass to CiviCRM to create groups.
+		// Create the corresponding CiviCRM Groups.
 		$civi_groups = $this->civi->create_civi_group( $group_id, $group );
 
-		// Did we get any?
-		if ( $civi_groups !== false ) {
-
-			// Update our group meta with the ids of the CiviCRM groups.
-			groups_update_groupmeta( $group_id, 'civicrm_groups', $civi_groups );
-
+		// Bail if something went wrong.
+		if ( $civi_groups === false ) {
+			return;
 		}
+
+		// Update our Group Meta with the IDs of the CiviCRM Groups.
+		groups_update_groupmeta( $group_id, 'civicrm_groups', $civi_groups );
 
 	}
 
 
 
 	/**
-	 * Updates a CiviCRM Group when a BuddyPress group is updated.
+	 * Updates a CiviCRM Group when a BuddyPress Group is updated.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group.
-	 * @param int $group The BP group object.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @param int $group The BuddyPress Group object.
 	 */
 	public function update_civi_group_details( $group_id ) {
 
@@ -214,10 +214,10 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			return;
 		}
 
-		// Get the group object.
+		// Get the Group object.
 		$group = groups_get_group( [ 'group_id' => $group_id ] );
 
-		// Pass to CiviCRM to update groups.
+		// Pass to CiviCRM to update Groups.
 		$civi_groups = $this->civi->update_civi_group( $group_id, $group );
 
 	}
@@ -225,12 +225,12 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Updates a CiviCRM Group when a BuddyPress group is updated.
+	 * Updates a CiviCRM Group when a BuddyPress Group is updated.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group.
-	 * @param int $group The BP group object.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @param int $group The BuddyPress Group object.
 	 */
 	public function update_civi_group( $group_id, $group ) {
 
@@ -239,7 +239,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			return;
 		}
 
-		// Pass to CiviCRM to update groups.
+		// Pass to CiviCRM to update Groups.
 		$civi_groups = $this->civi->update_civi_group( $group_id, $group );
 
 	}
@@ -247,11 +247,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Deletes a CiviCRM Group when a BuddyPress group is deleted.
+	 * Deletes a CiviCRM Group when a BuddyPress Group is deleted.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
 	 */
 	public function delete_civi_group( $group_id ) {
 
@@ -260,10 +260,10 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			return;
 		}
 
-		// Pass to CiviCRM to delete groups.
+		// Pass to CiviCRM to delete Groups.
 		$civi_groups = $this->civi->delete_civi_group( $group_id );
 
-		// We don't need to delete our meta, as BP will do so.
+		// We don't need to delete our meta, as BuddyPress will do so.
 
 	}
 
@@ -285,13 +285,13 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		// Only add hooks if saving data.
 		if ( $doaction AND $doaction == 'save' ) {
 
-			// Group membership hooks: group membership status is being modified.
-			add_action( 'groups_promote_member', [ $this, 'member_changing_status_group' ], 10, 3 );
-			add_action( 'groups_demote_member', [ $this, 'member_changing_status_group' ], 10, 2 );
-			add_action( 'groups_unban_member', [ $this, 'member_changing_status_group' ], 10, 2 );
-			add_action( 'groups_ban_member', [ $this, 'member_changing_status_group' ], 10, 2 );
+			// Group Membership hooks: Group Membership status is being modified.
+			add_action( 'groups_promote_member', [ $this, 'member_changing_status' ], 10, 3 );
+			add_action( 'groups_demote_member', [ $this, 'member_changing_status' ], 10, 2 );
+			add_action( 'groups_unban_member', [ $this, 'member_changing_status' ], 10, 2 );
+			add_action( 'groups_ban_member', [ $this, 'member_changing_status' ], 10, 2 );
 
-			// User is being removed from group.
+			// User is being removed from Group.
 			add_action( 'groups_remove_member', [ $this, 'civi_delete_group_membership' ], 10, 2 );
 
 		}
@@ -301,11 +301,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Get all BuddyPress groups.
+	 * Get all BuddyPress Groups.
 	 *
 	 * @since 0.1
 	 *
-	 * @return array $groups Array of BuddyPress group objects.
+	 * @return array $groups Array of BuddyPress Group objects.
 	 */
 	public function get_all_groups() {
 
@@ -343,14 +343,14 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param string $title The title of the BP group.
-	 * @param string $description The description of the BP group.
-	 * @param int $creator_id The numeric ID of the WP user.
-	 * @return int $new_group_id The numeric ID of the new BP group.
+	 * @param string $title The title of the BuddyPress Group.
+	 * @param string $description The description of the BuddyPress Group.
+	 * @param int $creator_id The numeric ID of the WordPress User.
+	 * @return int $new_group_id The numeric ID of the new BuddyPress Group.
 	 */
 	public function create_group( $title, $description, $creator_id = null ) {
 
-		// Set creator to current WP user if no CiviCRM contact passed.
+		// Set creator to current WordPress User if no CiviCRM Contact passed.
 		if ( empty( $creator_id ) ) {
 			$creator_id = bp_loggedin_user_id();
 		}
@@ -389,11 +389,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		groups_update_groupmeta( $new_group_id, 'invite_status', 'members' );
 
 		/**
-		 * Broadcast that a BuddyPress group has been created.
+		 * Broadcast that a BuddyPress Group has been created.
 		 *
 		 * @since 0.1
 		 *
-		 * @param int $new_group_id The numeric ID of the new group.
+		 * @param int $new_group_id The numeric ID of the new Group.
 		 */
 		do_action( 'bp_groups_civicrm_sync_group_created', $new_group_id );
 
@@ -405,26 +405,26 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Get all members of a BuddyPress group.
+	 * Get all Members of a BuddyPress Group.
 	 *
 	 * @since 0.2.2
 	 *
-	 * @param int $group_id The ID of the BuddyPress group.
-	 * @return array $members The members of the group.
+	 * @param int $group_id The ID of the BuddyPress Group.
+	 * @return array $members The Members of the Group.
 	 */
 	public function get_all_group_members( $group_id ) {
 
 		// Init return as empty array.
 		$members = [];
 
-		// Params group members.
+		// Params to get all Group Members.
 		$params = [
 			'exclude_admins_mods' => 0,
 			'per_page' => 1000000,
 			'group_id' => $group_id,
 		];
 
-		// Query group members.
+		// Query Group Members.
 		$has_members = bp_group_has_members( $params );
 
 		// Access template.
@@ -443,41 +443,41 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Create BuddyPress Group Members given an array of CiviCRM contacts.
+	 * Create BuddyPress Group Members given an array of CiviCRM Contacts.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group.
-	 * @param int $civi_users An array of CiviCRM contact data.
-	 * @param bool $is_admin Makes this member a group admin.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @param int $contacts An array of CiviCRM Contact data.
+	 * @param bool $is_admin Makes this Member a Group Admin.
 	 */
-	public function create_group_members( $group_id, $civi_users, $is_admin = 0 ) {
+	public function create_group_members( $group_id, $contacts, $is_admin = 0 ) {
 
-		// Bail if sync should not happen for this group.
+		// Bail if sync should not happen for this Group.
 		if ( ! $this->group_should_be_synced( $group_id ) ) {
 			return;
 		}
 
-		// Do we have any members?
-		if ( ! isset( $civi_users ) OR count( $civi_users ) == 0 ) {
+		// Bail if we have no Contacts.
+		if ( empty( $contacts ) ) {
 			return;
 		}
 
-		// Add members of this group as admins.
-		foreach( $civi_users AS $civi_user ) {
+		// Add Members of this Group as Admins.
+		foreach( $contacts AS $contact ) {
 
-			// Get WP user.
-			$user = get_user_by( 'email', $civi_user['email'] );
+			// Get WordPress User.
+			$user = get_user_by( 'email', $contact['email'] );
 
-			// Maybe create a WP user.
+			// Maybe create a WordPress User.
 			if ( ! $user ) {
-				$user = $this->wordpress_create_user( $civi_user );
+				$user = $this->wordpress_create_user( $contact );
 			}
 
 			// Sanity check.
 			if ( $user ) {
 
-				// Try and create membership.
+				// Try and create Membership.
 				if ( ! $this->create_group_member( $group_id, $user->ID, $is_admin ) ) {
 
 					/**
@@ -485,9 +485,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 					 *
 					 * @since 0.1
 					 *
-					 * @param int $group_id The numeric ID of the group.
-					 * @param int $user->ID The numeric ID of the user.
-					 * @param bool $is_admin True if the member is a group admin.
+					 * @param int $group_id The numeric ID of the Group.
+					 * @param int $user->ID The numeric ID of the User.
+					 * @param bool $is_admin True if the Member is a Group Admin.
 					 */
 					do_action( 'bp_groups_civicrm_sync_member_create_failed', $group_id, $user->ID, $is_admin );
 
@@ -498,9 +498,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 					 *
 					 * @since 0.1
 					 *
-					 * @param int $group_id The numeric ID of the group.
-					 * @param int $user->ID The numeric ID of the user.
-					 * @param bool $is_admin True if the member is a group admin.
+					 * @param int $group_id The numeric ID of the Group.
+					 * @param int $user->ID The numeric ID of the User.
+					 * @param bool $is_admin True if the Member is a Group Admin.
 					 */
 					do_action( 'bp_groups_civicrm_sync_member_created', $group_id, $user->ID, $is_admin );
 
@@ -519,28 +519,28 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group.
-	 * @param int $user_id The numeric ID of the WP user.
-	 * @param bool $is_admin Makes this member a group admin.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @param int $user_id The numeric ID of the WordPress User.
+	 * @param bool $is_admin Makes this Member a Group Admin.
 	 * @return bool $success True if successful, false if not.
 	 */
 	public function create_group_member( $group_id, $user_id, $is_admin = 0 ) {
 
-		// Bail if sync should not happen for this group.
+		// Bail if sync should not happen for this Group.
 		if ( ! $this->group_should_be_synced( $group_id ) ) {
 			return false;
 		}
 
-		// Check existing membership.
+		// Check existing Membership.
 		$is_member = groups_is_user_member( $user_id, $group_id );
 
-		// If user is already a member.
+		// If User is already a Member.
 		if ( $is_member ) {
 
 			// If they are being promoted.
 			if ( $is_admin == 1 ) {
 
-				// Promote them to admin.
+				// Promote them to Admin.
 				$this->promote_group_member( $group_id, $user_id, 'admin' );
 
 			} else {
@@ -555,17 +555,17 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 		}
 
-		// Unhook our action to prevent BP->CiviCRM sync.
+		// Unhook our action to prevent BuddyPress->CiviCRM sync.
 		remove_action( 'groups_join_group', [ $this, 'member_just_joined_group' ], 5 );
 
 		// Use BuddyPress function.
 		$success = groups_join_group( $group_id, $user_id );
 
-		// Re-hook our action to enable BP->CiviCRM sync.
+		// Re-hook our action to enable BuddyPress->CiviCRM sync.
 		add_action( 'groups_join_group', [ $this, 'member_just_joined_group' ], 5, 2 );
 
 		/*
-		// Set up member.
+		// Set up Member.
 		$new_member = new BP_Groups_Member;
 		$new_member->group_id = $group_id;
 		$new_member->user_id = $user_id;
@@ -575,7 +575,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		$new_member->date_modified = bp_core_current_time();
 		$new_member->is_confirmed = 1;
 
-		// Save the membership.
+		// Save the Membership.
 		if ( ! $new_member->save() ) {
 			return false;
 		}
@@ -589,35 +589,35 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Delete BuddyPress Group Members given an array of CiviCRM contacts.
+	 * Delete BuddyPress Group Members given an array of CiviCRM Contacts.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group.
-	 * @param int $civi_users An array of CiviCRM contact data.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @param int $contacts An array of CiviCRM Contact data.
 	 */
-	public function delete_group_members( $group_id, $civi_users ) {
+	public function delete_group_members( $group_id, $contacts ) {
 
-		// Bail if sync should not happen for this group.
+		// Bail if sync should not happen for this Group.
 		if ( ! $this->group_should_be_synced( $group_id ) ) {
 			return;
 		}
 
-		// Do we have any members?
-		if ( ! isset( $civi_users ) OR count( $civi_users ) == 0 ) {
+		// If we have no Members.
+		if ( empty( $contacts ) ) {
 			return;
 		}
 
 		// One by one.
-		foreach( $civi_users AS $civi_user ) {
+		foreach( $contacts AS $contact ) {
 
-			// Get WP user.
-			$user = get_user_by( 'email', $civi_user['email'] );
+			// Get WordPress User.
+			$user = get_user_by( 'email', $contact['email'] );
 
 			// Sanity check.
 			if ( $user ) {
 
-				// Try and delete membership.
+				// Try and delete Membership.
 				if ( ! $this->delete_group_member( $group_id, $user->ID ) ) {
 
 					/**
@@ -625,8 +625,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 					 *
 					 * @since 0.1
 					 *
-					 * @param int $group_id The numeric ID of the group.
-					 * @param int $user->ID The numeric ID of the user.
+					 * @param int $group_id The numeric ID of the Group.
+					 * @param int $user->ID The numeric ID of the User.
 					 */
 					do_action( 'bp_groups_civicrm_sync_member_delete_failed', $group_id, $user->ID );
 
@@ -637,8 +637,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 					 *
 					 * @since 0.1
 					 *
-					 * @param int $group_id The numeric ID of the group.
-					 * @param int $user->ID The numeric ID of the user.
+					 * @param int $group_id The numeric ID of the Group.
+					 * @param int $user->ID The numeric ID of the User.
 					 */
 					do_action( 'bp_groups_civicrm_sync_member_deleted', $group_id, $user->ID );
 
@@ -653,25 +653,25 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Delete a BuddyPress Group Membership given a WordPress user.
+	 * Delete a BuddyPress Group Membership given a WordPress User.
 	 *
-	 * We cannot use 'groups_remove_member()' because the logged in user may not
+	 * We cannot use 'groups_remove_member()' because the logged in User may not
 	 * pass the 'bp_is_item_admin()' check in that function.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group.
-	 * @param int $user_id The numeric ID of the WP user.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @param int $user_id The numeric ID of the WordPress User.
 	 * @return bool $success True if successful, false if not.
 	 */
 	public function delete_group_member( $group_id, $user_id ) {
 
-		// Bail if sync should not happen for this group.
+		// Bail if sync should not happen for this Group.
 		if ( ! $this->group_should_be_synced( $group_id ) ) {
 			return false;
 		}
 
-		// Bail if user is not a member.
+		// Bail if User is not a Member.
 		if ( ! groups_is_user_member( $user_id, $group_id ) ) {
 			return false;
 		}
@@ -687,12 +687,12 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		 *
 		 * @since 0.1
 		 *
-		 * @param int $group_id The numeric ID of the group.
-		 * @param int $user_id The numeric ID of the user.
+		 * @param int $group_id The numeric ID of the Group.
+		 * @param int $user_id The numeric ID of the User.
 		 */
 		do_action( 'groups_remove_member', $group_id, $user_id );
 
-		// Remove member.
+		// Remove Member.
 		$success = $member->remove();
 
 		// --<
@@ -703,35 +703,35 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Demote BuddyPress Group Members given an array of CiviCRM contacts.
+	 * Demote BuddyPress Group Members given an array of CiviCRM Contacts.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group.
-	 * @param int $civi_users An array of CiviCRM contact data.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @param int $contacts An array of CiviCRM Contact data.
 	 */
-	public function demote_group_members( $group_id, $civi_users ) {
+	public function demote_group_members( $group_id, $contacts ) {
 
-		// Bail if sync should not happen for this group.
+		// Bail if sync should not happen for this Group.
 		if ( ! $this->group_should_be_synced( $group_id ) ) {
 			return;
 		}
 
-		// Do we have any members?
-		if ( ! isset( $civi_users ) OR count( $civi_users ) == 0 ) {
+		// Do we have any Members?
+		if ( empty( $contacts ) ) {
 			return;
 		}
 
 		// One by one.
-		foreach( $civi_users AS $civi_user ) {
+		foreach( $contacts AS $contact ) {
 
-			// Get WP user.
-			$user = get_user_by( 'email', $civi_user['email'] );
+			// Get WordPress User.
+			$user = get_user_by( 'email', $contact['email'] );
 
 			// Sanity check.
 			if ( $user ) {
 
-				// Try and demote member.
+				// Try and demote Member.
 				if ( ! $this->demote_group_member( $group_id, $user->ID ) ) {
 
 					/**
@@ -739,8 +739,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 					 *
 					 * @since 0.1
 					 *
-					 * @param int $group_id The numeric ID of the group.
-					 * @param int $user->ID The numeric ID of the user.
+					 * @param int $group_id The numeric ID of the Group.
+					 * @param int $user->ID The numeric ID of the User.
 					 */
 					do_action( 'bp_groups_civicrm_sync_member_demote_failed', $group_id, $user->ID );
 
@@ -751,8 +751,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 					 *
 					 * @since 0.1
 					 *
-					 * @param int $group_id The numeric ID of the group.
-					 * @param int $user->ID The numeric ID of the user.
+					 * @param int $group_id The numeric ID of the Group.
+					 * @param int $user->ID The numeric ID of the User.
 					 */
 					do_action( 'bp_groups_civicrm_sync_member_demoted', $group_id, $user->ID );
 
@@ -767,22 +767,22 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Demote a BuddyPress Group Member given a WordPress user.
+	 * Demote a BuddyPress Group Member given a WordPress User.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group.
-	 * @param int $user_id The numeric ID of the WP user.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @param int $user_id The numeric ID of the WordPress User.
 	 * @return bool $success True if successful, false if not.
 	 */
 	public function demote_group_member( $group_id, $user_id ) {
 
-		// Bail if sync should not happen for this group.
+		// Bail if sync should not happen for this Group.
 		if ( ! $this->group_should_be_synced( $group_id ) ) {
 			return false;
 		}
 
-		// Bail if user is not a member.
+		// Bail if User is not a Member.
 		if ( ! groups_is_user_member( $user_id, $group_id ) ) {
 			return false;
 		}
@@ -798,8 +798,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		 *
 		 * @since 0.1
 		 *
-		 * @param int $group_id The numeric ID of the group.
-		 * @param int $user_id The numeric ID of the user.
+		 * @param int $group_id The numeric ID of the Group.
+		 * @param int $user_id The numeric ID of the User.
 		 */
 		do_action( 'groups_demote_member', $group_id, $user_id );
 
@@ -814,36 +814,36 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Promote BuddyPress Group Members given an array of CiviCRM contacts.
+	 * Promote BuddyPress Group Members given an array of CiviCRM Contacts.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group.
-	 * @param int $civi_users An array of CiviCRM contact data.
-	 * @param string $status The status to which the members will be promoted.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @param int $contacts An array of CiviCRM Contact data.
+	 * @param string $status The status to which the Members will be promoted.
 	 */
-	public function promote_group_members( $group_id, $civi_users, $status ) {
+	public function promote_group_members( $group_id, $contacts, $status ) {
 
-		// Bail if sync should not happen for this group.
+		// Bail if sync should not happen for this Group.
 		if ( ! $this->group_should_be_synced( $group_id ) ) {
 			return;
 		}
 
-		// Do we have any members?
-		if ( ! isset( $civi_users ) OR count( $civi_users ) == 0 ) {
+		// Bail if we have no Contacts.
+		if ( empty( $contacts ) ) {
 			return;
 		}
 
 		// One by one.
-		foreach( $civi_users AS $civi_user ) {
+		foreach( $contacts AS $contact ) {
 
-			// Get WP user.
-			$user = get_user_by( 'email', $civi_user['email'] );
+			// Get WordPress User.
+			$user = get_user_by( 'email', $contact['email'] );
 
 			// Sanity check.
 			if ( $user ) {
 
-				// Try and promote member.
+				// Try and promote Member.
 				if ( ! $this->promote_group_member( $group_id, $user->ID, $status ) ) {
 
 					/**
@@ -851,8 +851,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 					 *
 					 * @since 0.1
 					 *
-					 * @param int $group_id The numeric ID of the group.
-					 * @param int $user->ID The numeric ID of the user.
+					 * @param int $group_id The numeric ID of the Group.
+					 * @param int $user->ID The numeric ID of the User.
 					 */
 					do_action( 'bp_groups_civicrm_sync_member_promote_failed', $group_id, $user->ID );
 
@@ -863,8 +863,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 					 *
 					 * @since 0.1
 					 *
-					 * @param int $group_id The numeric ID of the group.
-					 * @param int $user->ID The numeric ID of the user.
+					 * @param int $group_id The numeric ID of the Group.
+					 * @param int $user->ID The numeric ID of the User.
 					 */
 					do_action( 'bp_groups_civicrm_sync_member_promoted', $group_id, $user->ID );
 
@@ -879,23 +879,23 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Promote a BuddyPress Group Member given a WordPress user and a status.
+	 * Promote a BuddyPress Group Member given a WordPress User and a status.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group.
-	 * @param int $user_id The numeric ID of the WP user.
-	 * @param string $status The status to which the member will be promoted.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @param int $user_id The numeric ID of the WordPress User.
+	 * @param string $status The status to which the Member will be promoted.
 	 * @return bool $success True if successful, false if not.
 	 */
 	public function promote_group_member( $group_id, $user_id, $status ) {
 
-		// Bail if sync should not happen for this group.
+		// Bail if sync should not happen for this Group.
 		if ( ! $this->group_should_be_synced( $group_id ) ) {
 			return false;
 		}
 
-		// Bail if user is not a member.
+		// Bail if User is not a Member.
 		if ( ! groups_is_user_member( $user_id, $group_id ) ) {
 			return false;
 		}
@@ -911,9 +911,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		 *
 		 * @since 0.1
 		 *
-		 * @param int $group_id The numeric ID of the group.
-		 * @param int $user_id The numeric ID of the user.
-		 * @param string $status The status to which the member will be promoted.
+		 * @param int $group_id The numeric ID of the Group.
+		 * @param int $user_id The numeric ID of the User.
+		 * @param string $status The status to which the Member will be promoted.
 		 */
 		do_action( 'groups_promote_member', $group_id, $user_id, $status );
 
@@ -928,12 +928,12 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Called when user joins group.
+	 * Called when User joins Group.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group.
-	 * @param int $user_id The numeric ID of the WP user.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @param int $user_id The numeric ID of the WordPress User.
 	 */
 	public function member_just_joined_group( $group_id, $user_id ) {
 
@@ -945,7 +945,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Called when user's group status is about to change.
+	 * Called when User's Group status is about to change.
 	 *
 	 * Parameter order ($group_id, $user_id) is the opposite of the "past tense"
 	 * hooks. Compare, for example, 'groups_promoted_member'.
@@ -954,24 +954,24 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.2.2
 	 *
-	 * @param int $group_id The numeric ID of the BP group.
-	 * @param int $user_id The numeric ID of the WP user.
-	 * @param string $status New status being promoted to.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @param int $user_id The numeric ID of the WordPress User.
+	 * @param string $status New status being changed to.
 	 */
-	public function member_changing_status_group( $group_id, $user_id, $status = '' ) {
+	public function member_changing_status( $group_id, $user_id, $status = '' ) {
 
-		// If we have no value for the status param, check if user is group admin.
+		// If we have no value for the status param, check if User is Group Admin.
 		if ( empty( $status ) ) {
 			$status = groups_is_user_admin( $user_id, $group_id ) ? 'admin' : '';
 		}
 
-		// Group admins cannot be banned.
+		// Group Admins cannot be banned.
 		// @see BP_Groups_Member::ban()
 		if ( $status == 'admin' AND 'groups_ban_member' == current_action() ) {
 			return;
 		}
 
-		// If a group admin is being demoted, clear status.
+		// If a Group Admin is being demoted, clear status.
 		if ( $status == 'admin' AND 'groups_demote_member' == current_action() ) {
 			$status = '';
 		}
@@ -979,20 +979,19 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		// Make status numeric for CiviCRM.
 		$is_admin = $status == 'admin' ? 1 : 0;
 
-		// Assume active.
+		// Is this User being banned?
 		$is_active = 1;
-
-		// Is this user being banned?
 		if ( 'groups_ban_member' == current_action() ) {
 			$is_active = 0;
 		}
 
-		// Update membership of CiviCRM group.
+		// Update Membership of CiviCRM Group.
 		$params = [
 			'bp_group_id' => $group_id,
 			'uf_id' => $user_id,
 			'is_active' => $is_active,
 			'is_admin' => $is_admin,
+			'bp_status' => $status,
 		];
 
 		// First, remove the CiviCRM actions, otherwise we may recurse.
@@ -1013,15 +1012,36 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Called when a user has been removed from a group.
+	 * Called when User's Group status has changed.
+	 *
+	 * Parameter order ($user_id, $group_id) is reversed for these "past tense"
+	 * hooks. Compare, for example, 'groups_join_group', 'groups_promote_member'
+	 * and other "present tense" hooks.
+	 *
+	 * @since 0.1
+	 *
+	 * @param int $user_id The numeric ID of the WordPress User.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 */
+	public function member_changed_status( $user_id, $group_id ) {
+
+		// Call update method.
+		$this->civi_update_group_membership( $user_id, $group_id );
+
+	}
+
+
+
+	/**
+	 * Called when a User has been removed from a Group.
 	 *
 	 * Parameter order ($user_id, $group_id) is reversed for this "past tense"
 	 * hook. Compare, for example, 'groups_join_group'.
 	 *
 	 * @since 0.2.2
 	 *
-	 * @param int $user_id The numeric ID of the WP user.
-	 * @param int $group_id The numeric ID of the BP group.
+	 * @param int $user_id The numeric ID of the WordPress User.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
 	 */
 	public function member_removed_from_group( $user_id, $group_id ) {
 
@@ -1033,42 +1053,21 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Called when user's group status has changed.
-	 *
-	 * Parameter order ($user_id, $group_id) is reversed for these "past tense"
-	 * hooks. Compare, for example, 'groups_join_group', 'groups_promote_member'
-	 * and other "present tense" hooks.
+	 * Inform CiviCRM of Membership status change.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $user_id The numeric ID of the WP user.
-	 * @param int $group_id The numeric ID of the BP group.
-	 */
-	public function member_changed_status_group( $user_id, $group_id ) {
-
-		// Call update method.
-		$this->civi_update_group_membership( $user_id, $group_id );
-
-	}
-
-
-
-	/**
-	 * Inform CiviCRM of membership status change.
-	 *
-	 * @since 0.1
-	 *
-	 * @param int $user_id The numeric ID of the WP user.
-	 * @param int $group_id The numeric ID of the BP group.
+	 * @param int $user_id The numeric ID of the WordPress User.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
 	 */
 	public function civi_update_group_membership( $user_id, $group_id ) {
 
-		// Bail if sync should not happen for this group.
+		// Bail if sync should not happen for this Group.
 		if ( ! $this->group_should_be_synced( $group_id ) ) {
 			return;
 		}
 
-		// Get current user status.
+		// Get current User status.
 		$status = $this->get_user_group_status( $user_id, $group_id );
 
 		// Make numeric for CiviCRM.
@@ -1077,12 +1076,12 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		// Assume active.
 		$is_active = 1;
 
-		// Is this user active?
+		// Is this User active?
 		if ( groups_is_user_banned( $user_id, $group_id ) ) {
 			$is_active = 0;
 		}
 
-		// Update membership of CiviCRM group.
+		// Update Membership of CiviCRM Group.
 		$params = [
 			'bp_group_id' => $group_id,
 			'uf_id' => $user_id,
@@ -1108,26 +1107,32 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Inform CiviCRM of membership status change.
+	 * Inform CiviCRM of Membership status change.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group.
-	 * @param int $user_id The numeric ID of the WP user.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @param int $user_id The numeric ID of the WordPress User.
 	 */
 	public function civi_delete_group_membership( $group_id, $user_id ) {
 
-		// Bail if sync should not happen for this group.
+		// Bail if sync should not happen for this Group.
 		if ( ! $this->group_should_be_synced( $group_id ) ) {
 			return;
 		}
 
-		// Update membership of CiviCRM groups.
+		// Get current User status.
+		$status = $this->get_user_group_status( $user_id, $group_id );
+
+		// Make numeric for CiviCRM.
+		$is_admin = $status == 'admin' ? 1 : 0;
+
+		// Update Membership of CiviCRM Groups.
 		$params = [
 			'bp_group_id' => $group_id,
 			'uf_id' => $user_id,
 			'is_active' => 0,
-			'is_admin' => 0,
+			'is_admin' => $is_admin,
 		];
 
 		// First, remove the CiviCRM action, otherwise we'll recurse.
@@ -1144,7 +1149,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Registers when BuddyPress Group Hierarchy plugin is saving a group.
+	 * Registers when BuddyPress Group Hierarchy plugin is saving a Group.
 	 *
 	 * @since 0.1
 	 */
@@ -1166,7 +1171,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Registers when BuddyPress Group Hierarchy plugin has saved a group.
+	 * Registers when BuddyPress Group Hierarchy plugin has saved a Group.
 	 *
 	 * @since 0.1
 	 */
@@ -1179,28 +1184,28 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Get BP group membership status for a user.
+	 * Get BuddyPress Group Membership status for a User.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $user_id The numeric ID of the WP user.
-	 * @param int $group_id The numeric ID of the BP group.
-	 * @return string $user_group_status The membership status for a user.
+	 * @param int $user_id The numeric ID of the WordPress User.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @return string $user_group_status The Membership status for a User.
 	 */
 	public function get_user_group_status( $user_id, $group_id ) {
 
-		// Access BP.
+		// Access BuddyPress.
 		global $bp;
 
 		// Init return.
 		$user_group_status = false;
 
-		// The following functionality is modified code from the BP Groupblog plugin.
-		// Get the current user's group status.
-		// For efficiency, we try first to look at the current group object.
+		// The following functionality is modified code from the BuddyPress Groupblog plugin.
+		// Get the current User's Group status.
+		// For efficiency, we try first to look at the current Group object.
 		if ( isset( $bp->groups->current_group->id ) && $group_id == $bp->groups->current_group->id ) {
 
-			// It's tricky to walk through the admin/mod lists over and over, so let's format.
+			// It's tricky to walk through the Admin/Mod lists over and over, so let's format.
 			if ( empty( $bp->groups->current_group->adminlist ) ) {
 				$bp->groups->current_group->adminlist = [];
 				if ( isset( $bp->groups->current_group->admins ) ) {
@@ -1215,7 +1220,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			if ( empty( $bp->groups->current_group->modlist ) ) {
 				$bp->groups->current_group->modlist = [];
 				if ( isset( $bp->groups->current_group->mods ) ) {
-					foreach( (array)$bp->groups->current_group->mods as $mod ) {
+					foreach( (array) $bp->groups->current_group->mods as $mod ) {
 						if ( isset( $mod->user_id ) ) {
 							$bp->groups->current_group->modlist[] = $mod->user_id;
 						}
@@ -1228,22 +1233,22 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			} elseif ( in_array( $user_id, $bp->groups->current_group->modlist ) ) {
 				$user_group_status = 'mod';
 			} else {
-				// I'm assuming that if a user is passed to this function, they're a member.
+				// I'm assuming that if a User is passed to this function, they're a Member.
 				// Doing an actual lookup is costly. Try to look for an efficient method.
 				$user_group_status = 'member';
 			}
 
 		}
 
-		// Fall back to BP functions if not set.
+		// Fall back to BuddyPress functions if not set.
 		if ( $user_group_status === false ) {
 
-			// Use BP functions
-			if ( groups_is_user_admin ( $user_id, $group_id ) ) {
+			// Use BuddyPress functions
+			if ( groups_is_user_admin( $user_id, $group_id ) ) {
 				$user_group_status = 'admin';
-			} else if ( groups_is_user_mod ( $user_id, $group_id ) ) {
+			} else if ( groups_is_user_mod( $user_id, $group_id ) ) {
 				$user_group_status = 'mod';
-			} else if ( groups_is_user_member ( $user_id, $group_id ) ) {
+			} else if ( groups_is_user_member( $user_id, $group_id ) ) {
 				$user_group_status = 'member';
 			}
 
@@ -1252,7 +1257,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		// Are we promoting or demoting?
 		if ( bp_action_variable( 1 ) AND bp_action_variable( 2 ) ) {
 
-			// Change user status based on promotion / demotion.
+			// Change User status based on promotion / demotion.
 			switch( bp_action_variable( 1 ) ) {
 
 				case 'promote' :
@@ -1277,14 +1282,14 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Creates a WordPress User given a CiviCRM contact.
+	 * Creates a WordPress User given a CiviCRM Contact.
 	 *
 	 * If this is called because a Contact has been added with "New Contact" in
-	 * CiviCRM and some group has been chosen at the same time, then the call
+	 * CiviCRM and some Group has been chosen at the same time, then the call
 	 * will come via CRM_Contact_BAO_Contact::create(). Unfortunately, this
 	 * method adds the Contact to the Group _before_ the email has been stored
 	 * so the $civi_contact data does not contain it. WordPress will still let
-	 * a user be created but they will have no email address!
+	 * a User be created but they will have no email address!
 	 *
 	 * In order to get around this, one of two things needs to happen: either
 	 * 1. the Contact needs to be added to the Group _after_ the email has been
@@ -1294,15 +1299,15 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param array $civi_contact The data for the CiviCRM contact.
-	 * @return mixed $user WP user object or false on failure.
+	 * @param array $civi_contact The data for the CiviCRM Contact.
+	 * @return mixed $user WordPress User object or false on failure.
 	 */
 	public function wordpress_create_user( $civi_contact ) {
 
 		// Create username from display name.
 		$user_name = sanitize_title( sanitize_user( $civi_contact['display_name'] ) );
 
-		// Check if we have a user with that username.
+		// Check if we have a User with that username.
 		$user_id = username_exists( $user_name );
 
 		// If not, check against email address.
@@ -1326,7 +1331,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			 */
 			do_action( 'bp_groups_civicrm_sync_before_insert_user', $civi_contact );
 
-			// Create the user.
+			// Create the User.
 			$user_id = wp_insert_user( [
 				'user_login' => $user_name,
 				'user_pass' => $random_password,
@@ -1338,7 +1343,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			// Is the email address empty?
 			if ( empty( $civi_contact['email'] ) ) {
 
-				// Store this contact temporarily.
+				// Store this Contact temporarily.
 				$this->temp_contact = [
 					'civi' => $civi_contact,
 					'user_id' => $user_id,
@@ -1358,7 +1363,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			 * @since 0.1
 			 *
 			 * @param array $civi_contact The CiviCRM Contact data.
-			 * @param int $user_id The numeric ID of the user.
+			 * @param int $user_id The numeric ID of the User.
 			 */
 			do_action( 'bp_groups_civicrm_sync_after_insert_user', $civi_contact, $user_id );
 
@@ -1367,7 +1372,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		// Sanity check.
 		if ( is_numeric( $user_id ) AND $user_id ) {
 
-			// Return WP user.
+			// Return WordPress User.
 			return get_user_by( 'id', $user_id );
 
 		}
@@ -1380,7 +1385,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Called when a CiviCRM contact's primary email address is updated.
+	 * Called when a CiviCRM Contact's primary email address is updated.
 	 *
 	 * @since 0.3.1
 	 *
@@ -1404,7 +1409,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		// Remove callback even if subsequent checks fail.
 		remove_action( 'civicrm_post', [ $this, 'civi_email_updated' ], 10, 4 );
 
-		// Bail if we don't have a temp contact.
+		// Bail if we don't have a temp Contact.
 		if ( ! isset( $this->temp_contact ) ) {
 			return;
 		}
@@ -1413,7 +1418,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			return;
 		}
 
-		// Bail if we have no email or contact ID.
+		// Bail if we have no email or Contact ID.
 		if ( ! isset( $objectRef->email ) OR ! isset( $objectRef->contact_id ) ) {
 			unset( $this->temp_contact );
 			return;
@@ -1425,7 +1430,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			return;
 		}
 
-		// Get user ID.
+		// Get User ID.
 		$user_id = $this->temp_contact['user_id'];
 
 		// Make sure there's an entry in the ufMatch table.
@@ -1454,11 +1459,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		 *
 		 * @param array $temp_contact The temporary CiviCRM Contact data.
 		 * @param object $objectRef The CiviCRM Contact data object.
-		 * @param int $user_id The numeric ID of the user.
+		 * @param int $user_id The numeric ID of the User.
 		 */
 		do_action( 'bp_groups_civicrm_sync_before_update_user', $this->temp_contact, $objectRef, $user_id );
 
-		// Update the WordPress user with this email address.
+		// Update the WordPress User with this email address.
 		$user_id = wp_update_user( [
 			'ID' => $user_id,
 			'user_email' => $objectRef->email,
@@ -1474,7 +1479,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		 *
 		 * @param array $temp_contact The temporary CiviCRM Contact data.
 		 * @param object $objectRef The CiviCRM Contact data object.
-		 * @param int $user_id The numeric ID of the user.
+		 * @param int $user_id The numeric ID of the User.
 		 */
 		do_action( 'bp_groups_civicrm_sync_after_update_user', $this->temp_contact, $objectRef, $user_id );
 
@@ -1483,7 +1488,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Remove filters (that we know of) that will interfere with creating a WordPress user.
+	 * Remove filters (that we know of) that will interfere with creating a WordPress User.
 	 *
 	 * @since 0.1
 	 */
@@ -1519,7 +1524,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Add filters (that we know of) after creating a WordPress user.
+	 * Add filters (that we know of) after creating a WordPress User.
 	 *
 	 * @since 0.1
 	 */
@@ -1555,25 +1560,25 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
-	 * Check if a group should by synced.
+	 * Check if a Group should by synced.
 	 *
 	 * @since 0.3.6
 	 *
-	 * @param int $group_id The numeric ID of the BP group.
-	 * @return bool $should_be_synced Whether or not the group should be synced.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @return bool $should_be_synced Whether or not the Group should be synced.
 	 */
 	public function group_should_be_synced( $group_id ) {
 
-		// Assume user should be synced.
+		// Assume User should be synced.
 		$should_be_synced = true;
 
 		/**
-		 * Let other plugins override whether a group should be synced.
+		 * Let other plugins override whether a Group should be synced.
 		 *
 		 * @since 0.3.6
 		 *
-		 * @param bool $should_be_synced True if the group should be synced, false otherwise.
-		 * @param int $group_id The numeric ID of the BP group.
+		 * @param bool $should_be_synced True if the Group should be synced, false otherwise.
+		 * @param int $group_id The numeric ID of the BuddyPress Group.
 		 * @return bool $should_be_synced The modified value of the sync flag.
 		 */
 		return apply_filters( 'bp_groups_civicrm_sync_group_should_be_synced', $should_be_synced, $group_id );

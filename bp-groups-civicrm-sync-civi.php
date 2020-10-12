@@ -76,7 +76,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 *
 	 * @since 0.1
 	 *
-	 * @param object $bp_object Reference to this plugin's BP object.
+	 * @param object $bp_object Reference to this plugin's BuddyPress object.
 	 * @param object $admin_object Reference to this plugin's Admin object.
 	 */
 	public function set_references( &$bp_object, &$admin_object ) {
@@ -101,25 +101,25 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Allow plugins to register php and template directories.
 		add_action( 'civicrm_config', [ $this, 'register_directories' ], 10, 1 );
 
-		// Intercept CiviCRM group create form.
+		// Intercept CiviCRM Group create form.
 		add_action( 'civicrm_buildForm', [ $this, 'form_create_bp_group_options' ], 10, 2 );
 
-		// Intercept CiviCRM group create form submission.
+		// Intercept CiviCRM Group create form submission.
 		add_action( 'civicrm_postProcess', [ $this, 'form_create_bp_group_process' ], 10, 2 );
 
-		// Intercept CiviCRM Drupal Organic Group edit form.
+		// Intercept CiviCRM Drupal Organic Groups edit form.
 		add_action( 'civicrm_buildForm', [ $this, 'form_edit_og_options' ], 10, 2 );
 
-		// Intercept CiviCRM Drupal Organic Group edit form submission.
+		// Intercept CiviCRM Drupal Organic Groups edit form submission.
 		add_action( 'civicrm_postProcess', [ $this, 'form_edit_og_process' ], 10, 2 );
 
-		// Intercept CiviCRM's add contacts to group.
+		// Intercept CiviCRM's add Contacts to Group.
 		add_action( 'civicrm_pre', [ $this, 'group_contacts_added' ], 10, 4 );
 
-		// Intercept CiviCRM's delete contacts from group.
+		// Intercept CiviCRM's delete Contacts from Group.
 		add_action( 'civicrm_pre', [ $this, 'group_contacts_deleted' ], 10, 4 );
 
-		// Intercept CiviCRM's rejoin contacts to group.
+		// Intercept CiviCRM's rejoin Contacts to Group.
 		add_action( 'civicrm_pre', [ $this, 'group_contacts_rejoined' ], 10, 4 );
 
 		/**
@@ -198,7 +198,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Creates the CiviCRM Group which is the ultimate parent for all BuddyPress groups.
+	 * Creates the CiviCRM Group which is the ultimate parent for all BuddyPress Groups.
 	 *
 	 * @since 0.1
 	 */
@@ -212,7 +212,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Init transaction.
 		$transaction = new CRM_Core_Transaction();
 
-		// Get the group ID of the CiviCRM meta group.
+		// Get the Group ID of the CiviCRM Meta Group.
 		$civi_meta_group_id = $this->find_group_id(
 			$this->meta_group_get_source()
 		);
@@ -224,7 +224,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		} else {
 
-			// Define group.
+			// Define Group.
 			$params = [
 				'name' => __( 'BuddyPress Groups', 'bp-groups-civicrm-sync' ),
 				'title' => __( 'BuddyPress Groups', 'bp-groups-civicrm-sync' ),
@@ -232,10 +232,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				'is_active' => 1,
 			];
 
-			// Set inscrutable group type (Access Control).
+			// Set inscrutable Group Type (Access Control).
 			$params['group_type'] = [ '1' => 1 ];
 
-			// Get "source" for the CiviCRM group.
+			// Get "source" for the CiviCRM Group.
 			$params['source'] = $this->meta_group_get_source();
 
 			// Use our adapted version of CRM_Bridge_OG_Drupal::updateCiviGroup().
@@ -243,7 +243,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		}
 
-		// Assign groups with no parent to the meta group.
+		// Assign Groups with no parent to the Meta Group.
 		//$this->meta_group_groups_assign();
 
 		// Do the database transaction.
@@ -254,7 +254,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Deletes the CiviCRM Group which is the ultimate parent for all BuddyPress groups.
+	 * Deletes the CiviCRM Group which is the ultimate parent for all BuddyPress Groups.
 	 *
 	 * @since 0.1
 	 */
@@ -265,7 +265,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return;
 		}
 
-		// Get the group ID of the CiviCRM meta group.
+		// Get the Group ID of the CiviCRM Meta Group.
 		$civi_meta_group_id = $this->find_group_id(
 			$this->meta_group_get_source()
 		);
@@ -276,7 +276,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			// Init transaction.
 			$transaction = new CRM_Core_Transaction();
 
-			// Delete group.
+			// Delete Group.
 			CRM_Contact_BAO_Group::discard( $civi_meta_group_id );
 
 			// Do the database transaction.
@@ -289,7 +289,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Assign all CiviCRM Groups with no parent to our meta group.
+	 * Assign all CiviCRM Groups with no parent to our Meta Group.
 	 *
 	 * @since 0.1
 	 */
@@ -300,7 +300,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return;
 		}
 
-		// Get the group ID of the CiviCRM meta group.
+		// Get the Group ID of the CiviCRM Meta Group.
 		$civi_meta_group_id = $this->find_group_id(
 			$this->meta_group_get_source()
 		);
@@ -310,83 +310,55 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return;
 		}
 
-		// Define get "all with no parent" params.
-		$params = [
-			'version' => 3,
-			// Define stupidly high limit, because API defaults to 25.
-			'options' => [
-				'limit' => '10000',
-			],
-		];
+		// Get all Groups.
+		$all_groups = $this->get_all_civi_groups();
 
-		// Get all groups with no parent ID (get ALL for now).
-		$all_groups = civicrm_api( 'group', 'get', $params );
+		// Bail if there are no results.
+		if ( empty( $all_groups ) ) {
+			return;
+		}
 
-		// If we got some groups.
-		if (
-			$all_groups['is_error'] == 0 AND
-			isset( $all_groups['values'] ) AND
-			count( $all_groups['values'] ) > 0
-		) {
+		// Loop.
+		foreach( $all_groups AS $group ) {
 
-			// Loop.
-			foreach( $all_groups['values'] AS $group ) {
-
-				// When there is no parent.
-				if (
-					! isset( $group['parents'] ) OR
-					is_null( $group['parents'] ) OR
-					$group['parents'] == ''
-				) {
-
-					// Init transaction.
-					//$transaction = new CRM_Core_Transaction();
-
-					// Set BP group to empty, which triggers assignment to meta group.
-					$bp_parent_id = 0;
-
-					// Exclude container group.
-					if ( isset( $group['id'] ) AND $group['id'] == $civi_meta_group_id ) {
-						continue;
-					}
-
-					// If "source" is not present, it's not an OG/BP group.
-					if ( ! isset( $group['source'] ) OR is_null( $group['source'] ) ) {
-						continue;
-					}
-
-					// Get group type.
-					$group_type = $this->civi_group_get_code_by_source( $group['source'] );
-
-					// Get CiviCRM group ID for BP parent group.
-					$civi_parent_id = $this->get_civi_parent_group_id( $bp_parent_id, $group_type );
-
-					// Maybe create nesting.
-					$this->group_nesting_create( $group['id'], $civi_parent_id, $group_type );
-
-					// Retain CiviCRM group type.
-					$group['group_type'] = $this->civi_group_get_type_by_code( $group_type );
-
-					// Update the group.
-					$success = $this->update_group( $group );
-
-					// Do the database transaction.
-					//$transaction->commit();
-
-				}
-
+			// Skip if there is a parent.
+			if ( empty( $group['parents'] ) ) {
+				continue;
 			}
 
-		} else {
+			// Init transaction.
+			//$transaction = new CRM_Core_Transaction();
 
-			// Debug.
-			$e = new \Exception;
-			$trace = $e->getTraceAsString();
-			error_log( print_r( [
-				'method' => __METHOD__,
-				'all_groups' => $all_groups,
-				'backtrace' => $trace,
-			], true ) );
+			// Set BuddyPress Group to empty, which triggers assignment to Meta Group.
+			$bp_parent_id = 0;
+
+			// Exclude container Group.
+			if ( isset( $group['id'] ) AND $group['id'] == $civi_meta_group_id ) {
+				continue;
+			}
+
+			// If "source" is not present, it's not an OG/BuddyPress Group.
+			if ( ! isset( $group['source'] ) OR is_null( $group['source'] ) ) {
+				continue;
+			}
+
+			// Get Group Type.
+			$group_type = $this->civi_group_get_code_by_source( $group['source'] );
+
+			// Get CiviCRM Group ID for BuddyPress Parent Group.
+			$civi_parent_id = $this->get_civi_parent_group_id( $bp_parent_id, $group_type );
+
+			// Maybe create nesting.
+			$this->group_nesting_create( $group['id'], $civi_parent_id, $group_type );
+
+			// Retain CiviCRM Group Type.
+			$group['group_type'] = $this->civi_group_get_type_by_code( $group_type );
+
+			// Update the Group.
+			$success = $this->update_group( $group );
+
+			// Do the database transaction.
+			//$transaction->commit();
 
 		}
 
@@ -395,7 +367,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Remove all top-level CiviCRM Groups from the meta group.
+	 * Remove all top-level CiviCRM Groups from the Meta Group.
 	 *
 	 * @since 0.1
 	 */
@@ -406,7 +378,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return;
 		}
 
-		// Get the group ID of the CiviCRM meta group.
+		// Get the Group ID of the CiviCRM Meta Group.
 		$civi_meta_group_id = $this->find_group_id(
 			$this->meta_group_get_source()
 		);
@@ -416,76 +388,52 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return;
 		}
 
-		// Define get "all with no parent" params.
-		$params = [
-			'version' => 3,
-			// Define stupidly high limit, because API defaults to 25.
-			'options' => [
-				'limit' => '10000',
-			],
-		];
+		// Get all Groups.
+		$all_groups = $this->get_all_civi_groups();
 
-		// Get all groups with no parent ID (get ALL for now).
-		$all_groups = civicrm_api( 'group', 'get', $params );
+		// Bail if there are no results.
+		if ( empty( $all_groups ) ) {
+			return;
+		}
 
-		// If we got some groups.
-		if (
-			$all_groups['is_error'] == 0 AND
-			isset( $all_groups['values'] ) AND
-			count( $all_groups['values'] ) > 0
-		) {
+		// Loop.
+		foreach( $all_groups AS $group ) {
 
-			// Loop.
-			foreach( $all_groups['values'] AS $group ) {
-
-				// When there is a parent.
-				if ( isset( $group['parents'] ) AND ! empty( $group['parents'] ) ) {
-
-					// If "source" is not present, it's not an OG/BP group.
-					if ( ! isset( $group['source'] ) OR is_null( $group['source'] ) ) {
-						continue;
-					}
-
-					// Skip if the parent is not the container group.
-					if ( $group['parents'] != $civi_meta_group_id ) {
-						continue;
-					}
-
-					// Init transaction.
-					//$transaction = new CRM_Core_Transaction();
-
-					// Delete nesting.
-					$this->group_nesting_delete( $group['id'], $group['parents'] );
-
-					// Get group type.
-					$group_type = $this->civi_group_get_code_by_source( $group['source'] );
-
-					// Retain CiviCRM group type.
-					$group['group_type'] = $this->civi_group_get_type_by_code( $group_type );
-
-					// Clear parents.
-					$group['parents'] = null;
-
-					// Do the database transaction.
-					//$transaction->commit();
-
-					// Update the group.
-					$success = $this->update_group( $group );
-
-				}
-
+			// Skip when there is no parent.
+			if ( empty( $group['parents'] ) ) {
+				continue;
 			}
 
-		} else {
+			// If "source" is not present, it's not an OG/BuddyPress Group.
+			if ( ! isset( $group['source'] ) OR is_null( $group['source'] ) ) {
+				continue;
+			}
 
-			// Debug.
-			$e = new \Exception;
-			$trace = $e->getTraceAsString();
-			error_log( print_r( [
-				'method' => __METHOD__,
-				'all_groups' => $all_groups,
-				'backtrace' => $trace,
-			], true ) );
+			// Skip if the parent is not the container Group.
+			if ( $group['parents'] != $civi_meta_group_id ) {
+				continue;
+			}
+
+			// Init transaction.
+			//$transaction = new CRM_Core_Transaction();
+
+			// Delete nesting.
+			$this->group_nesting_delete( $group['id'], $group['parents'] );
+
+			// Get Group Type.
+			$group_type = $this->civi_group_get_code_by_source( $group['source'] );
+
+			// Retain CiviCRM Group Type.
+			$group['group_type'] = $this->civi_group_get_type_by_code( $group_type );
+
+			// Clear parents.
+			$group['parents'] = null;
+
+			// Do the database transaction.
+			//$transaction->commit();
+
+			// Update the Group.
+			$success = $this->update_group( $group );
 
 		}
 
@@ -494,11 +442,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Get source (our unique code) for our meta group.
+	 * Get source (our unique code) for our Meta Group.
 	 *
 	 * @since 0.1
 	 *
-	 * @return string The unique meta group code.
+	 * @return string The unique Meta Group code.
 	 */
 	public function meta_group_get_source() {
 
@@ -514,13 +462,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Creates a CiviCRM Group when a BuddyPress group is created.
+	 * Creates a CiviCRM Group when a BuddyPress Group is created.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $bp_group_id the numeric ID of the BP group.
-	 * @param object $bp_group The BP group object.
-	 * @return array $return Associative array of CiviCRM group IDs (member_group_id, acl_group_id).
+	 * @param int $bp_group_id The numeric ID of the BuddyPress Group.
+	 * @param object $bp_group The BuddyPress Group object.
+	 * @return array|bool $return Associative array of CiviCRM Group IDs, or false on failure.
 	 */
 	public function create_civi_group( $bp_group_id, $bp_group ) {
 
@@ -529,7 +477,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return false;
 		}
 
-		// Init or die.
+		// Bail if no CiviCRM.
 		if ( ! $this->is_active() ) {
 			return false;
 		}
@@ -542,7 +490,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Init transaction.
 		$transaction = new CRM_Core_Transaction();
 
-		// Define group.
+		// Define Group.
 		$params = [
 			'bp_group_id' => $bp_group_id,
 			'name' => stripslashes( $bp_group->name ),
@@ -553,19 +501,19 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 
-		// First create the CiviCRM group.
+		// First create the CiviCRM Group.
 		$group_params = $params;
 
-		// Get name for the CiviCRM group.
+		// Get name for the CiviCRM Group.
 		$group_params['source'] = $this->member_group_get_sync_name( $bp_group_id );
 
-		// Define CiviCRM group type (Mailing List by default).
+		// Define CiviCRM Group Type (Mailing List by default).
 		$group_params['group_type'] = $this->civi_group_get_type_by_code( 'member' );
 
 		// Use our adapted version of CRM_Bridge_OG_Drupal::updateCiviGroup().
 		$success = $this->create_group( $group_params );
 
-		// Store ID of created CiviCRM group if successful.
+		// Store ID of created CiviCRM Group if successful.
 		if ( $success ) {
 			$return['member_group_id'] = $group_params['group_id'];
 		} else {
@@ -574,19 +522,19 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 
-		// Next create the CiviCRM ACL group.
+		// Next create the CiviCRM ACL Group.
 		$acl_params = $params;
 
-		// Set name and title of ACL group.
+		// Set name and title of ACL Group.
 		$acl_params['name'] = $acl_params['title'] = $acl_params['name'] . ': Administrator';
 
-		// Set source name for ACL group.
+		// Set source name for ACL Group.
 		$acl_params['source'] = $this->acl_group_get_sync_name( $bp_group_id );
 
-		// Set inscrutable group type (Access Control).
+		// Set inscrutable Group Type (Access Control).
 		$acl_params['group_type'] = $this->civi_group_get_type_by_code( 'acl' );
 
-		// Create the ACL group too.
+		// Create the ACL Group too.
 		$success = $this->create_group( $acl_params );
 
 		// If successful.
@@ -599,7 +547,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			// Use cloned CiviCRM function.
 			$this->updateCiviACLTables( $acl_params, 'add' );
 
-			// Store ID of created CiviCRM group.
+			// Store ID of created CiviCRM Group.
 			$return['acl_group_id'] = $acl_params['group_id'];
 
 		} else {
@@ -614,7 +562,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Do the database transaction.
 	    $transaction->commit();
 
-		// Add the creator to the groups.
+		// Add the creator to the Groups.
 		$params = [
 			'bp_group_id' => $bp_group_id,
 			'uf_id' => $bp_group->creator_id,
@@ -633,12 +581,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Updates a CiviCRM Group when a BuddyPress group is updated.
+	 * Updates a CiviCRM Group when a BuddyPress Group is updated.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group.
-	 * @param object $group The BP group object.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @param object $group The BuddyPress Group object.
 	 */
 	public function update_civi_group( $group_id, $group ) {
 
@@ -660,7 +608,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Init transaction.
 		$transaction = new CRM_Core_Transaction();
 
-		// Define group.
+		// Define Group.
 		$params = [
 			'bp_group_id' => $group_id,
 			'name' => stripslashes( $group->name ),
@@ -671,19 +619,19 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 
-		// First update the CiviCRM group.
+		// First update the CiviCRM Group.
 		$group_params = $params;
 
-		// Get name for the CiviCRM group.
+		// Get name for the CiviCRM Group.
 		$group_params['source'] = $this->member_group_get_sync_name( $group_id );
 
-		// Define CiviCRM group type (Mailing List by default).
+		// Define CiviCRM Group Type (Mailing List by default).
 		$group_params['group_type'] = $this->civi_group_get_type_by_code( 'member' );
 
 		// Use our adapted version of CRM_Bridge_OG_Drupal::updateCiviGroup().
 		$success = $this->update_group( $group_params );
 
-		// Store ID of updated CiviCRM group if successful.
+		// Store ID of updated CiviCRM Group if successful.
 		if ( $success ) {
 			$return['member_group_id'] = $group_params['group_id'];
 		} else {
@@ -692,19 +640,19 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 
-		// Next update the CiviCRM ACL group.
+		// Next update the CiviCRM ACL Group.
 		$acl_params = $params;
 
-		// Set name and title of ACL group.
+		// Set name and title of ACL Group.
 		$acl_params['name'] = $acl_params['title'] = $acl_params['name'] . ': Administrator';
 
-		// Set source name for ACL group.
+		// Set source name for ACL Group.
 		$acl_params['source'] = $this->acl_group_get_sync_name( $group_id );
 
-		// Set inscrutable group type (Access Control).
+		// Set inscrutable Group Type (Access Control).
 		$acl_params['group_type'] = $this->civi_group_get_type_by_code( 'acl' );
 
-		// Update the ACL group too.
+		// Update the ACL Group too.
 		$success = $this->update_group( $acl_params );
 
 		// If successful.
@@ -717,7 +665,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			// Use cloned CiviCRM function.
 			$this->updateCiviACLTables( $acl_params, 'update' );
 
-			// Store ID of created CiviCRM group.
+			// Store ID of created CiviCRM Group.
 			$return['acl_group_id'] = $acl_params['group_id'];
 
 		} else {
@@ -737,11 +685,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Deletes a CiviCRM Group when a BuddyPress group is deleted.
+	 * Deletes a CiviCRM Group when a BuddyPress Group is deleted.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BP group.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
 	 */
 	public function delete_civi_group( $group_id ) {
 
@@ -760,10 +708,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Init transaction.
 		$transaction = new CRM_Core_Transaction();
 
-		// Get the group object.
+		// Get the Group object.
 		$group = groups_get_group( [ 'group_id' => $group_id ] );
 
-		// Define group.
+		// Define Group.
 		$params = [
 			'bp_group_id' => $group_id,
 			'name' => $group->name,
@@ -773,10 +721,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 
-		// First delete the CiviCRM group.
+		// First delete the CiviCRM Group.
 		$group_params = $params;
 
-		// Get name for the CiviCRM group.
+		// Get name for the CiviCRM Group.
 		$group_params['source'] = $this->member_group_get_sync_name( $group_id );
 
 		// Use our adapted version of CRM_Bridge_OG_Drupal::updateCiviGroup().
@@ -784,16 +732,16 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 
-		// Next delete the CiviCRM ACL group.
+		// Next delete the CiviCRM ACL Group.
 		$acl_params = $params;
 
-		// Set name and title of ACL group.
+		// Set name and title of ACL Group.
 		$acl_params['name'] = $acl_params['title'] = $acl_params['name'] . ': Administrator';
 
-		// Set source name for ACL group.
+		// Set source name for ACL Group.
 		$acl_params['source'] = $this->acl_group_get_sync_name( $group_id );
 
-		// Delete the ACL group too.
+		// Delete the ACL Group too.
 		$this->delete_group( $acl_params );
 
 		// Set some further params.
@@ -871,7 +819,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Loop through tree.
 		foreach( $tree AS $bp_group ) {
 
-			// Collapse nesting by assigning all to meta group.
+			// Collapse nesting by assigning all to Meta Group.
 			$this->group_nesting_update( $bp_group->id, 0 );
 
 		}
@@ -885,62 +833,52 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $civi_group_id The numeric ID of the CiviCRM group.
-	 * @param int $civi_parent_id The numeric ID of the parent CiviCRM group.
+	 * @param int $civi_group_id The numeric ID of the CiviCRM Group.
+	 * @param int $civi_parent_id The numeric ID of the parent CiviCRM Group.
 	 * @param string $source Group update type - 'member' or 'acl'.
 	 */
 	public function group_nesting_create( $civi_group_id, $civi_parent_id, $source ) {
 
 		// Bail if no parent set.
-		if ( empty( $civi_parent_id ) ) {
-			return;
-		}
-		if ( ! is_numeric( $civi_parent_id ) ) {
+		if ( empty( $civi_parent_id ) OR ! is_numeric( $civi_parent_id ) ) {
 			return;
 		}
 
-		// Init transaction.
-		//$transaction = new CRM_Core_Transaction();
-
-		// Define new group nesting.
-		$create_params = [
+		// Define new Group Nesting.
+		$params = [
 			'version' => 3,
 			'child_group_id' => $civi_group_id,
 			'parent_group_id' => $civi_parent_id,
 		];
 
-		// Create CiviCRM group nesting under meta group.
-		$create_result = civicrm_api( 'group_nesting', 'create', $create_params );
+		// Create CiviCRM Group Nesting under Meta Group.
+		$result = civicrm_api( 'GroupNesting', 'create', $params );
 
-		// Error check.
-		if ( $create_result['is_error'] == '1' ) {
+		// Log if there's an error.
+		if ( ! empty( $result['is_error'] ) AND $result['is_error'] == 1 ) {
 
-			// Debug.
 			$e = new \Exception;
 			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
-				'create_params' => $create_params,
-				'create_result' => $create_result,
-				'backtrace' => $trace,
+				'params' => $params,
+				'result' => $result,
+				//'backtrace' => $trace,
 			], true ) );
 
 		}
-
-		// Do the database transaction.
-	    //$transaction->commit();
 
 	}
 
 
 
 	/**
-	 * Updates a CiviCRM Group's hierarchy when a BuddyPress group's hierarchy is updated.
+	 * Updates a CiviCRM Group's hierarchy when a BuddyPress Group's hierarchy is updated.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $bp_group_id The numeric ID of the BP group.
-	 * @param int $bp_parent_id The numeric ID of the parent BP group.
+	 * @param int $bp_group_id The numeric ID of the BuddyPress Group.
+	 * @param int $bp_parent_id The numeric ID of the parent BuddyPress Group.
 	 */
 	public function group_nesting_update( $bp_group_id, $bp_parent_id ) {
 
@@ -954,18 +892,18 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 
-		// Get group source.
+		// Get Group source.
 		$source = $this->member_group_get_sync_name( $bp_group_id );
 
-		// Get the group ID of the CiviCRM member group.
+		// Get the Group ID of the CiviCRM Member Group.
 		$civi_group_id = $this->find_group_id( $source );
 
-		// Bail if we don't get a group ID.
+		// Bail if we don't get a Group ID.
 		if ( ! $civi_group_id ) {
 
 			// Construct message.
 			$message = sprintf(
-				__( 'Could not find CiviCRM group for Source %s', 'bp-groups-civicrm-sync' ),
+				__( 'Could not find CiviCRM Group for Source %s', 'bp-groups-civicrm-sync' ),
 				$source
 			);
 
@@ -985,7 +923,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		}
 
-		// Get the group data.
+		// Get the Group data.
 		$civi_group = $this->get_civi_group_by_id( $civi_group_id );
 
 		// If there's an existing parent.
@@ -996,7 +934,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		}
 
-		// Get CiviCRM group ID for BP group.
+		// Get CiviCRM Group ID for BuddyPress Group.
 		$civi_parent_id = $this->get_civi_parent_group_id( $bp_parent_id, 'member' );
 
 		// Create new nesting.
@@ -1004,17 +942,17 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 
-		// Define group.
+		// Define Group.
 		$group_params = [
 			'bp_group_id' => $bp_group_id,
 			'id' => $civi_group_id,
 			'is_active' => 1,
 		];
 
-		// Get name for the CiviCRM group.
+		// Get name for the CiviCRM Group.
 		$group_params['source'] = $source;
 
-		// Define CiviCRM group type (Mailing List by default).
+		// Define CiviCRM Group Type (Mailing List by default).
 		$group_params['group_type'] = $this->civi_group_get_type_by_code( 'member' );
 
 		// Use our adapted version of CRM_Bridge_OG_Drupal::updateCiviGroup().
@@ -1025,15 +963,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Get ACL source.
 		$acl_source = $this->acl_group_get_sync_name( $bp_group_id );
 
-		// Get the group ID of the CiviCRM member group.
+		// Get the Group ID of the CiviCRM Member Group.
 		$civi_acl_group_id = $this->find_group_id( $acl_source );
 
-		// Bail if we don't get a group ID.
+		// Bail if we don't get a Group ID.
 		if ( ! $civi_acl_group_id ) {
 			return;
 		}
 
-		// Get the ACL group data.
+		// Get the ACL Group data.
 		$civi_acl_group = $this->get_civi_group_by_id( $civi_acl_group_id );
 
 		// Delete existing if there's an existing parent.
@@ -1041,23 +979,23 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			$this->group_nesting_delete( $civi_acl_group_id, $civi_acl_group['parents'] );
 		}
 
-		// Get CiviCRM group ID for BP group.
+		// Get CiviCRM Group ID for BuddyPress Group.
 		$civi_acl_parent_id = $this->get_civi_parent_group_id( $bp_parent_id, 'acl' );
 
 		// Create new nesting.
 		$this->group_nesting_create( $civi_acl_group_id, $civi_acl_parent_id, 'acl' );
 
-		// Define group for update.
+		// Define Group for update.
 		$group_params = [
 			'bp_group_id' => $bp_group_id,
 			'id' => $civi_acl_group_id,
 			'is_active' => 1,
 		];
 
-		// Get name for the CiviCRM ACL group.
+		// Get name for the CiviCRM ACL Group.
 		$group_params['source'] = $acl_source;
 
-		// Define CiviCRM group type (Access Control).
+		// Define CiviCRM Group Type (Access Control).
 		$group_params['group_type'] = $this->civi_group_get_type_by_code( 'acl' );
 
 		// Use our adapted version of CRM_Bridge_OG_Drupal::updateCiviGroup().
@@ -1071,15 +1009,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 		/*
-		// Define group.
+		// Define Group.
 		$params = [
 			'version' => 3,
 			'id' => $civi_group_id,
 			'is_active' => 1,
 		];
 
-		// Use API to inspect group.
-		$group = civicrm_api( 'group', 'get', $params );
+		// Use API to inspect Group.
+		$group = civicrm_api( 'Group', 'get', $params );
 		*/
 
 		/*
@@ -1104,32 +1042,37 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 */
 	public function group_nesting_delete( $civi_group_id, $civi_parent_id ) {
 
-		// Define existing group nesting.
+		// Define existing Group Nesting.
 		$existing_params = [
 			'version' => 3,
 			'parent_group_id' => $civi_parent_id,
 			'child_group_id' => $civi_group_id,
 		];
 
-		// Get existing group nesting.
-		$existing_result = civicrm_api( 'group_nesting', 'get', $existing_params );
+		// Get existing Group Nesting.
+		$existing_result = civicrm_api( 'GroupNesting', 'get', $existing_params );
 
-		// Did we get any?
-		if ( isset( $existing_result['values'] ) AND count( $existing_result['values'] ) > 0 ) {
+		// Bail if there's an error.
+		if ( ! empty( $existing_result['is_error'] ) AND $existing_result['is_error'] == 1 ) {
+			return;
+		}
 
-			// Loop through them.
-			foreach( $existing_result['values'] AS $existing_group_nesting ) {
+		// Bail if there are no results.
+		if ( empty( $existing_result['values'] ) ) {
+			return;
+		}
 
-				// Construct delete array.
-				$delete_params = [
-					'version' => 3,
-					'id' => $existing_group_nesting['id'],
-				];
+		// Loop through them.
+		foreach( $existing_result['values'] AS $existing_group_nesting ) {
 
-				// Clear existing group nesting.
-				$delete_result = civicrm_api( 'group_nesting', 'delete', $delete_params );
+			// Construct delete array.
+			$delete_params = [
+				'version' => 3,
+				'id' => $existing_group_nesting['id'],
+			];
 
-			}
+			// Clear existing Group Nesting.
+			$delete_result = civicrm_api( 'GroupNesting', 'delete', $delete_params );
 
 		}
 
@@ -1138,11 +1081,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * For a given BuddyPress parent group ID, get the ID of the synced CiviCRM Group.
+	 * For a given BuddyPress Parent Group ID, get the ID of the synced CiviCRM Group.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $bp_parent_id The numeric ID of the parent BP group.
+	 * @param int $bp_parent_id The numeric ID of the parent BuddyPress Group.
 	 * @param string $source Group update type - 'member' or 'acl'.
 	 */
 	public function get_civi_parent_group_id( $bp_parent_id, $source ) {
@@ -1150,32 +1093,32 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Init return.
 		$civi_parent_id = false;
 
-		// If the passed BP parent ID is 0, we're removing the BP parent or none is set.
+		// If the passed BuddyPress parent ID is 0, we're removing the BuddyPress parent or none is set.
 		if ( $bp_parent_id == 0 ) {
 
 			// Get our settings.
 			$parent_group = absint( $this->admin->setting_get( 'parent_group' ) );
 
-			// Bail if we're not using a parent group.
+			// Bail if we're not using a Parent Group.
 			if ( $parent_group == 0 ) {
 				return false;
 			}
 
-			// Get the group ID of the CiviCRM meta group.
+			// Get the Group ID of the CiviCRM Meta Group.
 			$civi_parent_id = $this->find_group_id(
 				$this->meta_group_get_source()
 			);
 
 		} else {
 
-			// What kind of group is this?
+			// What kind of Group is this?
 			if ( $source == 'member' ) {
 				$name = $this->member_group_get_sync_name( $bp_parent_id );
 			} else {
 				$name = $this->acl_group_get_sync_name( $bp_parent_id );
 			}
 
-			// Get the group ID of the parent CiviCRM group.
+			// Get the Group ID of the parent CiviCRM Group.
 			$civi_parent_id = $this->find_group_id( $name );
 
 		}
@@ -1194,8 +1137,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	/**
 	 * Creates a CiviCRM Group.
 	 *
-	 * Unfortunately, CiviCRM insists on assigning the logged-in user as the group creator
-	 * This means that we cannot assign the BP group creator as the CiviCRM group creator
+	 * Unfortunately, CiviCRM insists on assigning the logged-in User as the Group creator
+	 * This means that we cannot assign the BuddyPress Group creator as the CiviCRM Group creator
 	 * except by doing some custom SQL.
 	 *
 	 * @see CRM_Contact_BAO_Group::create()
@@ -1204,20 +1147,20 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 *
 	 * @param array $params The array of CiviCRM API params.
 	 * @param string $group_type The type of CiviCRM Group.
-	 * @return bool $success True if group created, false otherwise.
+	 * @return bool $success True if Group created, false otherwise.
 	 */
 	public function create_group( &$params, $group_type = null ) {
 
 		// Always use API 3.
 		$params['version'] = 3;
 
-		// If we have a group type passed here, use it.
+		// If we have a Group Type passed here, use it.
 		if ( ! is_null( $group_type ) ) {
 			$params['group_type'] = $group_type;
 		}
 
-		// Use CiviCRM API to create the group (will update if ID is set).
-		$group = civicrm_api( 'group', 'create', $params );
+		// Use CiviCRM API to create the Group (will update if ID is set).
+		$group = civicrm_api( 'Group', 'create', $params );
 
 		// How did we do?
 		if ( ! civicrm_error( $group ) ) {
@@ -1235,7 +1178,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
-				'message' => __( 'Could not create CiviCRM group', 'bp-groups-civicrm-sync' ),
+				'message' => __( 'Could not create CiviCRM Group', 'bp-groups-civicrm-sync' ),
 				'params' => $params,
 				'group' => $group,
 				'backtrace' => $trace,
@@ -1269,7 +1212,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Always use API 3.
 		$params['version'] = 3;
 
-		// If ID not specified, get the CiviCRM group ID from "source" value.
+		// If ID not specified, get the CiviCRM Group ID from "source" value.
 		if ( ! isset( $params['id'] ) OR empty( $params['id'] ) ) {
 
 			// Hand over to our clone of the CRM_Bridge_OG_Utils::groupID method.
@@ -1279,13 +1222,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		}
 
-		// If we have a group type passed here, use it.
+		// If we have a Group Type passed here, use it.
 		if ( ! is_null( $group_type ) ) {
 			$params['group_type'] = $group_type;
 		}
 
-		// Use CiviCRM API to create the group (will update if ID is set).
-		$group = civicrm_api( 'group', 'create', $params );
+		// Use CiviCRM API to create the Group (will update if ID is set).
+		$group = civicrm_api( 'Group', 'create', $params );
 
 		// How did we do?
 		if ( ! civicrm_error( $group ) ) {
@@ -1303,7 +1246,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
-				'message' => __( 'Could not update CiviCRM group', 'bp-groups-civicrm-sync' ),
+				'message' => __( 'Could not update CiviCRM Group', 'bp-groups-civicrm-sync' ),
 				'params' => $params,
 				'group' => $group,
 				'backtrace' => $trace,
@@ -1336,7 +1279,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Always use API 3.
 		$params['version'] = 3;
 
-		// If ID not specified, get the CiviCRM group ID from "source" value.
+		// If ID not specified, get the CiviCRM Group ID from "source" value.
 		if ( ! isset( $params['id'] ) OR empty( $params['id'] ) ) {
 
 			// Hand over to our clone of the CRM_Bridge_OG_Utils::groupID method.
@@ -1346,13 +1289,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		}
 
-		// Delete the group only if we have a valid id.
+		// Delete the Group only if we have a valid ID.
 		if ( $params['id'] ) {
 
-			// Delete group.
+			// Delete Group.
 			CRM_Contact_BAO_Group::discard( $params['id'] );
 
-			// Assign group ID.
+			// Assign Group ID.
 	        $params['group_id'] = $params['id'];
 
 		}
@@ -1369,12 +1312,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Add a CiviCRM contact to a CiviCRM group.
+	 * Add a CiviCRM Contact to a CiviCRM Group.
 	 *
 	 * @since 0.1
 	 *
-	 * @param integer $civi_group_id The ID of the CiviCRM group.
-	 * @param array $civi_contact_id The numeric ID of a CiviCRM contact.
+	 * @param integer $civi_group_id The ID of the CiviCRM Group.
+	 * @param array $civi_contact_id The numeric ID of a CiviCRM Contact.
 	 * @return array $group_contact The CiviCRM API data for the Contact.
 	 */
 	public function group_contact_create( $civi_group_id, $civi_contact_id ) {
@@ -1388,7 +1331,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		];
 
 		// Call API.
-		$group_contact = civicrm_api( 'GroupContact', 'Create', $params );
+		$group_contact = civicrm_api( 'GroupContact', 'create', $params );
 
 		// --<
 		return $group_contact;
@@ -1398,12 +1341,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Delete a CiviCRM contact from a CiviCRM group.
+	 * Delete a CiviCRM Contact from a CiviCRM Group.
 	 *
 	 * @since 0.1
 	 *
-	 * @param integer $civi_group_id The ID of the CiviCRM group
-	 * @param array $civi_contact_id The numeric ID of a CiviCRM contact
+	 * @param integer $civi_group_id The ID of the CiviCRM Group
+	 * @param array $civi_contact_id The numeric ID of a CiviCRM Contact
 	 * @return array $group_contact The CiviCRM API data for the Contact.
 	 */
 	public function group_contact_delete( $civi_group_id, $civi_contact_id ) {
@@ -1427,7 +1370,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Sync group member.
+	 * Sync Group Member.
 	 *
 	 * @since 0.1
 	 *
@@ -1436,7 +1379,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 */
 	public function group_contact_sync( &$params, $op ) {
 
-		// Get the CiviCRM contact ID.
+		// Get the CiviCRM Contact ID.
 		$civi_contact_id = $this->get_contact_id( $params['uf_id'] );
 
 		// If we don't get one.
@@ -1468,12 +1411,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		}
 
-		// Get the CiviCRM group ID of this BuddyPress group.
+		// Get the CiviCRM Group ID of this BuddyPress Group.
 		$civi_group_id = $this->find_group_id(
 			$this->member_group_get_sync_name( $params['bp_group_id'] )
 		);
 
-		// Init CiviCRM group params.
+		// Init CiviCRM Group params.
 		$groupParams = [
 			'version' => 3,
 			'contact_id' => $civi_contact_id,
@@ -1484,10 +1427,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		 * Removing a Contact from a Group has issues:
 		 *
 		 * When we try and "delete" a GroupContact, CiviCRM creates a record that
-		 * the contact was a member of the Group but has been removed - even if
-		 * they have *never been* a member of the group.
+		 * the Contact was a Member of the Group but has been removed - even if
+		 * they have *never been* a Member of the Group.
 		 *
-		 * Ideally the CiviCRM API should find out if the user was a member before
+		 * Ideally the CiviCRM API should find out if the User was a Member before
 		 * registering the "delete" event, but we may be able to pass "skip_undelete"
 		 * to the API to achieve the desired result. Needs testing.
 		 */
@@ -1502,10 +1445,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// We have to call 'create'. WTF?
 		$group_contact = civicrm_api( 'GroupContact', 'create', $groupParams );
 
-		// Do we have an admin user?
-		if ( ! empty( $params['is_admin'] ) AND $params['is_admin'] == '1' ) {
+		// Do we have an Admin User?
+		if (
+			( ! empty( $params['is_admin'] ) AND $params['is_admin'] == '1' )
+		) {
 
-			// Get the group ID of the acl group.
+			// Get the Group ID of the ACL Group.
 			$civi_group_id = $this->find_group_id(
 				$this->acl_group_get_sync_name( $params['bp_group_id'] )
 			);
@@ -1518,6 +1463,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				'status' => $params['is_admin'] ? 'Added' : 'Removed',
 			];
 
+			// Set status based on operation type and status.
+			if ( $op == 'add' ) {
+				$groupParams['status'] = $params['is_active'] ? 'Added' : 'Pending';
+			} else {
+				$groupParams['status'] = 'Removed';
+			}
+
 			// We have to call 'create'. WTF?
 			$acl_group_contact = civicrm_api( 'GroupContact', 'create', $groupParams );
 
@@ -1528,13 +1480,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Update a BP group when a CiviCRM contact is added to a group.
+	 * Update a BuddyPress Group when a CiviCRM Contact is added to a Group.
 	 *
 	 * @since 0.1
 	 *
 	 * @param string $op The type of database operation.
 	 * @param string $object_name The type of object.
-	 * @param integer $civi_group_id The ID of the CiviCRM group.
+	 * @param integer $civi_group_id The ID of the CiviCRM Group.
 	 * @param array $contact_ids Array of CiviCRM Contact IDs.
 	 */
 	public function group_contacts_added( $op, $object_name, $civi_group_id, $contact_ids ) {
@@ -1549,7 +1501,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return;
 		}
 
-		// Get group data.
+		// Get Group data.
 		$civi_group = $this->get_civi_group_by_id( $civi_group_id );
 
 		// Sanity check.
@@ -1557,7 +1509,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return;
 		}
 
-		// Get BP group ID.
+		// Get BuddyPress Group ID.
 		$bp_group_id = $this->get_bp_group_id_by_civi_group( $civi_group );
 
 		// Sanity check.
@@ -1565,11 +1517,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return;
 		}
 
-		// Loop through contacts.
+		// Loop through Contacts.
 		if ( count( $contact_ids ) > 0 ) {
 			foreach( $contact_ids AS $contact_id ) {
 
-				// Get contact data.
+				// Get Contact data.
 				$contact = $this->get_contact_by_contact_id( $contact_id );
 
 				// Sanity check and add if okay.
@@ -1580,19 +1532,19 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			}
 		}
 
-		// Assume member group.
+		// Assume Member Group.
 		$is_admin = 0;
 
-		// Add as admin if this us this an ACL group.
+		// Add as Admin if this is this an ACL Group.
 		if ( $this->is_acl_group( $civi_group ) ) {
 			$is_admin = 1;
 		}
 
-		// Add contacts to BP group.
+		// Add Contacts to BuddyPress Group.
 		$this->bp->create_group_members( $bp_group_id, $contacts, $is_admin );
 
-		// If it was an ACL group they were added to, we also need to add them to
-		// the member group - so, bail if this is a member group.
+		// If it was an ACL Group they were added to, we also need to add them to
+		// the Member Group - so, bail if this is a Member Group.
 		if ( $is_admin == 0 ) {
 			return;
 		}
@@ -1600,7 +1552,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// First, remove this action, otherwise we'll recurse.
 		remove_action( 'civicrm_pre', [ $this, 'group_contacts_added' ], 10 );
 
-		// Get the CiviCRM group ID of the member group.
+		// Get the CiviCRM Group ID of the Member Group.
 		$civi_group_id = $this->find_group_id(
 			$this->member_group_get_sync_name( $bp_group_id )
 		);
@@ -1608,10 +1560,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Sanity check.
 		if ( $civi_group_id ) {
 
-			// Add contacts  to member group.
+			// Add Contacts to Member Group.
 			foreach( $contacts AS $contact ) {
 				$this->group_contact_create( $civi_group_id, $contact['contact_id'] );
 			}
+
+			// Promote Members to Group Admins.
+			$this->bp->promote_group_members( $bp_group_id, $contacts, 'admin' );
 
 		}
 
@@ -1623,13 +1578,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Update a BP group when a CiviCRM contact is deleted (or removed) from a group.
+	 * Update a BuddyPress Group when a CiviCRM Contact is deleted (or removed) from a Group.
 	 *
 	 * @since 0.1
 	 *
 	 * @param string $op The type of database operation.
 	 * @param string $object_name The type of object.
-	 * @param integer $civi_group_id The ID of the CiviCRM group.
+	 * @param integer $civi_group_id The ID of the CiviCRM Group.
 	 * @param array $contact_ids Array of CiviCRM Contact IDs.
 	 */
 	public function group_contacts_deleted( $op, $object_name, $civi_group_id, $contact_ids ) {
@@ -1644,7 +1599,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return;
 		}
 
-		// Get group data.
+		// Get Group data.
 		$civi_group = $this->get_civi_group_by_id( $civi_group_id );
 
 		// Sanity check.
@@ -1652,7 +1607,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return;
 		}
 
-		// Get BP group ID.
+		// Get BuddyPress Group ID.
 		$bp_group_id = $this->get_bp_group_id_by_civi_group( $civi_group );
 
 		// Sanity check.
@@ -1660,11 +1615,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return;
 		}
 
-		// Loop through contacts.
+		// Loop through Contacts.
 		if ( count( $contact_ids ) > 0 ) {
 			foreach( $contact_ids AS $contact_id ) {
 
-				// Get contact data.
+				// Get Contact data.
 				$contact = $this->get_contact_by_contact_id( $contact_id );
 
 				// Sanity check and add if okay.
@@ -1675,10 +1630,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			}
 		}
 
-		// Is this an ACL group?
+		// Is this an ACL Group?
 		if ( $this->is_acl_group( $civi_group ) ) {
 
-			// Demote to member of BP group.
+			// Demote to Member of BuddyPress Group.
 			$this->bp->demote_group_members( $bp_group_id, $contacts );
 
 			// Skip deletion.
@@ -1686,13 +1641,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		}
 
-		// Delete from BP group.
+		// Delete from BuddyPress Group.
 		$this->bp->delete_group_members( $bp_group_id, $contacts );
 
 		// First, remove this action, otherwise we'll recurse.
 		remove_action( 'civicrm_pre', [ $this, 'group_contacts_deleted' ], 10 );
 
-		// Get the group ID of the acl group.
+		// Get the Group ID of the ACL Group.
 		$civi_group_id = $this->find_group_id(
 			$this->acl_group_get_sync_name( $bp_group_id )
 		);
@@ -1700,7 +1655,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Sanity check.
 		if ( $civi_group_id ) {
 
-			// Remove members from group.
+			// Remove Members from Group.
 			foreach( $contacts AS $contact ) {
 				$this->group_contact_delete( $civi_group_id, $contact['contact_id'] );
 			}
@@ -1715,17 +1670,17 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Update a BP group when a CiviCRM contact is re-added to a group.
+	 * Update a BuddyPress Group when a CiviCRM Contact is re-added to a Group.
 	 *
 	 * The issue here is that CiviCRM fires 'civicrm_pre' with $op = 'delete' regardless
-	 * of whether the contact is being removed or deleted. If a contact is later re-added
-	 * to the group, then $op != 'create', so we need to intercept $op = 'edit'.
+	 * of whether the Contact is being removed or deleted. If a Contact is later re-added
+	 * to the Group, then $op != 'create', so we need to intercept $op = 'edit'.
 	 *
 	 * @since 0.1
 	 *
 	 * @param string $op The type of database operation.
 	 * @param string $object_name The type of object.
-	 * @param integer $civi_group_id The ID of the CiviCRM group.
+	 * @param integer $civi_group_id The ID of the CiviCRM Group.
 	 * @param array $contact_ids Array of CiviCRM Contact IDs.
 	 */
 	public function group_contacts_rejoined( $op, $object_name, $civi_group_id, $contact_ids ) {
@@ -1746,7 +1701,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Set op to 'create'.
 		$op = 'create';
 
-		// Use our group contact addition callback.
+		// Use our Group Contact addition callback.
 		$this->group_contacts_added( $op, $object_name, $civi_group_id, $contact_ids );
 
 		// Re-add this action.
@@ -1757,11 +1712,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Get CiviCRM contact ID by WordPress user ID.
+	 * Get CiviCRM Contact ID by WordPress User ID.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $user_id The numeric ID of the WordPress user.
+	 * @param int $user_id The numeric ID of the WordPress User.
 	 * @return int $civi_contact_id The numeric ID of the CiviCRM Contact.
 	 */
 	public function get_contact_id( $user_id ) {
@@ -1780,11 +1735,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return $civi_contact_id;
 		}
 
-		// Else synchronize contact for this user.
+		// Else synchronize contact for this User.
 		$user = get_userdata( $user_id );
 		if ( $user ) {
 
-			// Sync this user.
+			// Sync this User.
 			CRM_Core_BAO_UFMatch::synchronizeUFMatch(
 				$user, // User object.
 				$user->ID, // ID.
@@ -1795,7 +1750,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				null // is_login.
 			);
 
-			// Get the CiviCRM contact ID.
+			// Get the CiviCRM Contact ID.
 			$civi_contact_id = CRM_Core_BAO_UFMatch::getContactId( $user_id );
 			if ( ! $civi_contact_id ) {
 
@@ -1838,36 +1793,36 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Get CiviCRM contact data by contact ID.
+	 * Get CiviCRM Contact data by Contact ID.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $contact_id The numeric ID of the CiviCRM contact.
+	 * @param int $contact_id The numeric ID of the CiviCRM Contact.
 	 * @return mixed $civi_contact The array of data for the CiviCRM Contact, or false if not found.
 	 */
 	public function get_contact_by_contact_id( $contact_id ) {
 
-		// Get all contact data.
+		// Get all Contact data.
 		$params = [
 			'version' => 3,
 			'contact_id' => $contact_id,
 		];
 
 		// Use API.
-		$contact_data = civicrm_api( 'contact', 'get', $params );
+		$result = civicrm_api( 'Contact', 'get', $params );
 
 		// Bail if we get any errors.
-		if ( $contact_data['is_error'] == 1 ) {
+		if ( ! empty( $result['is_error'] ) AND $result['is_error'] == 1 ) {
 			return false;
 		}
 
 		// Bail if there are no values.
-		if ( empty( $contact_data['values'] ) ) {
+		if ( empty( $result['values'] ) ) {
 			return false;
 		}
 
-		// Get contact.
-		$contact = array_shift( $contact_data['values'] );
+		// Get Contact.
+		$contact = array_shift( $result['values'] );
 
 		// --<
 		return $contact;
@@ -1881,13 +1836,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Find a CiviCRM group ID by source and (optionally) by title.
+	 * Find a CiviCRM Group ID by source and (optionally) by title.
 	 *
 	 * @since 0.1
 	 *
 	 * @param string $source The sync name for the CiviCRM Group.
 	 * @param string $title The title of the CiviCRM Group to search for.
-	 * @return int|bool $group_id The ID of the CiviCRM group.
+	 * @return int|bool $group_id The ID of the CiviCRM Group.
 	 */
 	public function find_group_id( $source, $title = '' ) {
 
@@ -1908,7 +1863,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		}
 
-		// Let CiviCRM get the group ID.
+		// Let CiviCRM get the Group ID.
 		$civi_group_id = CRM_Core_DAO::singleValueQuery( $query, $params );
 
 		// Check for failure.
@@ -1920,7 +1875,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				$source
 			);
 
-			// Get BP group ID - source is of the form BP Sync Group :BPID:
+			// Get BuddyPress Group ID - source is of the form BP Sync Group :BPID:
 			$tmp = explode( ':', $source );
 			$group_id = $tmp[1];
 
@@ -1930,7 +1885,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				$group_id
 			);
 
-			// Get the group object if we get an ID.
+			// Get the Group object if we get an ID.
 			if ( $group_id ) {
 				$group = groups_get_group( [ 'group_id' => $group_id, 'populate_extras' => true ] );
 				$group_data = print_r( $group, true );
@@ -1956,12 +1911,55 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Get CiviCRM group data by CiviCRM group ID.
+	 * Get all CiviCRM Group data.
+	 *
+	 * @since 0.3.7
+	 *
+	 * @return array $groups The array of CiviCRM Group data.
+	 */
+	public function get_all_civi_groups() {
+
+		// Init return.
+		$groups = [];
+
+		// Define params to get all Groups.
+		$params = [
+			'version' => 3,
+			'options' => [
+				'limit' => '0', // API defaults to 25.
+			],
+		];
+
+		// Call the API.
+		$result = civicrm_api( 'Group', 'get', $params );
+
+		// Bail if there's an error.
+		if ( ! empty( $result['is_error'] ) AND $result['is_error'] == 1 ) {
+			return $groups;
+		}
+
+		// Bail if there are no results.
+		if ( empty( $result['values'] ) ) {
+			return $groups;
+		}
+
+		// The result set is what we're after.
+		$groups = $result['values'];
+
+		// --<
+		return $groups;
+
+	}
+
+
+
+	/**
+	 * Get CiviCRM Group data by CiviCRM Group ID.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $civi_group_id The numeric ID of the CiviCRM group.
-	 * @return mixed $group The array of CiviCRM group data, or false if none found.
+	 * @param int $civi_group_id The numeric ID of the CiviCRM Group.
+	 * @return mixed $group The array of CiviCRM Group data, or false if none found.
 	 */
 	public function get_civi_group_by_id( $civi_group_id ) {
 
@@ -1971,21 +1969,21 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			'group_id' => $civi_group_id,
 		];
 
-		// Get group.
-		$civi_group = civicrm_api( 'group', 'get', $params );
+		// Get Group.
+		$result = civicrm_api( 'Group', 'get', $params );
 
 		// Bail if we get any errors.
-		if ( $civi_group['is_error'] == 1 ) {
+		if ( ! empty( $result['is_error'] ) AND $result['is_error'] == 1 ) {
 			return false;
 		}
 
 		// Bail if there are no values.
-		if ( empty( $civi_group['values'] ) ) {
+		if ( empty( $result['values'] ) ) {
 			return false;
 		}
 
-		// Get group data.
-		$group = array_shift( $civi_group['values'] );
+		// Get Group data.
+		$group = array_shift( $result['values'] );
 
 		// --<
 		return $group;
@@ -1995,21 +1993,21 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Get a BuddyPress group ID by CiviCRM Group data.
+	 * Get a BuddyPress Group ID by CiviCRM Group data.
 	 *
 	 * @since 0.1
 	 *
-	 * @param array $civi_group The array of CiviCRM group data.
-	 * @return mixed $bp_group_id The numeric ID of the BP group, or false if none found.
+	 * @param array $civi_group The array of CiviCRM Group data.
+	 * @return mixed $bp_group_id The numeric ID of the BuddyPress Group, or false if none found.
 	 */
 	public function get_bp_group_id_by_civi_group( $civi_group ) {
 
-		// Bail if group has no reference to BP.
+		// Bail if Group has no reference to BuddyPress.
 		if ( ! $this->has_bp_group( $civi_group ) ) {
 			return false;
 		}
 
-		// Get BP group ID - source is of the form BP Sync Group :BPID:
+		// Get BuddyPress Group ID - source is of the form BP Sync Group :BPID:
 		$tmp = explode( ':', $civi_group['source'] );
 		$bp_group_id = $tmp[1];
 
@@ -2033,12 +2031,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Init return.
 		$group_type = false;
 
-		// Check for member group.
+		// Check for Member Group.
 		if ( strstr( $source, 'BP Sync Group :' ) !== false ) {
 			$group_type = 'member';
 		}
 
-		// Check for ACL group.
+		// Check for ACL Group.
 		if ( strstr( $source, 'BP Sync Group ACL :' ) !== false ) {
 			$group_type = 'acl';
 		}
@@ -2056,7 +2054,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @since 0.1
 	 *
 	 * @param string $group_type The type of CiviCRM Group - either 'member' or 'acl'.
-	 * @return array $return Associative array of CiviCRM group types for the API.
+	 * @return array $return Associative array of CiviCRM Group Types for the API.
 	 */
 	public function civi_group_get_type_by_code( $group_type ) {
 
@@ -2064,14 +2062,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $group_type == 'member' ) {
 
 			/**
-			 * Define CiviCRM group type.
+			 * Define CiviCRM Group Type.
 			 *
 			 * By default, this is set to "Mailing List".
 			 *
 			 * @since 0.1
 			 *
-			 * @param array The existing CiviCRM group type array.
-			 * @return array The modified CiviCRM group type array.
+			 * @param array The existing CiviCRM Group Type array.
+			 * @return array The modified CiviCRM Group Type array.
 			 */
 			$type_data = apply_filters( 'bp_groups_civicrm_sync_member_group_type', [ '2' => 2 ] );
 
@@ -2081,14 +2079,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $group_type == 'acl' ) {
 
 			/**
-			 * Define CiviCRM group type.
+			 * Define CiviCRM Group Type.
 			 *
 			 * By default, this is set to "Access Control".
 			 *
 			 * @since 0.1
 			 *
-			 * @param array The existing CiviCRM group type array.
-			 * @return array The modified CiviCRM group type array.
+			 * @param array The existing CiviCRM Group Type array.
+			 * @return array The modified CiviCRM Group Type array.
 			 */
 			$type_data = apply_filters( 'bp_groups_civicrm_sync_acl_group_type', [ '1' => 1 ] );
 
@@ -2102,12 +2100,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Check if a CiviCRM Group has an associated BuddyPress group.
+	 * Check if a CiviCRM Group has an associated BuddyPress Group.
 	 *
 	 * @since 0.1
 	 *
-	 * @param array $civi_group The array of CiviCRM group data.
-	 * @return boolean $has_group True if CiviCRM group has a BP group, false if not.
+	 * @param array $civi_group The array of CiviCRM Group data.
+	 * @return boolean $has_group True if CiviCRM Group has a BuddyPress Group, false if not.
 	 */
 	public function has_bp_group( $civi_group ) {
 
@@ -2116,7 +2114,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return false;
 		}
 
-		// If the group source has no reference to BP, then it's not.
+		// If the Group source has no reference to BuddyPress, then it's not.
 		if ( strstr( $civi_group['source'], 'BP Sync Group' ) === false ) {
 			return false;
 		}
@@ -2129,16 +2127,16 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Construct name for CiviCRM group.
+	 * Construct name for CiviCRM Group.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $bp_group_id The BuddyPress group ID.
+	 * @param int $bp_group_id The BuddyPress Group ID.
 	 * @return string
 	 */
 	public function member_group_get_sync_name( $bp_group_id ) {
 
-		// Construct name, based on OG schema.
+		// Construct name, based on Organic Groups schema.
 		return 'BP Sync Group :' . $bp_group_id . ':';
 
 	}
@@ -2146,21 +2144,21 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Check if a CiviCRM Group is a BuddyPress member group.
+	 * Check if a CiviCRM Group is a BuddyPress Member Group.
 	 *
 	 * @since 0.1
 	 *
-	 * @param array $civi_group The array of CiviCRM group data.
-	 * @return boolean $is_member_group True if CiviCRM group is a BP member group, false if not.
+	 * @param array $civi_group The array of CiviCRM Group data.
+	 * @return boolean $is_member_group True if CiviCRM Group is a BuddyPress Member Group, false if not.
 	 */
 	public function is_member_group( $civi_group ) {
 
-		// Bail if group has no reference to BP.
+		// Bail if Group has no reference to BuddyPress.
 		if ( ! $this->has_bp_group( $civi_group ) ) {
 			return false;
 		}
 
-		// If the group source has a reference to BP, then it is.
+		// If the Group source has a reference to BuddyPress, then it is.
 		if ( strstr( $civi_group['source'], 'BP Sync Group :' ) !== false ) {
 			return true;
 		}
@@ -2173,16 +2171,16 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Construct name for CiviCRM ACL group.
+	 * Construct name for CiviCRM ACL Group.
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $bp_group_id The BuddyPress group ID.
+	 * @param int $bp_group_id The BuddyPress Group ID.
 	 * @return string
 	 */
 	public function acl_group_get_sync_name( $bp_group_id ) {
 
-		// Construct name, based on OG schema.
+		// Construct name, based on Organic Groups schema.
 		return 'BP Sync Group ACL :' . $bp_group_id . ':';
 
 	}
@@ -2190,21 +2188,21 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Check if a CiviCRM Group is a BuddyPress ACL group.
+	 * Check if a CiviCRM Group is a BuddyPress ACL Group.
 	 *
 	 * @since 0.1
 	 *
-	 * @param array $civi_group The array of CiviCRM group data.
-	 * @return boolean $is_acl_group True if CiviCRM group is a BP ACL group, false if not.
+	 * @param array $civi_group The array of CiviCRM Group data.
+	 * @return boolean $is_acl_group True if CiviCRM Group is a BuddyPress ACL Group, false if not.
 	 */
 	public function is_acl_group( $civi_group ) {
 
-		// Bail if group has no reference to BP.
+		// Bail if Group has no reference to BuddyPress.
 		if ( ! $this->has_bp_group( $civi_group ) ) {
 			return false;
 		}
 
-		// If the group source has a reference to BP ACL, then it is.
+		// If the Group source has a reference to BuddyPress ACL, then it is.
 		if ( strstr( $civi_group['source'], 'BP Sync Group ACL :' ) !== false ) {
 			return true;
 		}
@@ -2376,7 +2374,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Enable a BP group to be created when creating a CiviCRM group.
+	 * Enable a BuddyPress Group to be created when creating a CiviCRM Group.
 	 *
 	 * @since 0.1
 	 *
@@ -2385,20 +2383,20 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 */
 	public function form_create_bp_group_options( $formName, &$form ) {
 
-		// Is this the group edit form?
+		// Is this the Group edit form?
 		if ( $formName != 'CRM_Group_Form_Edit' ) {
 			return;
 		}
 
-		// Get CiviCRM group.
+		// Get CiviCRM Group.
 		$civi_group = $form->getVar( '_group' );
 
-		// If we have a group, bail.
+		// If we have a Group, bail.
 		if ( ! empty( $civi_group ) ) {
 			return;
 		}
 
-		// Okay, it's the new group form.
+		// Okay, it's the new Group form.
 
 		// Add the field element in the form.
 		$form->add( 'checkbox', 'bpgroupscivicrmsynccreatefromnew', __( 'Create BuddyPress Group', 'bp-groups-civicrm-sync' ) );
@@ -2413,7 +2411,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Create a BP group when creating a CiviCRM group.
+	 * Create a BuddyPress Group when creating a CiviCRM Group.
 	 *
 	 * @since 0.1
 	 *
@@ -2422,7 +2420,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 */
 	public function form_create_bp_group_process( $formName, &$form ) {
 
-		// Kick out if not group edit form.
+		// Kick out if not Group edit form.
 		if ( ! ( $form instanceof CRM_Group_Form_Edit ) ) {
 			return;
 		}
@@ -2438,9 +2436,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return;
 		}
 
-		// The group hasn't been created yet.
+		// The Group hasn't been created yet.
 
-		// Get CiviCRM group.
+		// Get CiviCRM Group.
 		$civi_group = $form->getVar( '_group' );
 
 		$e = new \Exception;
@@ -2452,7 +2450,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			//'backtrace' => $trace,
 		], true ) );
 
-		// Convert to BP group.
+		// Convert to BuddyPress Group.
 		$this->civi_group_to_bp_group_convert( $civi_group );
 
 	}
@@ -2460,11 +2458,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Create a BP group from a CiviCRM group.
+	 * Create a BuddyPress Group from a CiviCRM Group.
 	 *
 	 * @since 0.1
 	 *
-	 * @param object $civi_group The CiviCRM group object.
+	 * @param object $civi_group The CiviCRM Group object.
 	 */
 	public function civi_group_to_bp_group_convert( $civi_group ) {
 
@@ -2483,29 +2481,29 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		remove_action( 'groups_create_group', [ $this->bp, 'create_civi_group' ], 100 );
 		remove_action( 'groups_details_updated', [ $this->bp, 'update_civi_group_details' ], 100 );
 
-		// Create the BuddyPress group.
+		// Create the BuddyPress Group.
 		$bp_group_id = $this->bp->create_group( $civi_group->title, $civi_group->description );
 
 		// Re-add hooks.
 		add_action( 'groups_create_group', [ $this->bp, 'create_civi_group' ], 100, 3 );
 		add_action( 'groups_details_updated', [ $this->bp, 'update_civi_group_details' ], 100, 1 );
 
-		// Get all contacts in this group.
+		// Get all Contacts in this Group.
 		$params = [
 			'version' => 3,
 			'group' => $civi_group->id,
 		];
 
-		// Use API to get members.
-		$group_admins = civicrm_api( 'contact', 'get', $params );
+		// Use API to get Members.
+		$group_admins = civicrm_api( 'Contact', 'get', $params );
 
-		// Do we have any members?
+		// Do we have any Members?
 		if ( isset( $group_admins['values'] ) AND count( $group_admins['values'] ) > 0 ) {
 
-			// Make admins.
+			// Make Admins.
 			$is_admin = 1;
 
-			// Create memberships from the CiviCRM contacts.
+			// Create Memberships from the CiviCRM Contacts.
 			$this->bp->create_group_members( $bp_group_id, $group_admins['values'], $is_admin );
 
 		}
@@ -2515,46 +2513,46 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Get source safely.
 		$source = isset( $civi_group->source ) ? $civi_group->source : '';
 
-		// Get the non-ACL CiviCRM group ID.
+		// Get the non-ACL CiviCRM Group ID.
 		$civi_group_id = $this->find_group_id(
 			str_replace( 'OG Sync Group ACL', 'OG Sync Group', $source )
 		);
 
-		// Get all contacts in this group.
+		// Get all Contacts in this Group.
 		$params = [
 			'version' => 3,
 			'group' => $civi_group_id,
 		];
 
-		// Use API to get members.
-		$group_members = civicrm_api( 'contact', 'get', $params );
+		// Use API to get Members.
+		$group_members = civicrm_api( 'Contact', 'get', $params );
 
-		// Do we have any members?
+		// Do we have any Members?
 		if ( isset( $group_members['values'] ) AND count( $group_members['values'] ) > 0 ) {
 
-			// Make members.
+			// Make Members.
 			$is_admin = 0;
 
-			// Create memberships from the CiviCRM contacts.
+			// Create Memberships from the CiviCRM Contacts.
 			$this->bp->create_group_members( $bp_group_id, $group_members['values'], $is_admin );
 
 		}
 
 
 
-		// Update the "source" field for both CiviCRM groups.
+		// Update the "source" field for both CiviCRM Groups.
 
-		// Define CiviCRM ACL group.
+		// Define CiviCRM ACL Group.
 		$acl_group_params = [
 			'version' => 3,
 			'id' => $civi_group->id,
 		];
 
-		// Get name for the CiviCRM group.
+		// Get name for the CiviCRM Group.
 		$acl_group_params['source'] = $this->acl_group_get_sync_name( $bp_group_id );
 
-		// Use CiviCRM API to create the group (will update if ID is set).
-		$acl_group = civicrm_api( 'group', 'create', $acl_group_params );
+		// Use CiviCRM API to create the Group (will update if ID is set).
+		$acl_group = civicrm_api( 'Group', 'create', $acl_group_params );
 
 		// Error check.
 		if ( $acl_group['is_error'] == '1' ) {
@@ -2575,17 +2573,17 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 
-		// Define CiviCRM group.
+		// Define CiviCRM Group.
 		$member_group_params = [
 			'version' => 3,
 			'id' => $civi_group_id,
 		];
 
-		// Get name for the CiviCRM group.
+		// Get name for the CiviCRM Group.
 		$member_group_params['source'] = $this->member_group_get_sync_name( $bp_group_id );
 
-		// Use CiviCRM API to create the group (will update if ID is set).
-		$member_group = civicrm_api( 'group', 'create', $member_group_params );
+		// Use CiviCRM API to create the Group (will update if ID is set).
+		$member_group = civicrm_api( 'Group', 'create', $member_group_params );
 
 		// Error check.
 		if ( $member_group['is_error'] == '1' ) {
@@ -2623,7 +2621,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Enable a BP group to be created from pre-existing Drupal OG groups in CiviCRM.
+	 * Enable a BuddyPress Group to be created from pre-existing Drupal Organic Groups in CiviCRM.
 	 *
 	 * @since 0.1
 	 *
@@ -2632,21 +2630,21 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 */
 	public function form_edit_og_options( $formName, &$form ) {
 
-		// Is this the group edit form?
+		// Is this the Group edit form?
 		if ( $formName != 'CRM_Group_Form_Edit' ) {
 			return;
 		}
 
-		// Get CiviCRM group.
+		// Get CiviCRM Group.
 		$civi_group = $form->getVar( '_group' );
 
 		// Get source safely.
 		$source = isset( $civi_group->source ) ? $civi_group->source : '';
 
-		// In Drupal, OG groups are synced with 'OG Sync Group :GID:'
-		// Related OG ACL groups are synced with 'OG Sync Group ACL :GID:'
+		// In Drupal, Organic Groups are synced with 'OG Sync Group :GID:'
+		// Related Organic Groups ACL Groups are synced with 'OG Sync Group ACL :GID:'
 
-		// Is this an OG administrator group?
+		// Is this an Organic Groups Administrator Group?
 		if ( strstr( $source, 'OG Sync Group ACL' ) === false ) {
 			return;
 		}
@@ -2664,7 +2662,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Create a BP group based on pre-existing CiviCRM/Drupal/OG group.
+	 * Create a BuddyPress Group based on pre-existing CiviCRM/Drupal/Organic Groups.
 	 *
 	 * @since 0.1
 	 *
@@ -2673,7 +2671,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 */
 	public function form_edit_og_process( $formName, &$form ) {
 
-		// Kick out if not group edit form.
+		// Kick out if not Group edit form.
 		if ( ! ( $form instanceof CRM_Group_Form_Edit ) ) {
 			return;
 		}
@@ -2689,10 +2687,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return;
 		}
 
-		// Get CiviCRM group.
+		// Get CiviCRM Group.
 		$civi_group = $form->getVar( '_group' );
 
-		// Convert to BP group.
+		// Convert to BuddyPress Group.
 		$this->og_group_to_bp_group_convert( $civi_group );
 
 	}
@@ -2700,7 +2698,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Convert all legacy OG CiviCRM Groups to BP CiviCRM Groups.
+	 * Convert all legacy Organic Groups CiviCRM Groups to BuddyPress CiviCRM Groups.
 	 *
 	 * @since 0.1
 	 */
@@ -2711,36 +2709,23 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return;
 		}
 
-		// Define get all groups params.
-		$params = [
-			'version' => 3,
-			// Define stupidly high limit, because API defaults to 25.
-			'options' => [
-				'limit' => '10000',
-			],
-		];
+		// Get all Groups.
+		$all_groups = $this->get_all_civi_groups();
 
-		// Get all groups with no parent ID (get ALL for now).
-		$all_groups = civicrm_api( 'group', 'get', $params );
+		// Bail if there are no results.
+		if ( empty( $all_groups ) ) {
+			return;
+		}
 
-		// If we got some.
-		if (
-			$all_groups['is_error'] == 0 AND
-			isset( $all_groups['values'] ) AND
-			count( $all_groups['values'] ) > 0
-		) {
+		// Loop through them.
+		foreach( $all_groups AS $civi_group ) {
 
-			// Loop through them.
-			foreach( $all_groups['values'] AS $civi_group ) {
-
-				// Send for processing.
-				$this->og_group_to_bp_group_convert( (object)$civi_group );
-
-			}
+			// Send for processing.
+			$this->og_group_to_bp_group_convert( (object)$civi_group );
 
 		}
 
-		// Assign to meta group.
+		// Assign to Meta Group.
 		$this->meta_group_groups_assign();
 
 	}
@@ -2748,21 +2733,21 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Create a BP group based on pre-existing CiviCRM/Drupal/OG group.
+	 * Create a BuddyPress Group based on pre-existing CiviCRM/Drupal/Organic Groups.
 	 *
 	 * @since 0.1
 	 *
-	 * @param object $civi_group The CiviCRM group object.
+	 * @param object $civi_group The CiviCRM Group object.
 	 */
 	public function og_group_to_bp_group_convert( $civi_group ) {
 
 		// Get source.
 		$source = $civi_group->source;
 
-		// In Drupal, OG groups are synced with 'OG Sync Group :GID:'
-		// Related OG ACL groups are synced with 'OG Sync Group ACL :GID:'
+		// In Drupal, Organic Groups are synced with 'OG Sync Group :GID:'
+		// Related Organic Groups ACL Groups are synced with 'OG Sync Group ACL :GID:'
 
-		// Is this an OG administrator group?
+		// Is this an Organic Groups Administrator Group?
 		if ( strstr( $source, 'OG Sync Group ACL' ) === false ) {
 			return;
 		}
@@ -2777,7 +2762,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Sanitise title by stripping suffix.
 		$bp_group_title = array_shift( explode( ': Administrator', $civi_group->title ) );
 
-		// Create the BuddyPress group.
+		// Create the BuddyPress Group.
 		$bp_group_id = $this->bp->create_group( $bp_group_title, $civi_group->description );
 
 		// Re-add hooks.
@@ -2786,68 +2771,68 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 
-		// Get all contacts in this group.
+		// Get all Contacts in this Group.
 		$params = [
 			'version' => 3,
 			'group' => $civi_group->id,
 		];
 
-		// Use API to get members.
-		$group_admins = civicrm_api( 'contact', 'get', $params );
+		// Use API to get Members.
+		$group_admins = civicrm_api( 'Contact', 'get', $params );
 
-		// Do we have any members?
+		// Do we have any Members?
 		if ( isset( $group_admins['values'] ) AND count( $group_admins['values'] ) > 0 ) {
 
-			// Make admins.
+			// Make Admins.
 			$is_admin = 1;
 
-			// Create memberships from the CiviCRM contacts.
+			// Create Memberships from the CiviCRM Contacts.
 			$this->bp->create_group_members( $bp_group_id, $group_admins['values'], $is_admin );
 
 		}
 
 
 
-		// Get the non-ACL CiviCRM group ID.
+		// Get the non-ACL CiviCRM Group ID.
 		$civi_group_id = $this->find_group_id(
 			str_replace( 'OG Sync Group ACL', 'OG Sync Group', $source )
 		);
 
-		// Get all contacts in this group.
+		// Get all Contacts in this Group.
 		$params = [
 			'version' => 3,
 			'group' => $civi_group_id,
 		];
 
-		// Use API to get members.
-		$group_members = civicrm_api( 'contact', 'get', $params );
+		// Use API to get Members.
+		$group_members = civicrm_api( 'Contact', 'get', $params );
 
-		// Do we have any members?
+		// Do we have any Members?
 		if ( isset( $group_members['values'] ) AND count( $group_members['values'] ) > 0 ) {
 
-			// Make members.
+			// Make Members.
 			$is_admin = 0;
 
-			// Create memberships from the CiviCRM contacts.
+			// Create Memberships from the CiviCRM Contacts.
 			$this->bp->create_group_members( $bp_group_id, $group_members['values'], $is_admin );
 
 		}
 
 
 
-		// Update the "source" field for both CiviCRM groups.
+		// Update the "source" field for both CiviCRM Groups.
 
-		// Define CiviCRM ACL group.
+		// Define CiviCRM ACL Group.
 		$acl_group_params = [
 			'version' => 3,
 			'id' => $civi_group->id,
 		];
 
-		// Get name for the CiviCRM group.
+		// Get name for the CiviCRM Group.
 		$acl_group_params['source'] = $this->acl_group_get_sync_name( $bp_group_id );
 
-		// Use CiviCRM API to create the group (will update if ID is set).
-		$acl_group = civicrm_api( 'group', 'create', $acl_group_params );
+		// Use CiviCRM API to create the Group (will update if ID is set).
+		$acl_group = civicrm_api( 'Group', 'create', $acl_group_params );
 
 		// Error check.
 		if ( $acl_group['is_error'] == '1' ) {
@@ -2868,17 +2853,17 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 
-		// Define CiviCRM group.
+		// Define CiviCRM Group.
 		$member_group_params = [
 			'version' => 3,
 			'id' => $civi_group_id,
 		];
 
-		// Get name for the CiviCRM group.
+		// Get name for the CiviCRM Group.
 		$member_group_params['source'] = $this->member_group_get_sync_name( $bp_group_id );
 
-		// Use CiviCRM API to create the group (will update if ID is set).
-		$member_group = civicrm_api( 'group', 'create', $member_group_params );
+		// Use CiviCRM API to create the Group (will update if ID is set).
+		$member_group = civicrm_api( 'Group', 'create', $member_group_params );
 
 		// Error check.
 		if ( $member_group['is_error'] == '1' ) {
@@ -2902,7 +2887,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// If no parent.
 		if ( isset( $civi_group['parents'] ) AND $civi_group['parents'] == '' ) {
 
-			// Assign both to meta group.
+			// Assign both to Meta Group.
 			$this->group_nesting_update( $bp_group_id, '0' );
 
 		}
@@ -2912,58 +2897,49 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Do we have any legacy OG CiviCRM Groups?
+	 * Do we have any legacy Organic Groups CiviCRM Groups?
 	 *
 	 * @since 0.1
 	 *
-	 * @return bool True if legacy OG CiviCRM Groups are found, false if not.
+	 * @return bool True if legacy Organic Groups CiviCRM Groups are found, false if not.
 	 */
 	public function has_og_groups() {
 
 		// Init or die.
 		if ( ! $this->is_active() ) {
-			return;
+			return false;
 		}
 
-		// Define get all groups params.
-		$params = [
-			'version' => 3,
-		];
+		// Get all Groups.
+		$all_groups = $this->get_all_civi_groups();
 
-		// Get all groups with no parent ID (get ALL for now).
-		$all_groups = civicrm_api( 'group', 'get', $params );
+		// Bail if there are no results.
+		if ( empty( $all_groups ) ) {
+			return false;
+		}
 
-		// If we got some.
-		if (
-			$all_groups['is_error'] == 0 AND
-			isset( $all_groups['values'] ) AND
-			count( $all_groups['values'] ) > 0
-		) {
+		// Loop through them.
+		foreach( $all_groups AS $civi_group ) {
 
-			// Loop through them.
-			foreach( $all_groups['values'] AS $civi_group ) {
+			// If "source" is not present, it's not an Organic Groups Group.
+			if ( empty( $civi_group['source'] ) ) {
+				continue;
+			}
 
-				// If "source" is not present, it's not an OG group.
-				if ( empty( $civi_group['source'] ) ) {
-					continue;
-				}
+			// Get source.
+			$source = $civi_group['source'];
 
-				// Get source.
-				$source = $civi_group['source'];
+			// In Drupal, Organic Groups are synced with 'OG Sync Group :GID:'
+			// Related Organic Groups ACL Groups are synced with 'OG Sync Group ACL :GID:'
 
-				// In Drupal, OG groups are synced with 'OG Sync Group :GID:'
-				// Related OG ACL groups are synced with 'OG Sync Group ACL :GID:'
+			// Is this an Organic Groups Administrator Group?
+			if ( strstr( $source, 'OG Sync Group ACL :' ) !== false ) {
+				return true;
+			}
 
-				// Is this an OG administrator group?
-				if ( strstr( $source, 'OG Sync Group ACL :' ) !== false ) {
-					return true;
-				}
-
-				// Is this an OG member group?
-				if ( strstr( $source, 'OG Sync Group :' ) !== false ) {
-					return true;
-				}
-
+			// Is this an Organic Groups Member Group?
+			if ( strstr( $source, 'OG Sync Group :' ) !== false ) {
+				return true;
 			}
 
 		}
@@ -2980,18 +2956,18 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Updates a CiviCRM Contact when a WordPress user is updated.
+	 * Updates a CiviCRM Contact when a WordPress User is updated.
 	 *
 	 * @since 0.1
 	 *
-	 * @param object $user A WordPress user object.
+	 * @param object $user A WordPress User object.
 	 */
 	public function _civi_contact_update( $user ) {
 
 		// Make sure CiviCRM file is included.
 		require_once 'CRM/Core/BAO/UFMatch.php';
 
-		// synchronizeUFMatch returns the contact object.
+		// synchronizeUFMatch returns the Contact object.
 		$civi_contact = CRM_Core_BAO_UFMatch::synchronizeUFMatch(
 			$user, // User object.
 			$user->ID, // ID
