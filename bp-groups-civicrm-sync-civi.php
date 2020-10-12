@@ -1426,7 +1426,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$group_contact = civicrm_api( 'GroupContact', 'create', $groupParams );
 
 		// Do we have an admin user?
-		if ( isset( $params['is_admin'] ) AND ! is_null( $params['is_admin'] ) ) {
+		if ( ! empty( $params['is_admin'] ) AND $params['is_admin'] == '1' ) {
 
 			// Get the group ID of the acl group.
 			$civi_group_id = $this->find_group_id(
