@@ -46,7 +46,8 @@ This plugin is in active development. For feature requests and bug reports (or i
 
 = 0.3.7 =
 
-* Add filter to exclude BuddyPress groups from sync
+* Adds filter to exclude BuddyPress groups from sync
+* Fixes ACL group membership sync
 
 = 0.3.6 =
 
