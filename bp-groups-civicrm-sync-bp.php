@@ -1087,6 +1087,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			'uf_id' => $user_id,
 			'is_active' => $is_active,
 			'is_admin' => $is_admin,
+			'bp_status' => $status,
 		];
 
 		// First, remove the CiviCRM actions, otherwise we may recurse.
@@ -1133,6 +1134,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			'uf_id' => $user_id,
 			'is_active' => 0,
 			'is_admin' => $is_admin,
+			'bp_status' => $status,
 		];
 
 		// First, remove the CiviCRM action, otherwise we'll recurse.

@@ -568,6 +568,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			'uf_id' => $bp_group->creator_id,
 			'is_active' => 1,
 			'is_admin' => 1,
+			'bp_status' => $status,
 		];
 
 		// Use clone of CRM_Bridge_OG_Drupal::og().
@@ -1465,7 +1466,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				'status' => $params['is_admin'] ? 'Added' : 'Removed',
 			];
 
-			// Set status based on operation type and status.
+			// Sanity check.
+			if ( ! isset( $params['bp_status'] ) ) {
+				$params['bp_status'] = '';
+			}
+
+			// Set status based on operation type and BP status.
 			if ( $op == 'add' AND $params['bp_status'] != 'ex-admin' ) {
 				$groupParams['status'] = $params['is_active'] ? 'Added' : 'Pending';
 			} else {
