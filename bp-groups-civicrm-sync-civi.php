@@ -1445,9 +1445,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// We have to call 'create'. WTF?
 		$group_contact = civicrm_api( 'GroupContact', 'create', $groupParams );
 
-		// Do we have an Admin User?
+		// Do we have an Admin User - or Admin being demoted?
 		if (
 			( ! empty( $params['is_admin'] ) AND $params['is_admin'] == '1' )
+			OR
+			$params['bp_status'] == 'ex-admin'
 		) {
 
 			// Get the Group ID of the ACL Group.
@@ -1464,7 +1466,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			];
 
 			// Set status based on operation type and status.
-			if ( $op == 'add' ) {
+			if ( $op == 'add' AND $params['bp_status'] != 'ex-admin' ) {
 				$groupParams['status'] = $params['is_active'] ? 'Added' : 'Pending';
 			} else {
 				$groupParams['status'] = 'Removed';

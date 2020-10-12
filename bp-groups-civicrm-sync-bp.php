@@ -971,9 +971,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			return;
 		}
 
-		// If a Group Admin is being demoted, clear status.
+		// If a Group Admin is being demoted, set special status.
 		if ( $status == 'admin' AND 'groups_demote_member' == current_action() ) {
-			$status = '';
+			$status = 'ex-admin';
 		}
 
 		// Make status numeric for CiviCRM.
