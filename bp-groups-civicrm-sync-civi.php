@@ -356,10 +356,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		} else {
 
 			// Debug.
+			$e = new \Exception;
+			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
 				'all_groups' => $all_groups,
-				'backtrace' => wp_debug_backtrace_summary(),
+				'backtrace' => $trace,
 			], true ) );
 
 		}
@@ -445,10 +447,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		} else {
 
 			// Debug.
+			$e = new \Exception;
+			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
 				'all_groups' => $all_groups,
-				'backtrace' => wp_debug_backtrace_summary(),
+				'backtrace' => $trace,
 			], true ) );
 
 		}
@@ -856,11 +860,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $create_result['is_error'] == '1' ) {
 
 			// Debug.
+			$e = new \Exception;
+			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
 				'create_params' => $create_params,
 				'create_result' => $create_result,
-				'backtrace' => wp_debug_backtrace_summary(),
+				'backtrace' => $trace,
 			], true ) );
 
 		}
@@ -906,13 +912,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			);
 
 			// Log identifying data.
+			$e = new \Exception;
+			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
 				'message' => $message,
 				'bp_group_id' => $bp_group_id,
 				'bp_parent_id' => $bp_parent_id,
 				'source' => $source,
-				'backtrace' => wp_debug_backtrace_summary(),
+				'backtrace' => $trace,
 			], true ) );
 
 			return;
@@ -1162,12 +1170,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		} else {
 
 			// Log identifying data.
+			$e = new \Exception;
+			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
 				'message' => __( 'Could not create CiviCRM group', 'bp-groups-civicrm-sync' ),
 				'params' => $params,
 				'group' => $group,
-				'backtrace' => wp_debug_backtrace_summary(),
+				'backtrace' => $trace,
 			], true ) );
 
 			// Set flag.
@@ -1226,12 +1236,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		} else {
 
 			// Log identifying data.
+			$e = new \Exception;
+			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
 				'message' => __( 'Could not update CiviCRM group', 'bp-groups-civicrm-sync' ),
 				'params' => $params,
 				'group' => $group,
-				'backtrace' => wp_debug_backtrace_summary(),
+				'backtrace' => $trace,
 			], true ) );
 
 			// Set flag.
@@ -1377,11 +1389,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				);
 
 				// Log something.
+				$e = new \Exception;
+				$trace = $e->getTraceAsString();
 				error_log( print_r( [
 					'method' => __METHOD__,
 					'error' => $error,
 					'user' => print_r( new WP_User( $user_id ), true ),
-					'backtrace' => wp_debug_backtrace_summary(),
+					'backtrace' => $trace,
 				], true ) );
 
 			}
@@ -1707,11 +1721,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 					);
 
 					// Log something.
+					$e = new \Exception;
+					$trace = $e->getTraceAsString();
 					error_log( print_r( [
 						'method' => __METHOD__,
 						'error' => $error,
 						'user' => print_r( new WP_User( $user_id ), true ),
-						'backtrace' => wp_debug_backtrace_summary(),
+						'backtrace' => $trace,
 					], true ) );
 
 				}
@@ -1828,11 +1844,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			}
 
 			// Log something.
+			$e = new \Exception;
+			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
 				'error' => $error,
 				'group' => $group_data,
-				'backtrace' => wp_debug_backtrace_summary(),
+				'backtrace' => $trace,
 			], true ) );
 
 		}
@@ -2308,7 +2326,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Get CiviCRM group.
 		$civi_group = $form->getVar( '_group' );
 
-		$e = new Exception;
+		$e = new \Exception;
 		$trace = $e->getTraceAsString();
 		error_log( print_r( [
 			'method' => __METHOD__,
@@ -2336,7 +2354,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Set flag so that we don't act on the 'groups_create_group' action.
 		$this->do_not_sync = true;
 
-		$e = new Exception;
+		$e = new \Exception;
 		$trace = $e->getTraceAsString();
 		error_log( print_r( [
 			'method' => __METHOD__,
@@ -2425,10 +2443,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $acl_group['is_error'] == '1' ) {
 
 			// Debug.
+			$e = new \Exception;
+			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
 				'acl_group' => $acl_group,
-				'backtrace' => wp_debug_backtrace_summary(),
+				'backtrace' => $trace,
 			], true ) );
 
 			// Bail.
@@ -2454,10 +2474,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $member_group['is_error'] == '1' ) {
 
 			// Debug.
+			$e = new \Exception;
+			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
 				'member_group' => $member_group,
-				'backtrace' => wp_debug_backtrace_summary(),
+				'backtrace' => $trace,
 			], true ) );
 
 			// Bail.
@@ -2700,10 +2722,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $acl_group['is_error'] == '1' ) {
 
 			// Debug.
+			$e = new \Exception;
+			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
 				'acl_group' => $acl_group,
-				'backtrace' => wp_debug_backtrace_summary(),
+				'backtrace' => $trace,
 			], true ) );
 
 			// Bail.
@@ -2729,10 +2753,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $member_group['is_error'] == '1' ) {
 
 			// Debug.
+			$e = new \Exception;
+			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
 				'member_group' => $member_group,
-				'backtrace' => wp_debug_backtrace_summary(),
+				'backtrace' => $trace,
 			], true ) );
 
 			// Bail.
