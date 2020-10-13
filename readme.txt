@@ -2,7 +2,7 @@
 Contributors: needle, cuny-academic-commons
 Donate link: https://www.paypal.me/interactivist
 Tags: civicrm, buddypress, user, groups, sync
-Requires at least: 3.9
+Requires at least: 4.9
 Tested up to: 5.5
 Stable tag: 0.3.7
 License: GPLv2 or later
@@ -14,9 +14,7 @@ BP Groups CiviCRM Sync enables two-way synchronisation between BuddyPress groups
 
 == Description ==
 
-A port of the Drupal civicrm_og_sync module for WordPress that enables two-way synchronisation between BuddyPress Groups and CiviCRM. It does not rely on any core CiviCRM files, since any required (or adapted) methods are included.
-
-For each *BuddyPress* group, the plugin will automatically create two *CiviCRM* groups:
+This plugin provides two-way synchronisation between *CiviCRM Groups* and *BuddyPress Groups* in a similar way to the Drupal *Organic Groups CiviCRM* module. For each *BuddyPress* group, the plugin will automatically create two *CiviCRM* groups:
 
 * A "normal" (mailing list) group containing a contact record for each corresponding *BuddyPress* group member. This group is assigned the same name as the linked *BuddyPress* group.
 * An "ACL" group containing the contact record of the administrators of the corresponding *BuddyPress* group. This gives *BuddyPress* group admins the ability to view and edit members of their group in *CiviCRM*.
@@ -25,7 +23,7 @@ When a new user is added to (or joins) a *BuddyPress* group, they are automatica
 
 ### Requirements
 
-This plugin requires a minimum of *WordPress 3.9*, *BuddyPress 1.8* and *CiviCRM 4.6*.
+This plugin requires a minimum of *WordPress 4.9*, *BuddyPress 1.8* and *CiviCRM 4.7*. Having the latest version of each plugin active is, of course, highly recommended.
 
 ### Plugin Development
 

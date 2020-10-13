@@ -2,7 +2,7 @@
 --------------------------------------------------------------------------------
 Plugin Name: BP Groups CiviCRM Sync
 Plugin URI: https://github.com/christianwach/bp-groups-civicrm-sync
-Description: A port of the Drupal civicrm_og_sync module for WordPress that enables two-way synchronisation between BuddyPress Groups and CiviCRM Groups.
+Description: Enables two-way synchronisation between BuddyPress Groups and CiviCRM Groups.
 Author: Christian Wach
 Version: 0.3.7
 Author URI: http://haystack.co.uk
