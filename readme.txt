@@ -46,6 +46,7 @@ This plugin is in active development. For feature requests and bug reports (or i
 
 * Adds filter to exclude BuddyPress groups from sync
 * Fixes ACL group membership sync
+* Disables the UI for creating a BuddyPress Group from a CiviCRM Group - create a BuddyPress Group instead
 
 = 0.3.6 =
 
