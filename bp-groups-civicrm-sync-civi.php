@@ -102,10 +102,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		add_action( 'civicrm_config', [ $this, 'register_directories' ], 10, 1 );
 
 		// Intercept CiviCRM Group create form.
-		add_action( 'civicrm_buildForm', [ $this, 'form_create_bp_group_options' ], 10, 2 );
+		//add_action( 'civicrm_buildForm', [ $this, 'form_create_bp_group_options' ], 10, 2 );
 
 		// Intercept CiviCRM Group create form submission.
-		add_action( 'civicrm_postProcess', [ $this, 'form_create_bp_group_process' ], 10, 2 );
+		//add_action( 'civicrm_postProcess', [ $this, 'form_create_bp_group_process' ], 10, 2 );
 
 		// Intercept CiviCRM Drupal Organic Groups edit form.
 		add_action( 'civicrm_buildForm', [ $this, 'form_edit_og_options' ], 10, 2 );
@@ -2419,7 +2419,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Create a BuddyPress Group when creating a CiviCRM Group.
+	 * Maybe create a BuddyPress Group when creating a CiviCRM Group.
 	 *
 	 * @since 0.1
 	 *
@@ -2449,14 +2449,17 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Get CiviCRM Group.
 		$civi_group = $form->getVar( '_group' );
 
+		/*
 		$e = new \Exception;
 		$trace = $e->getTraceAsString();
 		error_log( print_r( [
 			'method' => __METHOD__,
 			'values' => $values,
+			'form' => $form,
 			'civi_group' => $civi_group,
 			//'backtrace' => $trace,
 		], true ) );
+		*/
 
 		// Convert to BuddyPress Group.
 		$this->civi_group_to_bp_group_convert( $civi_group );
@@ -2477,6 +2480,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Set flag so that we don't act on the 'groups_create_group' action.
 		$this->do_not_sync = true;
 
+		/*
 		$e = new \Exception;
 		$trace = $e->getTraceAsString();
 		error_log( print_r( [
@@ -2484,6 +2488,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			'civi_group' => $civi_group,
 			//'backtrace' => $trace,
 		], true ) );
+		*/
 
 		// Remove hooks.
 		remove_action( 'groups_create_group', [ $this->bp, 'create_civi_group' ], 100 );
