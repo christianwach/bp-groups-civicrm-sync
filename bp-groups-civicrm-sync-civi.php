@@ -562,7 +562,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			'uf_id' => $bp_group->creator_id,
 			'is_active' => 1,
 			'is_admin' => 1,
-			'bp_status' => $status,
 		];
 
 		// Use clone of CRM_Bridge_OG_Drupal::og().
