@@ -1,15 +1,15 @@
-<?php /*
-================================================================================
-BP Groups CiviCRM Sync Uninstaller
-================================================================================
-AUTHOR: Christian Wach <needle@haystack.co.uk>
---------------------------------------------------------------------------------
-NOTES
-=====
+<?php
+/**
+ * Uninstaller.
+ *
+ * Handles uninstall functionality.
+ *
+ * @package BP_Groups_CiviCRM_Sync
+ * @since 0.1
+ */
 
-
---------------------------------------------------------------------------------
-*/
+// Exit if accessed directly.
+defined( 'ABSPATH' ) || exit;
 
 
 
@@ -23,5 +23,3 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 // Delete options.
 delete_option( 'bp_groups_civicrm_sync_settings' );
 delete_option( 'bp_groups_civicrm_sync_version' );
-
-

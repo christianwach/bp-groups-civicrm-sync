@@ -1,4 +1,17 @@
 <?php
+/**
+ * Admin Class.
+ *
+ * Handles admin functionality.
+ *
+ * @package BP_Groups_CiviCRM_Sync
+ * @since 0.1
+ */
+
+// Exit if accessed directly.
+defined( 'ABSPATH' ) || exit;
+
+
 
 /**
  * BP Groups CiviCRM Sync Admin Class.
@@ -208,12 +221,12 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	public function admin_menu() {
 
 		// We must be network admin in multisite.
-		if ( is_multisite() AND ! is_super_admin() ) {
+		if ( is_multisite() && ! is_super_admin() ) {
 			return false;
 		}
 
 		// Check user permissions.
-		if ( ! current_user_can('manage_options') ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
 			return false;
 		}
 
@@ -243,10 +256,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		}
 
-		// Add styles and scripts only on our Settings admin page.
-		// @see wp-admin/admin-header.php
-		//add_action( 'admin_print_styles-' . $this->parent_page, [ $this, 'admin_settings_styles' ] );
-		//add_action( 'admin_print_scripts-' . $this->parent_page, [ $this, 'admin_settings_scripts' ] );
+		// Implement menu highlighting.
 		add_action( 'admin_head-' . $this->parent_page, [ $this, 'admin_head' ], 50 );
 		add_action( 'admin_head-' . $this->parent_page, [ $this, 'admin_menu_highlight' ], 50 );
 
@@ -260,10 +270,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 			[ $this, 'page_settings' ] // Callback.
 		);
 
-		// Add styles and scripts only on our Settings admin page.
-		// @see wp-admin/admin-header.php
-		//add_action( 'admin_print_styles-' . $this->settings_page, [ $this, 'admin_settings_styles' ] );
-		//add_action( 'admin_print_scripts-' . $this->settings_page, [ $this, 'admin_settings_scripts' ] );
+		// Implement menu highlighting.
 		add_action( 'admin_head-' . $this->settings_page, [ $this, 'admin_head' ], 50 );
 		add_action( 'admin_head-' . $this->settings_page, [ $this, 'admin_menu_highlight' ], 50 );
 
@@ -278,9 +285,10 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		);
 
 		// Add styles and scripts only on our Utilities admin page.
-		// @see wp-admin/admin-header.php
 		add_action( 'admin_print_styles-' . $this->sync_page, [ $this, 'admin_utilities_styles' ] );
 		add_action( 'admin_print_scripts-' . $this->sync_page, [ $this, 'admin_utilities_scripts' ] );
+
+		// Implement menu highlighting.
 		add_action( 'admin_head-' . $this->sync_page, [ $this, 'admin_head' ], 50 );
 		add_action( 'admin_head-' . $this->sync_page, [ $this, 'admin_menu_highlight' ], 50 );
 
@@ -306,8 +314,8 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		// Define subpages.
 		$subpages = [
-		 	'bp_groups_civicrm_sync_settings',
-		 	'bp_groups_civicrm_sync_utilities',
+			'bp_groups_civicrm_sync_settings',
+			'bp_groups_civicrm_sync_utilities',
 		];
 
 		// This tweaks the Settings subnav menu to show only one menu item.
@@ -369,7 +377,8 @@ class BP_Groups_CiviCRM_Sync_Admin {
 			'bgcs-utilities-js',
 			BP_GROUPS_CIVICRM_SYNC_URL . 'assets/js/bgcs-admin-utilities.js',
 			[ 'jquery', 'jquery-ui-core', 'jquery-ui-progressbar' ],
-			BP_GROUPS_CIVICRM_SYNC_VERSION
+			BP_GROUPS_CIVICRM_SYNC_VERSION,
+			true
 		);
 
 		// Init localisation.
@@ -486,7 +495,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		// Checked by default.
 		$checked = ' checked="checked"';
-		if ( isset( $parent_group ) AND $parent_group === 0 ) {
+		if ( isset( $parent_group ) && $parent_group === 0 ) {
 			$checked = '';
 		}
 
@@ -504,7 +513,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 			// Checked by default.
 			$hierarchy_checked = ' checked="checked"';
-			if ( isset( $hierarchy ) AND $hierarchy === 0 ) {
+			if ( isset( $hierarchy ) && $hierarchy === 0 ) {
 				$hierarchy_checked = '';
 			}
 
@@ -563,22 +572,13 @@ class BP_Groups_CiviCRM_Sync_Admin {
 					$messages .= '<div id="message" class="updated"><p>' . __( 'No Organic Groups found.', 'bp-groups-civicrm-sync' ) . '</p></div>';
 				}
 
-			} else {
-
-				// Are we checking BuddyPress?
-				if ( $checking_bp ) {
-				} else {
-					// Show settings updated message.
-					//$messages .= '<div id="message" class="updated"><p>' . __( 'Options saved.', 'bp-groups-civicrm-sync' ) . '</p></div>';
-				}
-
 			}
 
 		}
 
 		// Show "Organic Group to BuddyPress Sync" if we have Organic Groups.
 		$og_to_bp_do_sync = false;
-		if ( $checking_og AND $has_og_groups ) {
+		if ( $checking_og && $has_og_groups ) {
 			$og_to_bp_do_sync = true;
 		}
 
@@ -646,9 +646,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		global $_parent_pages;
 
-		if ( isset( $_parent_pages[$menu_slug] ) ) {
-			$parent_slug = $_parent_pages[$menu_slug];
-			if ( $parent_slug && ! isset( $_parent_pages[$parent_slug] ) ) {
+		if ( isset( $_parent_pages[ $menu_slug ] ) ) {
+			$parent_slug = $_parent_pages[ $menu_slug ];
+			if ( $parent_slug && ! isset( $_parent_pages[ $parent_slug ] ) ) {
 				$url = network_admin_url( add_query_arg( 'page', $menu_slug, $parent_slug ) );
 			} else {
 				$url = network_admin_url( 'admin.php?page=' . $menu_slug );
@@ -680,7 +680,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	public function admin_form_url_get() {
 
 		// Sanitise admin page url.
-		$target_url = $_SERVER['REQUEST_URI'];
+		$target_url = wp_unslash( $_SERVER['REQUEST_URI'] );
 		$url_array = explode( '&', $target_url );
 		if ( $url_array ) {
 			$target_url = htmlentities( $url_array[0] . '&updated=true' );
@@ -736,23 +736,23 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 */
 	public function settings_update_router() {
 
-	 	// Was the settings form submitted?
-		if( isset( $_POST['bp_groups_civicrm_sync_settings_submit'] ) ) {
+		// Was the settings form submitted?
+		if ( isset( $_POST['bp_groups_civicrm_sync_settings_submit'] ) ) {
 			$this->settings_update_options();
 		}
 
-	 	// Was the "Stop Sync" button pressed?
-		if( isset( $_POST['bp_groups_civicrm_sync_bp_stop'] ) ) {
+		// Was the "Stop Sync" button pressed?
+		if ( isset( $_POST['bp_groups_civicrm_sync_bp_stop'] ) ) {
 			delete_option( '_bgcs_members_page' );
 			delete_option( '_bgcs_groups_page' );
 			return;
 		}
 
 		// Were any sync operations requested?
-		if(
-			isset( $_POST[ 'bp_groups_civicrm_sync_bp_check' ] ) OR
-			isset( $_POST[ 'bp_groups_civicrm_sync_bp_check_sync' ] ) OR
-			isset( $_POST[ 'bp_groups_civicrm_sync_convert' ] )
+		if (
+			isset( $_POST['bp_groups_civicrm_sync_bp_check'] ) ||
+			isset( $_POST['bp_groups_civicrm_sync_bp_check_sync'] ) ||
+			isset( $_POST['bp_groups_civicrm_sync_convert'] )
 		) {
 			$this->settings_update_sync();
 		}
@@ -854,8 +854,8 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		$urls = $this->page_get_urls();
 
 		// Redirect to settings page with message.
-		wp_redirect( $urls['settings'] . '&updated=true' );
-		die();
+		wp_safe_redirect( add_query_arg( [ 'updated' => 'true' ], $urls['settings'] ) );
+		exit;
 
 	}
 
@@ -865,8 +865,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * Do sync procedure, depending on which one has been selected.
 	 *
 	 * @since 0.1
-	 *
-	 * @return boolean True if sync performed, false otherwise.
 	 */
 	public function settings_update_sync() {
 
@@ -888,7 +886,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		// Did we ask to check the sync of BuddyPress Groups and CiviCRM Groups?
 		if ( ! empty( $bp_groups_civicrm_sync_bp_check_sync ) ) {
-			$this->check_sync_between_bp_and_civi();
+			//$this->check_sync_between_bp_and_civi();
 		}
 
 		// Did we ask to convert Organic Groups?
@@ -900,8 +898,8 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		$urls = $this->page_get_urls();
 
 		// Redirect to utilities page with message.
-		wp_redirect( $urls['utilities'] . '&updated=true' );
-		die();
+		wp_safe_redirect( add_query_arg( [ 'updated' => 'true' ], $urls['utilities'] ) );
+		exit;
 
 	}
 
@@ -928,6 +926,8 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 *
+	 * @param str $setting_name The name of the setting.
+	 * @param mixed $default The default value of the setting.
 	 * @return mixed $setting The value of the setting.
 	 */
 	public function setting_get( $setting_name = '', $default = false ) {
@@ -938,7 +938,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		}
 
 		// Get setting.
-		return ( array_key_exists( $setting_name, $this->settings ) ) ? $this->settings[$setting_name] : $default;
+		return ( array_key_exists( $setting_name, $this->settings ) ) ? $this->settings[ $setting_name ] : $default;
 
 	}
 
@@ -948,6 +948,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * Set a value for a specified setting.
 	 *
 	 * @since 0.1
+	 *
+	 * @param str $setting_name The name of the setting.
+	 * @param mixed $value The value for the setting.
 	 */
 	public function setting_set( $setting_name = '', $value = '' ) {
 
@@ -957,7 +960,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		}
 
 		// Set setting.
-		$this->settings[$setting_name] = $value;
+		$this->settings[ $setting_name ] = $value;
 
 	}
 
@@ -1105,15 +1108,15 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		}
 
 		// Is this an AJAX request?
-		if ( defined( 'DOING_AJAX' ) AND DOING_AJAX ) {
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 
 			// Set reasonable headers.
-			header('Content-type: text/plain');
-			header("Cache-Control: no-cache");
-			header("Expires: -1");
+			header( 'Content-type: text/plain' );
+			header( 'Cache-Control: no-cache' );
+			header( 'Expires: -1' );
 
 			// Echo.
-			echo json_encode( $data );
+			echo wp_json_encode( $data );
 
 			// Die.
 			exit();
@@ -1131,9 +1134,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 */
 	public function check_sync_between_bp_and_civi() {
 
-		// Disable.
-		return;
-
 		// Init or die.
 		if ( ! $this->civi->is_active() ) {
 			return;
@@ -1143,15 +1143,15 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		$params = [
 			'version' => 3,
 			'options' => [
-				'limit' => '0', // API defaults to 25.
+				'limit' => 0, // API defaults to 25.
 			],
 		];
 
-		// Get all Groups with no parent ID (get ALL for now)
+		// Get all Groups with no parent ID - get ALL for now.
 		$result = civicrm_api( 'Group', 'get', $params );
 
 		// Bail if there's an error.
-		if ( ! empty( $result['is_error'] ) AND $result['is_error'] == 1 ) {
+		if ( ! empty( $result['is_error'] ) && $result['is_error'] == 1 ) {
 			return;
 		}
 
@@ -1161,7 +1161,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		}
 
 		// Loop through them.
-		foreach( $all_groups['values'] AS $civi_group ) {
+		foreach ( $all_groups['values'] as $civi_group ) {
 
 			// Is this Group supposed to have a BuddyPress Group?
 			$has_group = $this->civi->has_bp_group( $civi_group );

@@ -1,4 +1,17 @@
 <?php
+/**
+ * CiviCRM Class.
+ *
+ * Handles CiviCRM-related functionality.
+ *
+ * @package BP_Groups_CiviCRM_Sync
+ * @since 0.1
+ */
+
+// Exit if accessed directly.
+defined( 'ABSPATH' ) || exit;
+
+
 
 /**
  * BP Groups CiviCRM Sync CiviCRM Class.
@@ -218,7 +231,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		);
 
 		// Skip if it already exists.
-		if ( is_numeric( $civi_meta_group_id ) AND $civi_meta_group_id > 0 ) {
+		if ( is_numeric( $civi_meta_group_id ) && $civi_meta_group_id > 0 ) {
 
 			// Skip.
 
@@ -247,7 +260,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		//$this->meta_group_groups_assign();
 
 		// Do the database transaction.
-	    $transaction->commit();
+		$transaction->commit();
 
 	}
 
@@ -271,7 +284,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		);
 
 		// If it exists.
-		if ( is_numeric( $civi_meta_group_id ) AND $civi_meta_group_id > 0 ) {
+		if ( is_numeric( $civi_meta_group_id ) && $civi_meta_group_id > 0 ) {
 
 			// Init transaction.
 			$transaction = new CRM_Core_Transaction();
@@ -319,26 +332,23 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		}
 
 		// Loop.
-		foreach( $all_groups AS $group ) {
+		foreach ( $all_groups as $group ) {
 
 			// Skip if there is a parent.
 			if ( empty( $group['parents'] ) ) {
 				continue;
 			}
 
-			// Init transaction.
-			//$transaction = new CRM_Core_Transaction();
-
 			// Set BuddyPress Group to empty, which triggers assignment to Meta Group.
 			$bp_parent_id = 0;
 
 			// Exclude container Group.
-			if ( isset( $group['id'] ) AND $group['id'] == $civi_meta_group_id ) {
+			if ( isset( $group['id'] ) && $group['id'] == $civi_meta_group_id ) {
 				continue;
 			}
 
 			// If "source" is not present, it's not an OG/BuddyPress Group.
-			if ( ! isset( $group['source'] ) OR is_null( $group['source'] ) ) {
+			if ( ! isset( $group['source'] ) || is_null( $group['source'] ) ) {
 				continue;
 			}
 
@@ -356,9 +366,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 			// Update the Group.
 			$success = $this->update_group( $group );
-
-			// Do the database transaction.
-			//$transaction->commit();
 
 		}
 
@@ -397,7 +404,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		}
 
 		// Loop.
-		foreach( $all_groups AS $group ) {
+		foreach ( $all_groups as $group ) {
 
 			// Skip when there is no parent.
 			if ( empty( $group['parents'] ) ) {
@@ -405,7 +412,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			}
 
 			// If "source" is not present, it's not an OG/BuddyPress Group.
-			if ( ! isset( $group['source'] ) OR is_null( $group['source'] ) ) {
+			if ( ! isset( $group['source'] ) || is_null( $group['source'] ) ) {
 				continue;
 			}
 
@@ -413,9 +420,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			if ( $group['parents'] != $civi_meta_group_id ) {
 				continue;
 			}
-
-			// Init transaction.
-			//$transaction = new CRM_Core_Transaction();
 
 			// Delete nesting.
 			$this->group_nesting_delete( $group['id'], $group['parents'] );
@@ -428,9 +432,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 			// Clear parents.
 			$group['parents'] = null;
-
-			// Do the database transaction.
-			//$transaction->commit();
 
 			// Update the Group.
 			$success = $this->update_group( $group );
@@ -485,8 +486,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Init return.
 		$return = [];
 
-
-
 		// Init transaction.
 		$transaction = new CRM_Core_Transaction();
 
@@ -498,8 +497,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			'description' => stripslashes( $bp_group->description ),
 			'is_active' => 1,
 		];
-
-
 
 		// First create the CiviCRM Group.
 		$group_params = $params;
@@ -520,13 +517,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			$return['member_group_id'] = 0;
 		}
 
-
-
 		// Next create the CiviCRM ACL Group.
 		$acl_params = $params;
 
 		// Set name and title of ACL Group.
-		$acl_params['name'] = $acl_params['title'] = $acl_params['name'] . ': Administrator';
+		$acl_params['name'] .= ': Administrator';
+		$acl_params['title'] = $acl_params['name'];
 
 		// Set source name for ACL Group.
 		$acl_params['source'] = $this->acl_group_get_sync_name( $bp_group_id );
@@ -545,7 +541,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			$acl_params['civicrm_group_id'] = $group_params['group_id'];
 
 			// Use cloned CiviCRM function.
-			$this->updateCiviACLTables( $acl_params, 'add' );
+			$this->update_civi_acl_tables( $acl_params, 'add' );
 
 			// Store ID of created CiviCRM Group.
 			$return['acl_group_id'] = $acl_params['group_id'];
@@ -554,13 +550,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			$return['acl_group_id'] = 0;
 		}
 
-
-
 		// Create nesting with no parent.
 		$this->group_nesting_update( $bp_group_id, 0 );
 
 		// Do the database transaction.
-	    $transaction->commit();
+		$transaction->commit();
 
 		// Add the creator to the Groups.
 		$params = [
@@ -604,8 +598,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Init return.
 		$return = [];
 
-
-
 		// Init transaction.
 		$transaction = new CRM_Core_Transaction();
 
@@ -617,8 +609,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			'description' => stripslashes( $group->description ),
 			'is_active' => 1,
 		];
-
-
 
 		// First update the CiviCRM Group.
 		$group_params = $params;
@@ -639,13 +629,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			$return['member_group_id'] = 0;
 		}
 
-
-
 		// Next update the CiviCRM ACL Group.
 		$acl_params = $params;
 
 		// Set name and title of ACL Group.
-		$acl_params['name'] = $acl_params['title'] = $acl_params['name'] . ': Administrator';
+		$acl_params['name'] .= ': Administrator';
+		$acl_params['title'] = $acl_params['name'];
 
 		// Set source name for ACL Group.
 		$acl_params['source'] = $this->acl_group_get_sync_name( $group_id );
@@ -664,7 +653,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			$acl_params['civicrm_group_id'] = $group_params['group_id'];
 
 			// Use cloned CiviCRM function.
-			$this->updateCiviACLTables( $acl_params, 'update' );
+			$this->update_civi_acl_tables( $acl_params, 'update' );
 
 			// Store ID of created CiviCRM Group.
 			$return['acl_group_id'] = $acl_params['group_id'];
@@ -673,10 +662,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			$return['acl_group_id'] = 0;
 		}
 
-
-
 		// Do the database transaction.
-	    $transaction->commit();
+		$transaction->commit();
 
 		// --<
 		return $return;
@@ -704,8 +691,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return;
 		}
 
-
-
 		// Init transaction.
 		$transaction = new CRM_Core_Transaction();
 
@@ -720,8 +705,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			'is_active' => 1,
 		];
 
-
-
 		// First delete the CiviCRM Group.
 		$group_params = $params;
 
@@ -731,13 +714,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Use our adapted version of CRM_Bridge_OG_Drupal::updateCiviGroup().
 		$this->delete_group( $group_params );
 
-
-
 		// Next delete the CiviCRM ACL Group.
 		$acl_params = $params;
 
 		// Set name and title of ACL Group.
-		$acl_params['name'] = $acl_params['title'] = $acl_params['name'] . ': Administrator';
+		$acl_params['name'] .= ': Administrator';
+		$acl_params['title'] = $acl_params['name'];
 
 		// Set source name for ACL Group.
 		$acl_params['source'] = $this->acl_group_get_sync_name( $group_id );
@@ -750,12 +732,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$acl_params['civicrm_group_id'] = $group_params['group_id'];
 
 		// Use cloned CiviCRM function.
-		$this->updateCiviACLTables( $acl_params, 'delete' );
-
-
+		$this->update_civi_acl_tables( $acl_params, 'delete' );
 
 		// Do the database transaction.
-	    $transaction->commit();
+		$transaction->commit();
 
 	}
 
@@ -786,7 +766,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		}
 
 		// Loop through tree.
-		foreach( $tree AS $bp_group ) {
+		foreach ( $tree as $bp_group ) {
 
 			// Update the nesting.
 			$this->group_nesting_update( $bp_group->id, $bp_group->parent_id );
@@ -818,7 +798,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		}
 
 		// Loop through tree.
-		foreach( $tree AS $bp_group ) {
+		foreach ( $tree as $bp_group ) {
 
 			// Collapse nesting by assigning all to Meta Group.
 			$this->group_nesting_update( $bp_group->id, 0 );
@@ -841,7 +821,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	public function group_nesting_create( $civi_group_id, $civi_parent_id, $source ) {
 
 		// Bail if no parent set.
-		if ( empty( $civi_parent_id ) OR ! is_numeric( $civi_parent_id ) ) {
+		if ( empty( $civi_parent_id ) || ! is_numeric( $civi_parent_id ) ) {
 			return;
 		}
 
@@ -856,9 +836,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$result = civicrm_api( 'GroupNesting', 'create', $params );
 
 		// Log if there's an error.
-		if ( ! empty( $result['is_error'] ) AND $result['is_error'] == 1 ) {
+		if ( ! empty( $result['is_error'] ) && $result['is_error'] == 1 ) {
 
-			$e = new \Exception;
+			$e = new \Exception();
 			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
@@ -891,8 +871,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Init transaction.
 		$transaction = new CRM_Core_Transaction();
 
-
-
 		// Get Group source.
 		$source = $this->member_group_get_sync_name( $bp_group_id );
 
@@ -904,12 +882,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 			// Construct message.
 			$message = sprintf(
+				/* translators: %s: The Group source */
 				__( 'Could not find CiviCRM Group for Source %s', 'bp-groups-civicrm-sync' ),
 				$source
 			);
 
 			// Log identifying data.
-			$e = new \Exception;
+			$e = new \Exception();
 			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
@@ -928,7 +907,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$civi_group = $this->get_civi_group_by_id( $civi_group_id );
 
 		// If there's an existing parent.
-		if ( isset( $civi_group['parents'] ) AND ! empty( $civi_group['parents'] ) ) {
+		if ( isset( $civi_group['parents'] ) && ! empty( $civi_group['parents'] ) ) {
 
 			// Delete existing.
 			$this->group_nesting_delete( $civi_group_id, $civi_group['parents'] );
@@ -940,8 +919,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Create new nesting.
 		$this->group_nesting_create( $civi_group_id, $civi_parent_id, 'member' );
-
-
 
 		// Define Group.
 		$group_params = [
@@ -959,8 +936,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Use our adapted version of CRM_Bridge_OG_Drupal::updateCiviGroup().
 		$success = $this->update_group( $group_params );
 
-
-
 		// Get ACL source.
 		$acl_source = $this->acl_group_get_sync_name( $bp_group_id );
 
@@ -976,7 +951,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$civi_acl_group = $this->get_civi_group_by_id( $civi_acl_group_id );
 
 		// Delete existing if there's an existing parent.
-		if ( isset( $civi_acl_group['parents'] ) AND ! empty( $civi_acl_group['parents'] ) ) {
+		if ( isset( $civi_acl_group['parents'] ) && ! empty( $civi_acl_group['parents'] ) ) {
 			$this->group_nesting_delete( $civi_acl_group_id, $civi_acl_group['parents'] );
 		}
 
@@ -1002,12 +977,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Use our adapted version of CRM_Bridge_OG_Drupal::updateCiviGroup().
 		$success = $this->update_group( $group_params );
 
-
-
 		// Do the database transaction.
-	    $transaction->commit();
-
-
+		$transaction->commit();
 
 		/*
 		// Define Group.
@@ -1054,7 +1025,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$existing_result = civicrm_api( 'GroupNesting', 'get', $existing_params );
 
 		// Bail if there's an error.
-		if ( ! empty( $existing_result['is_error'] ) AND $existing_result['is_error'] == 1 ) {
+		if ( ! empty( $existing_result['is_error'] ) && $existing_result['is_error'] == 1 ) {
 			return;
 		}
 
@@ -1064,7 +1035,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		}
 
 		// Loop through them.
-		foreach( $existing_result['values'] AS $existing_group_nesting ) {
+		foreach ( $existing_result['values'] as $existing_group_nesting ) {
 
 			// Construct delete array.
 			$delete_params = [
@@ -1175,7 +1146,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		} else {
 
 			// Log identifying data.
-			$e = new \Exception;
+			$e = new \Exception();
 			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
@@ -1214,7 +1185,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$params['version'] = 3;
 
 		// If ID not specified, get the CiviCRM Group ID from "source" value.
-		if ( ! isset( $params['id'] ) OR empty( $params['id'] ) ) {
+		if ( ! isset( $params['id'] ) || empty( $params['id'] ) ) {
 
 			// Hand over to our clone of the CRM_Bridge_OG_Utils::groupID method.
 			$params['id'] = $this->find_group_id(
@@ -1243,7 +1214,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		} else {
 
 			// Log identifying data.
-			$e = new \Exception;
+			$e = new \Exception();
 			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
@@ -1281,7 +1252,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$params['version'] = 3;
 
 		// If ID not specified, get the CiviCRM Group ID from "source" value.
-		if ( ! isset( $params['id'] ) OR empty( $params['id'] ) ) {
+		if ( ! isset( $params['id'] ) || empty( $params['id'] ) ) {
 
 			// Hand over to our clone of the CRM_Bridge_OG_Utils::groupID method.
 			$params['id'] = $this->find_group_id(
@@ -1297,7 +1268,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			CRM_Contact_BAO_Group::discard( $params['id'] );
 
 			// Assign Group ID.
-	        $params['group_id'] = $params['id'];
+			$params['group_id'] = $params['id'];
 
 		}
 
@@ -1346,8 +1317,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 *
 	 * @since 0.1
 	 *
-	 * @param integer $civi_group_id The ID of the CiviCRM Group
-	 * @param array $civi_contact_id The numeric ID of a CiviCRM Contact
+	 * @param integer $civi_group_id The ID of the CiviCRM Group.
+	 * @param array $civi_contact_id The numeric ID of a CiviCRM Contact.
 	 * @return array $group_contact The CiviCRM API data for the Contact.
 	 */
 	public function group_contact_delete( $civi_group_id, $civi_contact_id ) {
@@ -1391,12 +1362,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 				// Construct verbose error string.
 				$error = sprintf(
+					/* translators: %d: The numeric ID of the WordPress User */
 					__( 'No CiviCRM Contact ID could be found for WordPress User ID %d', 'bp-groups-civicrm-sync' ),
 					$user_id
 				);
 
 				// Log something.
-				$e = new \Exception;
+				$e = new \Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
 					'method' => __METHOD__,
@@ -1448,8 +1420,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Do we have an Admin User - or Admin being demoted?
 		if (
-			( ! empty( $params['is_admin'] ) AND $params['is_admin'] == '1' )
-			OR
+			( ! empty( $params['is_admin'] ) && $params['is_admin'] == '1' )
+			||
 			$params['bp_status'] == 'ex-admin'
 		) {
 
@@ -1472,7 +1444,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			}
 
 			// Set status based on operation type and BP status.
-			if ( $op == 'add' AND $params['bp_status'] != 'ex-admin' ) {
+			if ( $op == 'add' && $params['bp_status'] != 'ex-admin' ) {
 				$groupParams['status'] = $params['is_active'] ? 'Added' : 'Pending';
 			} else {
 				$groupParams['status'] = 'Removed';
@@ -1527,7 +1499,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Loop through Contacts.
 		if ( count( $contact_ids ) > 0 ) {
-			foreach( $contact_ids AS $contact_id ) {
+			foreach ( $contact_ids as $contact_id ) {
 
 				// Get Contact data.
 				$contact = $this->get_contact_by_contact_id( $contact_id );
@@ -1569,7 +1541,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $civi_group_id ) {
 
 			// Add Contacts to Member Group.
-			foreach( $contacts AS $contact ) {
+			foreach ( $contacts as $contact ) {
 				$this->group_contact_create( $civi_group_id, $contact['contact_id'] );
 			}
 
@@ -1625,7 +1597,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Loop through Contacts.
 		if ( count( $contact_ids ) > 0 ) {
-			foreach( $contact_ids AS $contact_id ) {
+			foreach ( $contact_ids as $contact_id ) {
 
 				// Get Contact data.
 				$contact = $this->get_contact_by_contact_id( $contact_id );
@@ -1664,7 +1636,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $civi_group_id ) {
 
 			// Remove Members from Group.
-			foreach( $contacts AS $contact ) {
+			foreach ( $contacts as $contact ) {
 				$this->group_contact_delete( $civi_group_id, $contact['contact_id'] );
 			}
 
@@ -1767,12 +1739,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 					// Construct verbose error string.
 					$error = sprintf(
+						/* translators: %d: The numeric ID of the WordPress User */
 						__( 'No CiviCRM Contact ID could be found for WordPress User ID %d', 'bp-groups-civicrm-sync' ),
 						$user_id
 					);
 
 					// Log something.
-					$e = new \Exception;
+					$e = new \Exception();
 					$trace = $e->getTraceAsString();
 					error_log( print_r( [
 						'method' => __METHOD__,
@@ -1820,7 +1793,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$result = civicrm_api( 'Contact', 'get', $params );
 
 		// Bail if we get any errors.
-		if ( ! empty( $result['is_error'] ) AND $result['is_error'] == 1 ) {
+		if ( ! empty( $result['is_error'] ) && $result['is_error'] == 1 ) {
 			return false;
 		}
 
@@ -1855,7 +1828,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	public function find_group_id( $source, $title = '' ) {
 
 		// Construct query.
-		$query = "SELECT id FROM civicrm_group WHERE source = %1";
+		$query = 'SELECT id FROM civicrm_group WHERE source = %1';
 
 		// Define replacement.
 		$params = [ 1 => [ $source, 'String' ] ];
@@ -1864,7 +1837,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( ! empty( $title ) ) {
 
 			// Add to query.
-			$query .= " OR title = %2";
+			$query .= ' OR title = %2';
 
 			// Add to replacements.
 			$params[2] = [ $title, 'String' ];
@@ -1879,28 +1852,33 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 			// Construct meaningful error.
 			$error = sprintf(
+				/* translators: %s: The Group source */
 				__( 'No CiviCRM Group ID could be found for %s', 'bp-groups-civicrm-sync' ),
 				$source
 			);
 
-			// Get BuddyPress Group ID - source is of the form BP Sync Group :BPID:
+			// Get BuddyPress Group ID - source is of the form "BP Sync Group :BPID:".
 			$tmp = explode( ':', $source );
-			$group_id = $tmp[1];
+			$group_id = (int) $tmp[1];
 
 			// Init message.
 			$group_data = sprintf(
-				__( 'No BuddyPress Group could be found for ID %s', 'bp-groups-civicrm-sync' ),
+				/* translators: %s: The BuddyPress Group ID */
+				__( 'No BuddyPress Group could be found for ID %d', 'bp-groups-civicrm-sync' ),
 				$group_id
 			);
 
 			// Get the Group object if we get an ID.
 			if ( $group_id ) {
-				$group = groups_get_group( [ 'group_id' => $group_id, 'populate_extras' => true ] );
+				$group = groups_get_group( [
+					'group_id' => $group_id,
+					'populate_extras' => true,
+				] );
 				$group_data = print_r( $group, true );
 			}
 
 			// Log something.
-			$e = new \Exception;
+			$e = new \Exception();
 			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
@@ -1942,7 +1920,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$result = civicrm_api( 'Group', 'get', $params );
 
 		// Bail if there's an error.
-		if ( ! empty( $result['is_error'] ) AND $result['is_error'] == 1 ) {
+		if ( ! empty( $result['is_error'] ) && $result['is_error'] == 1 ) {
 			return $groups;
 		}
 
@@ -1981,7 +1959,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$result = civicrm_api( 'Group', 'get', $params );
 
 		// Bail if we get any errors.
-		if ( ! empty( $result['is_error'] ) AND $result['is_error'] == 1 ) {
+		if ( ! empty( $result['is_error'] ) && $result['is_error'] == 1 ) {
 			return false;
 		}
 
@@ -2015,7 +1993,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return false;
 		}
 
-		// Get BuddyPress Group ID - source is of the form BP Sync Group :BPID:
+		// Get BuddyPress Group ID - source is of the form "BP Sync Group :BPID:".
 		$tmp = explode( ':', $civi_group['source'] );
 		$bp_group_id = $tmp[1];
 
@@ -2083,7 +2061,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		}
 
-		// If 'acl'
+		// If 'acl'.
 		if ( $group_type == 'acl' ) {
 
 			/**
@@ -2234,17 +2212,17 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @param array $aclParams The array of CiviCRM API params.
 	 * @param string $op The CiviCRM database operation.
 	 */
-	public function updateCiviACLTables( $aclParams, $op ) {
+	public function update_civi_acl_tables( $aclParams, $op ) {
 
 		// Drupal-esque operation.
 		if ( $op == 'delete' ) {
-			$this->updateCiviACL( $aclParams, $op );
-			$this->updateCiviACLEntityRole( $aclParams, $op );
-			$this->updateCiviACLRole( $aclParams, $op );
+			$this->update_civi_acl( $aclParams, $op );
+			$this->update_civi_acl_entity_role( $aclParams, $op );
+			$this->update_civi_acl_role( $aclParams, $op );
 		} else {
-			$this->updateCiviACLRole( $aclParams, $op );
-			$this->updateCiviACLEntityRole( $aclParams, $op );
-			$this->updateCiviACL( $aclParams, $op );
+			$this->update_civi_acl_role( $aclParams, $op );
+			$this->update_civi_acl_entity_role( $aclParams, $op );
+			$this->update_civi_acl( $aclParams, $op );
 		}
 	}
 
@@ -2258,7 +2236,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @param array $params The array of CiviCRM API params.
 	 * @param string $op The CiviCRM database operation.
 	 */
-	public function updateCiviACLRole( &$params, $op ) {
+	public function update_civi_acl_role( &$params, $op ) {
 
 		$optionGroupID = CRM_Core_DAO::getFieldValue(
 			'CRM_Core_DAO_OptionGroup',
@@ -2291,12 +2269,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			'value'
 		);
 
-		$query = "
+		$query = '
 			SELECT v.id
 			FROM civicrm_option_value v
 			WHERE v.option_group_id = %1
-			AND v.description     = %2
-		";
+			AND v.description = %2
+		';
 
 		$queryParams = [
 			1 => [ $optionGroupID, 'Integer' ],
@@ -2320,7 +2298,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @param array $params The array of CiviCRM API params.
 	 * @param string $op The CiviCRM database operation.
 	 */
-	public function updateCiviACLEntityRole( &$params, $op ) {
+	public function update_civi_acl_entity_role( &$params, $op ) {
 
 		$dao = new CRM_ACL_DAO_EntityRole();
 
@@ -2334,8 +2312,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		$dao->acl_role_id = $params['acl_role_id'];
 
-		$dao->find(TRUE);
-		$dao->is_active = TRUE;
+		$dao->find( true );
+		$dao->is_active = true;
 		$dao->save();
 		$params['acl_entity_role_id'] = $dao->id;
 
@@ -2351,7 +2329,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @param array $params The array of CiviCRM API params.
 	 * @param string $op The CiviCRM database operation.
 	 */
-	public function updateCiviACL( &$params, $op ) {
+	public function update_civi_acl( &$params, $op ) {
 
 		$dao = new CRM_ACL_DAO_ACL();
 
@@ -2363,13 +2341,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return;
 		}
 
-		$dao->find(TRUE);
+		$dao->find( true );
 
 		$dao->entity_table = 'civicrm_acl_role';
 		$dao->entity_id    = $params['acl_role_id'];
 		$dao->operation    = 'Edit';
 
-		$dao->is_active = TRUE;
+		$dao->is_active = true;
 		$dao->save();
 		$params['acl_id'] = $dao->id;
 
@@ -2410,8 +2388,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$form->add( 'checkbox', 'bpgroupscivicrmsynccreatefromnew', __( 'Create BuddyPress Group', 'bp-groups-civicrm-sync' ) );
 
 		// Dynamically insert a template block in the page.
-		CRM_Core_Region::instance('page-body')->add( [
-			'template' => 'bp-groups-civicrm-sync-new.tpl'
+		CRM_Core_Region::instance( 'page-body' )->add( [
+			'template' => 'bp-groups-civicrm-sync-new.tpl',
 		] );
 
 	}
@@ -2511,7 +2489,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$group_admins = civicrm_api( 'Contact', 'get', $params );
 
 		// Do we have any Members?
-		if ( isset( $group_admins['values'] ) AND count( $group_admins['values'] ) > 0 ) {
+		if ( isset( $group_admins['values'] ) && count( $group_admins['values'] ) > 0 ) {
 
 			// Make Admins.
 			$is_admin = 1;
@@ -2520,8 +2498,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			$this->bp->create_group_members( $bp_group_id, $group_admins['values'], $is_admin );
 
 		}
-
-
 
 		// Get source safely.
 		$source = isset( $civi_group->source ) ? $civi_group->source : '';
@@ -2541,7 +2517,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$group_members = civicrm_api( 'Contact', 'get', $params );
 
 		// Do we have any Members?
-		if ( isset( $group_members['values'] ) AND count( $group_members['values'] ) > 0 ) {
+		if ( isset( $group_members['values'] ) && count( $group_members['values'] ) > 0 ) {
 
 			// Make Members.
 			$is_admin = 0;
@@ -2550,8 +2526,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			$this->bp->create_group_members( $bp_group_id, $group_members['values'], $is_admin );
 
 		}
-
-
 
 		// Update the "source" field for both CiviCRM Groups.
 
@@ -2571,7 +2545,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $acl_group['is_error'] == '1' ) {
 
 			// Debug.
-			$e = new \Exception;
+			$e = new \Exception();
 			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
@@ -2583,8 +2557,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return;
 
 		}
-
-
 
 		// Define CiviCRM Group.
 		$member_group_params = [
@@ -2602,7 +2574,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $member_group['is_error'] == '1' ) {
 
 			// Debug.
-			$e = new \Exception;
+			$e = new \Exception();
 			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
@@ -2615,10 +2587,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		}
 
-
-
 		// If no parent.
-		if ( isset( $civi_group['parents'] ) AND $civi_group['parents'] == '' ) {
+		if ( isset( $civi_group['parents'] ) && $civi_group['parents'] == '' ) {
 
 			// Assign both to meta group.
 			$this->group_nesting_update( $bp_group_id, '0' );
@@ -2654,8 +2624,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Get source safely.
 		$source = isset( $civi_group->source ) ? $civi_group->source : '';
 
-		// In Drupal, Organic Groups are synced with 'OG Sync Group :GID:'
-		// Related Organic Groups ACL Groups are synced with 'OG Sync Group ACL :GID:'
+		/*
+		 * In Drupal, Organic Groups are synced with 'OG Sync Group :GID:'.
+		 * Related Organic Groups ACL Groups are synced with 'OG Sync Group ACL :GID:'.
+		 */
 
 		// Is this an Organic Groups Administrator Group?
 		if ( strstr( $source, 'OG Sync Group ACL' ) === false ) {
@@ -2666,8 +2638,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$form->add( 'checkbox', 'bpgroupscivicrmsynccreatefromog', __( 'Create BuddyPress Group', 'bp-groups-civicrm-sync' ) );
 
 		// Dynamically insert a template block in the page.
-		CRM_Core_Region::instance('page-body')->add( [
-			'template' => 'bp-groups-civicrm-sync-og.tpl'
+		CRM_Core_Region::instance( 'page-body' )->add( [
+			'template' => 'bp-groups-civicrm-sync-og.tpl',
 		] );
 
 	}
@@ -2731,10 +2703,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		}
 
 		// Loop through them.
-		foreach( $all_groups AS $civi_group ) {
+		foreach ( $all_groups as $civi_group ) {
 
 			// Send for processing.
-			$this->og_group_to_bp_group_convert( (object)$civi_group );
+			$this->og_group_to_bp_group_convert( (object) $civi_group );
 
 		}
 
@@ -2757,8 +2729,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Get source.
 		$source = $civi_group->source;
 
-		// In Drupal, Organic Groups are synced with 'OG Sync Group :GID:'
-		// Related Organic Groups ACL Groups are synced with 'OG Sync Group ACL :GID:'
+		/*
+		 * In Drupal, Organic Groups are synced with 'OG Sync Group :GID:'.
+		 * Related Organic Groups ACL Groups are synced with 'OG Sync Group ACL :GID:'.
+		 */
 
 		// Is this an Organic Groups Administrator Group?
 		if ( strstr( $source, 'OG Sync Group ACL' ) === false ) {
@@ -2782,8 +2756,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		add_action( 'groups_create_group', [ $this->bp, 'create_civi_group' ], 100, 3 );
 		add_action( 'groups_details_updated', [ $this->bp, 'update_civi_group_details' ], 100, 1 );
 
-
-
 		// Get all Contacts in this Group.
 		$params = [
 			'version' => 3,
@@ -2794,7 +2766,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$group_admins = civicrm_api( 'Contact', 'get', $params );
 
 		// Do we have any Members?
-		if ( isset( $group_admins['values'] ) AND count( $group_admins['values'] ) > 0 ) {
+		if ( isset( $group_admins['values'] ) && count( $group_admins['values'] ) > 0 ) {
 
 			// Make Admins.
 			$is_admin = 1;
@@ -2803,8 +2775,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			$this->bp->create_group_members( $bp_group_id, $group_admins['values'], $is_admin );
 
 		}
-
-
 
 		// Get the non-ACL CiviCRM Group ID.
 		$civi_group_id = $this->find_group_id(
@@ -2821,7 +2791,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$group_members = civicrm_api( 'Contact', 'get', $params );
 
 		// Do we have any Members?
-		if ( isset( $group_members['values'] ) AND count( $group_members['values'] ) > 0 ) {
+		if ( isset( $group_members['values'] ) && count( $group_members['values'] ) > 0 ) {
 
 			// Make Members.
 			$is_admin = 0;
@@ -2830,8 +2800,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			$this->bp->create_group_members( $bp_group_id, $group_members['values'], $is_admin );
 
 		}
-
-
 
 		// Update the "source" field for both CiviCRM Groups.
 
@@ -2851,7 +2819,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $acl_group['is_error'] == '1' ) {
 
 			// Debug.
-			$e = new \Exception;
+			$e = new \Exception();
 			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
@@ -2863,8 +2831,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return;
 
 		}
-
-
 
 		// Define CiviCRM Group.
 		$member_group_params = [
@@ -2882,7 +2848,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $member_group['is_error'] == '1' ) {
 
 			// Debug.
-			$e = new \Exception;
+			$e = new \Exception();
 			$trace = $e->getTraceAsString();
 			error_log( print_r( [
 				'method' => __METHOD__,
@@ -2895,10 +2861,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		}
 
-
-
 		// If no parent.
-		if ( isset( $civi_group['parents'] ) AND $civi_group['parents'] == '' ) {
+		if ( isset( $civi_group['parents'] ) && $civi_group['parents'] == '' ) {
 
 			// Assign both to Meta Group.
 			$this->group_nesting_update( $bp_group_id, '0' );
@@ -2932,7 +2896,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		}
 
 		// Loop through them.
-		foreach( $all_groups AS $civi_group ) {
+		foreach ( $all_groups as $civi_group ) {
 
 			// If "source" is not present, it's not an Organic Groups Group.
 			if ( empty( $civi_group['source'] ) ) {
@@ -2942,8 +2906,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			// Get source.
 			$source = $civi_group['source'];
 
-			// In Drupal, Organic Groups are synced with 'OG Sync Group :GID:'
-			// Related Organic Groups ACL Groups are synced with 'OG Sync Group ACL :GID:'
+			/*
+			 * In Drupal, Organic Groups are synced with 'OG Sync Group :GID:'.
+			 * Related Organic Groups ACL Groups are synced with 'OG Sync Group ACL :GID:'.
+			 */
 
 			// Is this an Organic Groups Administrator Group?
 			if ( strstr( $source, 'OG Sync Group ACL :' ) !== false ) {
@@ -2975,7 +2941,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 *
 	 * @param object $user A WordPress User object.
 	 */
-	public function _civi_contact_update( $user ) {
+	public function civi_contact_update( $user ) {
 
 		// Make sure CiviCRM file is included.
 		require_once 'CRM/Core/BAO/UFMatch.php';
@@ -2983,7 +2949,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// synchronizeUFMatch returns the Contact object.
 		$civi_contact = CRM_Core_BAO_UFMatch::synchronizeUFMatch(
 			$user, // User object.
-			$user->ID, // ID
+			$user->ID, // ID.
 			$user->user_email, // Unique identifier.
 			'WordPress', // CMS.
 			null, // Unused.

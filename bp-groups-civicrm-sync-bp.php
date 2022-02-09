@@ -1,4 +1,17 @@
 <?php
+/**
+ * BuddyPress Class.
+ *
+ * Handles BuddyPress-related functionality.
+ *
+ * @package BP_Groups_CiviCRM_Sync
+ * @since 0.1
+ */
+
+// Exit if accessed directly.
+defined( 'ABSPATH' ) || exit;
+
+
 
 /**
  * BP Groups CiviCRM Sync BuddyPress Class.
@@ -205,7 +218,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 * @since 0.1
 	 *
 	 * @param int $group_id The numeric ID of the BuddyPress Group.
-	 * @param int $group The BuddyPress Group object.
 	 */
 	public function update_civi_group_details( $group_id ) {
 
@@ -283,7 +295,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	public function groups_admin_load( $doaction ) {
 
 		// Only add hooks if saving data.
-		if ( $doaction AND $doaction == 'save' ) {
+		if ( $doaction && $doaction == 'save' ) {
 
 			// Group Membership hooks: Group Membership status is being modified.
 			add_action( 'groups_promote_member', [ $this, 'member_changing_status' ], 10, 3 );
@@ -464,7 +476,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		}
 
 		// Add Members of this Group as Admins.
-		foreach( $contacts AS $contact ) {
+		foreach ( $contacts as $contact ) {
 
 			// Get WordPress User.
 			$user = get_user_by( 'email', $contact['email'] );
@@ -609,7 +621,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		}
 
 		// One by one.
-		foreach( $contacts AS $contact ) {
+		foreach ( $contacts as $contact ) {
 
 			// Get WordPress User.
 			$user = get_user_by( 'email', $contact['email'] );
@@ -723,7 +735,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		}
 
 		// One by one.
-		foreach( $contacts AS $contact ) {
+		foreach ( $contacts as $contact ) {
 
 			// Get WordPress User.
 			$user = get_user_by( 'email', $contact['email'] );
@@ -835,7 +847,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		}
 
 		// One by one.
-		foreach( $contacts AS $contact ) {
+		foreach ( $contacts as $contact ) {
 
 			// Get WordPress User.
 			$user = get_user_by( 'email', $contact['email'] );
@@ -965,14 +977,16 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			$status = groups_is_user_admin( $user_id, $group_id ) ? 'admin' : '';
 		}
 
-		// Group Admins cannot be banned.
-		// @see BP_Groups_Member::ban()
-		if ( $status == 'admin' AND 'groups_ban_member' == current_action() ) {
+		/*
+		 * Group Admins cannot be banned.
+		 * @see BP_Groups_Member::ban()
+		 */
+		if ( $status == 'admin' && 'groups_ban_member' == current_action() ) {
 			return;
 		}
 
 		// If a Group Admin is being demoted, set special status.
-		if ( $status == 'admin' AND 'groups_demote_member' == current_action() ) {
+		if ( $status == 'admin' && 'groups_demote_member' == current_action() ) {
 			$status = 'ex-admin';
 		}
 
@@ -1154,6 +1168,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 * Registers when BuddyPress Group Hierarchy plugin is saving a Group.
 	 *
 	 * @since 0.1
+	 *
+	 * @param object $group The BuddyPress Group object.
 	 */
 	public function hierarchy_before_change( $group ) {
 
@@ -1176,6 +1192,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 * Registers when BuddyPress Group Hierarchy plugin has saved a Group.
 	 *
 	 * @since 0.1
+	 *
+	 * @param object $group The BuddyPress Group object.
 	 */
 	public function hierarchy_after_change( $group ) {
 
@@ -1211,7 +1229,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			if ( empty( $bp->groups->current_group->adminlist ) ) {
 				$bp->groups->current_group->adminlist = [];
 				if ( isset( $bp->groups->current_group->admins ) ) {
-					foreach( (array)$bp->groups->current_group->admins as $admin ) {
+					foreach ( (array) $bp->groups->current_group->admins as $admin ) {
 						if ( isset( $admin->user_id ) ) {
 							$bp->groups->current_group->adminlist[] = $admin->user_id;
 						}
@@ -1222,7 +1240,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			if ( empty( $bp->groups->current_group->modlist ) ) {
 				$bp->groups->current_group->modlist = [];
 				if ( isset( $bp->groups->current_group->mods ) ) {
-					foreach( (array) $bp->groups->current_group->mods as $mod ) {
+					foreach ( (array) $bp->groups->current_group->mods as $mod ) {
 						if ( isset( $mod->user_id ) ) {
 							$bp->groups->current_group->modlist[] = $mod->user_id;
 						}
@@ -1245,30 +1263,30 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		// Fall back to BuddyPress functions if not set.
 		if ( $user_group_status === false ) {
 
-			// Use BuddyPress functions
+			// Use BuddyPress functions.
 			if ( groups_is_user_admin( $user_id, $group_id ) ) {
 				$user_group_status = 'admin';
-			} else if ( groups_is_user_mod( $user_id, $group_id ) ) {
+			} elseif ( groups_is_user_mod( $user_id, $group_id ) ) {
 				$user_group_status = 'mod';
-			} else if ( groups_is_user_member( $user_id, $group_id ) ) {
+			} elseif ( groups_is_user_member( $user_id, $group_id ) ) {
 				$user_group_status = 'member';
 			}
 
 		}
 
 		// Are we promoting or demoting?
-		if ( bp_action_variable( 1 ) AND bp_action_variable( 2 ) ) {
+		if ( bp_action_variable( 1 ) && bp_action_variable( 2 ) ) {
 
 			// Change User status based on promotion / demotion.
-			switch( bp_action_variable( 1 ) ) {
+			switch ( bp_action_variable( 1 ) ) {
 
-				case 'promote' :
+				case 'promote':
 					$user_group_status = bp_action_variable( 2 );
 					break;
 
-				case 'demote' :
-				case 'ban' :
-				case 'unban' :
+				case 'demote':
+				case 'ban':
+				case 'unban':
 					$user_group_status = 'member';
 					break;
 
@@ -1313,13 +1331,12 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		$user_id = username_exists( $user_name );
 
 		// If not, check against email address.
-		if ( ! $user_id AND email_exists( $civi_contact['email'] ) == false ) {
+		if ( ! $user_id && email_exists( $civi_contact['email'] ) == false ) {
 
 			// Generate a random password.
-			$random_password = wp_generate_password(
-				$length = 12,
-				$include_standard_special_chars = false
-			);
+			$length = 12;
+			$include_standard_special_chars = false;
+			$random_password = wp_generate_password( $length, $include_standard_special_chars );
 
 			// Remove filters.
 			$this->remove_filters();
@@ -1371,12 +1388,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 		}
 
-		// Sanity check.
-		if ( is_numeric( $user_id ) AND $user_id ) {
-
-			// Return WordPress User.
+		// Return WordPress User if we get one.
+		if ( ! empty( $user_id ) && is_numeric( $user_id ) ) {
 			return get_user_by( 'id', $user_id );
-
 		}
 
 		// Return error.
@@ -1421,7 +1435,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		}
 
 		// Bail if we have no email or Contact ID.
-		if ( ! isset( $objectRef->email ) OR ! isset( $objectRef->contact_id ) ) {
+		if ( ! isset( $objectRef->email ) || ! isset( $objectRef->contact_id ) ) {
 			unset( $this->temp_contact );
 			return;
 		}

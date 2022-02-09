@@ -1,16 +1,20 @@
-<?php /*
---------------------------------------------------------------------------------
-Plugin Name: BP Groups CiviCRM Sync
-Plugin URI: https://github.com/christianwach/bp-groups-civicrm-sync
-Description: Enables two-way synchronisation between BuddyPress Groups and CiviCRM Groups.
-Author: Christian Wach
-Version: 0.4
-Author URI: http://haystack.co.uk
-Text Domain: bp-groups-civicrm-sync
-Domain Path: /languages
-Depends: CiviCRM
---------------------------------------------------------------------------------
-*/
+<?php
+/**
+ * Plugin Name: BP Groups CiviCRM Sync
+ * Plugin URI: https://github.com/christianwach/bp-groups-civicrm-sync
+ * Description: Enables two-way synchronisation between BuddyPress Groups and CiviCRM Groups.
+ * Author: Christian Wach
+ * Version: 0.4
+ * Author URI: http://haystack.co.uk
+ * Text Domain: bp-groups-civicrm-sync
+ * Domain Path: /languages
+ * Depends: CiviCRM
+ *
+ * @package BP_Groups_CiviCRM_Sync
+ */
+
+// Exit if accessed directly.
+defined( 'ABSPATH' ) || exit;
 
 
 
@@ -84,7 +88,7 @@ class BP_Groups_CiviCRM_Sync {
 	 */
 	public function __construct() {
 
-		// Init loading process
+		// Init loading process.
 		$this->initialise();
 
 	}
@@ -179,9 +183,9 @@ class BP_Groups_CiviCRM_Sync {
 	public function include_files() {
 
 		// Load our class files.
-		require( BP_GROUPS_CIVICRM_SYNC_PATH . 'bp-groups-civicrm-sync-civi.php' );
-		require( BP_GROUPS_CIVICRM_SYNC_PATH . 'bp-groups-civicrm-sync-bp.php' );
-		require( BP_GROUPS_CIVICRM_SYNC_PATH . 'bp-groups-civicrm-sync-admin.php' );
+		require BP_GROUPS_CIVICRM_SYNC_PATH . 'bp-groups-civicrm-sync-civi.php';
+		require BP_GROUPS_CIVICRM_SYNC_PATH . 'bp-groups-civicrm-sync-bp.php';
+		require BP_GROUPS_CIVICRM_SYNC_PATH . 'bp-groups-civicrm-sync-admin.php';
 
 	}
 
@@ -254,8 +258,10 @@ register_activation_hook( __FILE__, [ bp_groups_civicrm_sync(), 'activate' ] );
 // Deactivation.
 register_deactivation_hook( __FILE__, [ bp_groups_civicrm_sync(), 'deactivate' ] );
 
-// Uninstall will use the 'uninstall.php' method when fully built.
-// See: http://codex.wordpress.org/Function_Reference/register_uninstall_hook
+/*
+ * Uninstall uses the 'uninstall.php' method.
+ * @see https://developer.wordpress.org/reference/functions/register_uninstall_hook/
+ */
 
 
 
@@ -285,7 +291,7 @@ function bp_groups_civicrm_sync_plugin_action_links( $links, $file ) {
 
 		// Add Paypal link.
 		$paypal = 'https://www.paypal.me/interactivist';
-		$links[] = '<a href="' . $paypal . '" target="_blank">' . __( 'Donate!', 'civicrm-admin-utilities' ) . '</a>';
+		$links[] = '<a href="' . $paypal . '" target="_blank">' . __( 'Donate!', 'bp-groups-civicrm-sync' ) . '</a>';
 
 	}
 
@@ -297,6 +303,3 @@ function bp_groups_civicrm_sync_plugin_action_links( $links, $file ) {
 // Add filters for the above.
 add_filter( 'network_admin_plugin_action_links', 'bp_groups_civicrm_sync_plugin_action_links', 10, 2 );
 add_filter( 'plugin_action_links', 'bp_groups_civicrm_sync_plugin_action_links', 10, 2 );
-
-
-
