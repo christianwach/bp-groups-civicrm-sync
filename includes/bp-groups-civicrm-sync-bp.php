@@ -49,15 +49,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 */
 	public $admin;
 
-	/**
-	 * Flag for overriding sync process.
-	 *
-	 * @since 0.1
-	 * @access public
-	 * @var bool $do_not_sync Flag for overriding sync process.
-	 */
-	public $do_not_sync = false;
-
 
 
 	/**

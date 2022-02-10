@@ -1,19 +1,19 @@
 {* template block that contains the new field *}
-<div id="testfieldoptions">
-<h3>{ts}BuddyPress Group Sync{/ts}</h3>
+<div id="bpgcs-block">
+<h3>{$bpgcs_title}</h3>
 <table class="form-layout-compressed">
 <tr>
-  <td colspan="2"><span style="color: red;">{ts}<strong>NOTE:</strong> If you are going to create a BuddyPress Group, you only need to fill out the "Title" field (and optionally the "Description" field). The Group Type will be automatically set to "Access Control" and the Parent Group will be automatically assigned to the container group.{/ts}</span></td>
+  <td colspan="2"><p style="color: red;">{$bpgcs_description}</p></td>
 </tr>
 <tr>
-  <td class="label"><label for="bpgroupscivicrmsynccreatefromnew">{ts}Create a BuddyPress Group{/ts}</label></td>
-  <td>{$form.bpgroupscivicrmsynccreatefromnew.html}</td>
+  <td class="label"><label for="bpgcs_create_from_new">{$bpgcs_label}</label></td>
+  <td>{$form.bpgcs_create_from_new.html}</td>
 </tr>
 </table>
 </div>
 
 {* reposition the above block after #someOtherBlock *}
 <script type="text/javascript">
-  // jQuery will not move an item unless it is wrapped
-  cj('#testfieldoptions').insertBefore('.crm-group-form-block > .crm-submit-buttons:last');
+  // jQuery will not move an item unless it is wrapped.
+  cj('#bpgcs-block').insertBefore('.crm-group-form-block > .crm-submit-buttons:last');
 </script>

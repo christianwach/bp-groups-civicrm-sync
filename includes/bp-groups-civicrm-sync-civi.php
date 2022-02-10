@@ -54,15 +54,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 */
 	public $admin;
 
-	/**
-	 * Flag for overriding sync process.
-	 *
-	 * @since 0.1
-	 * @access public
-	 * @var bool $do_not_sync Flag for overriding sync process.
-	 */
-	public $do_not_sync = false;
-
 
 
 	/**
@@ -473,11 +464,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 */
 	public function create_civi_group( $bp_group_id, $bp_group ) {
 
-		// Are we overriding this?
-		if ( $this->do_not_sync ) {
-			return false;
-		}
-
 		// Bail if no CiviCRM.
 		if ( ! $this->is_active() ) {
 			return false;
@@ -584,11 +570,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 */
 	public function update_civi_group( $group_id, $group ) {
 
-		// Are we overriding this?
-		if ( $this->do_not_sync ) {
-			return false;
-		}
-
 		// Init or die.
 		if ( ! $this->is_active() ) {
 			return false;
@@ -679,11 +660,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 * @param int $group_id The numeric ID of the BuddyPress Group.
 	 */
 	public function delete_civi_group( $group_id ) {
-
-		// Are we overriding this?
-		if ( $this->do_not_sync ) {
-			return;
-		}
 
 		// Init or die.
 		if ( ! $this->is_active() ) {
@@ -2483,7 +2459,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Enable a BuddyPress Group to be created when creating a CiviCRM Group.
+	 * Enables a BuddyPress Group to be created when creating a CiviCRM Group.
 	 *
 	 * @since 0.1
 	 *
@@ -2507,8 +2483,17 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Okay, it's the new Group form.
 
+		// Add text.
+		$form->assign( 'bpgcs_title', __( 'BuddyPress Group Sync', 'bp-groups-civicrm-sync' ) );
+		$form->assign( 'bpgcs_description', sprintf(
+			__( '%1$sNOTE:%2$s If you are going to create a BuddyPress Group, you only need to fill out the "Group Title" field (and optionally the "Group Description" field). The Group Type will be automatically set to "Access Control" and (if a container group has been specified) the Parent Group will be automatically assigned to the container group.', 'bp-groups-civicrm-sync' ),
+			'<strong>',
+			'</strong>'
+		) );
+		$form->assign( 'bpgcs_label', __( 'Create a BuddyPress Group', 'bp-groups-civicrm-sync' ) );
+
 		// Add the field element in the form.
-		$form->add( 'checkbox', 'bpgroupscivicrmsynccreatefromnew', __( 'Create BuddyPress Group', 'bp-groups-civicrm-sync' ) );
+		$form->add( 'checkbox', 'bpgcs_create_from_new', __( 'Create BuddyPress Group', 'bp-groups-civicrm-sync' ) );
 
 		// Dynamically insert a template block in the page.
 		CRM_Core_Region::instance( 'page-body' )->add( [
@@ -2538,17 +2523,19 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$values = $form->getVar( '_submitValues' );
 
 		// Was our checkbox ticked?
-		if ( ! isset( $values['bpgroupscivicrmsynccreatefromnew'] ) ) {
+		if ( ! isset( $values['bpgcs_create_from_new'] ) ) {
 			return;
 		}
-		if ( $values['bpgroupscivicrmsynccreatefromnew'] != '1' ) {
+		if ( $values['bpgcs_create_from_new'] != '1' ) {
 			return;
 		}
 
-		// The Group hasn't been created yet.
+		// The Group hasn't been created yet, but the data is there.
 
 		// Get CiviCRM Group.
-		$civi_group = $form->getVar( '_group' );
+		$civi_group = new stdClass();
+		$civi_group->title = $values['title'];
+		$civi_group->description = $values['description'];
 
 		/*
 		$e = new \Exception;
@@ -2578,9 +2565,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 */
 	public function civi_group_to_bp_group_convert( $civi_group ) {
 
-		// Set flag so that we don't act on the 'groups_create_group' action.
-		$this->do_not_sync = true;
-
 		/*
 		$e = new \Exception;
 		$trace = $e->getTraceAsString();
@@ -2591,7 +2575,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		], true ) );
 		*/
 
-		// Remove hooks.
+		// Remove hooks to prevent recursion.
 		remove_action( 'groups_create_group', [ $this->bp, 'create_civi_group' ], 100 );
 		remove_action( 'groups_details_updated', [ $this->bp, 'update_civi_group_details' ], 100 );
 
@@ -2757,8 +2741,17 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return;
 		}
 
+		// Add text.
+		$form->assign( 'bpgcs_title', __( 'BuddyPress Group Sync', 'bp-groups-civicrm-sync' ) );
+		$form->assign( 'bpgcs_description', sprintf(
+			__( '%1$sWARNING:%2$s You may wish to make sure your CiviCRM Contacts exist as WordPress Users before creating this group. CiviCRM Contacts that do not have a corresponding WordPress User will have one created for them. You will need to review roles for the new WordPress Users when this process is complete.', 'bp-groups-civicrm-sync' ),
+			'<strong>',
+			'</strong>'
+		) );
+		$form->assign( 'bpgcs_label', __( 'Convert to BuddyPress Group', 'bp-groups-civicrm-sync' ) );
+
 		// Add the field element in the form.
-		$form->add( 'checkbox', 'bpgroupscivicrmsynccreatefromog', __( 'Create BuddyPress Group', 'bp-groups-civicrm-sync' ) );
+		$form->add( 'checkbox', 'bpgcs_create_from_og', __( 'Create BuddyPress Group', 'bp-groups-civicrm-sync' ) );
 
 		// Dynamically insert a template block in the page.
 		CRM_Core_Region::instance( 'page-body' )->add( [
@@ -2788,10 +2781,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$values = $form->getVar( '_submitValues' );
 
 		// Was our checkbox ticked?
-		if ( ! isset( $values['bpgroupscivicrmsynccreatefromog'] ) ) {
+		if ( ! isset( $values['bpgcs_create_from_og'] ) ) {
 			return;
 		}
-		if ( $values['bpgroupscivicrmsynccreatefromog'] != '1' ) {
+		if ( $values['bpgcs_create_from_og'] != '1' ) {
 			return;
 		}
 
@@ -2862,10 +2855,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return;
 		}
 
-		// Set flag so that we don't act on the 'groups_create_group' action.
-		$this->do_not_sync = true;
-
-		// Remove hooks.
+		// Remove hooks to prevent recursion.
 		remove_action( 'groups_create_group', [ $this->bp, 'create_civi_group' ], 100 );
 		remove_action( 'groups_details_updated', [ $this->bp, 'update_civi_group_details' ], 100 );
 
