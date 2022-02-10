@@ -185,7 +185,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	public function register_directories( &$config ) {
 
 		// Define our custom path.
-		$custom_path = BP_GROUPS_CIVICRM_SYNC_PATH . 'civicrm_custom_templates';
+		$custom_path = BP_GROUPS_CIVICRM_SYNC_PATH . 'assets/civicrm/custom_templates';
 
 		// Kick out if no CiviCRM.
 		if ( ! civi_wp()->initialize() ) {
