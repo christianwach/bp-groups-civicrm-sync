@@ -183,9 +183,9 @@ class BP_Groups_CiviCRM_Sync {
 	public function include_files() {
 
 		// Load our class files.
-		require BP_GROUPS_CIVICRM_SYNC_PATH . 'bp-groups-civicrm-sync-civi.php';
-		require BP_GROUPS_CIVICRM_SYNC_PATH . 'bp-groups-civicrm-sync-bp.php';
-		require BP_GROUPS_CIVICRM_SYNC_PATH . 'bp-groups-civicrm-sync-admin.php';
+		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/bp-groups-civicrm-sync-civi.php';
+		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/bp-groups-civicrm-sync-bp.php';
+		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/bp-groups-civicrm-sync-admin.php';
 
 	}
 
