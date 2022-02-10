@@ -125,6 +125,10 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		// Group Membership hooks: removed Group Membership.
 		add_action( 'groups_removed_member', [ $this, 'member_removed_from_group' ], 10, 2 );
 
+		// Group Membership hooks: Group Membership status is being reduced.
+		add_action( 'groups_demote_member', [ $this, 'member_reduce_status' ], 10, 2 );
+		add_action( 'groups_ban_member', [ $this, 'member_reduce_status' ], 10, 2 );
+
 		// Group Membership hooks: modified Group Membership.
 		add_action( 'groups_promoted_member', [ $this, 'member_changed_status' ], 10, 2 );
 		add_action( 'groups_demoted_member', [ $this, 'member_changed_status' ], 10, 2 );
@@ -1026,6 +1030,44 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 	/**
+	 * Called when User's Group status is being reduced.
+	 *
+	 * @since 0.4
+	 *
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @param int $user_id The numeric ID of the WordPress User.
+	 */
+	public function member_reduce_status( $group_id, $user_id ) {
+
+		// Bail if not on front-end.
+		if ( is_admin() ) {
+			return;
+		}
+
+		// Check if User is Group Admin.
+		$status = groups_is_user_admin( $user_id, $group_id ) ? 'admin' : '';
+
+		/*
+		 * Group Admins cannot be banned.
+		 * @see BP_Groups_Member::ban()
+		 */
+		if ( $status == 'admin' && 'groups_ban_member' == current_action() ) {
+			return;
+		}
+
+		// If a Group Admin is being demoted, set special status.
+		if ( $status == 'admin' && 'groups_demote_member' == current_action() ) {
+			$status = 'ex-admin';
+		}
+
+		// Set a flag for used in "past tense" callback.
+		$this->old_status = $status;
+
+	}
+
+
+
+	/**
 	 * Called when User's Group status has changed.
 	 *
 	 * Parameter order ($user_id, $group_id) is reversed for these "past tense"
@@ -1083,6 +1125,12 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 		// Get current User status.
 		$status = $this->get_user_group_status( $user_id, $group_id );
+
+		// Check previous status.
+		if ( isset( $this->old_status ) && $this->old_status === 'ex-admin' ) {
+			$status = $this->old_status;
+			unset( $this->old_status );
+		}
 
 		// Make numeric for CiviCRM.
 		$is_admin = $status == 'admin' ? 1 : 0;

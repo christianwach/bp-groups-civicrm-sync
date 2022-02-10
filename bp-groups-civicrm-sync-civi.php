@@ -217,7 +217,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 */
 	public function meta_group_create() {
 
-		// Init or die.
+		// Bail if CiviCRM is not active.
 		if ( ! $this->is_active() ) {
 			return;
 		}
@@ -1283,26 +1283,62 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Add a CiviCRM Contact to a CiviCRM Group.
+	 * Checks if a CiviCRM Contact is a member of a CiviCRM Group.
 	 *
-	 * @since 0.1
+	 * @since 0.4
 	 *
-	 * @param integer $civi_group_id The ID of the CiviCRM Group.
-	 * @param array $civi_contact_id The numeric ID of a CiviCRM Contact.
-	 * @return array $group_contact The CiviCRM API data for the Contact.
+	 * @param integer $civi_group_id The numeric ID of the CiviCRM Group.
+	 * @param integer $civi_contact_id The numeric ID of the CiviCRM Contact.
+	 * @param string $status The status of the CiviCRM Group Contact.
+	 * @return array|bool $group_contact The API data if the Contact is a member of the Group, false otherwise.
 	 */
-	public function group_contact_create( $civi_group_id, $civi_contact_id ) {
+	public function group_contact_exists( $civi_group_id, $civi_contact_id, $status ) {
+
+		// Init return.
+		$group_contact = false;
+
+		// Bail if CiviCRM is not active.
+		if ( ! $this->is_active() ) {
+			return $group_contact;
+		}
 
 		// Init API params.
 		$params = [
 			'version' => 3,
 			'contact_id' => $civi_contact_id,
 			'group_id' => $civi_group_id,
-			'status' => 'Added',
+			'status' => $status,
 		];
 
-		// Call API.
-		$group_contact = civicrm_api( 'GroupContact', 'create', $params );
+		// Call CiviCRM API.
+		$result = civicrm_api( 'GroupContact', 'get', $params );
+
+		// Return early if something went wrong.
+		if ( ! empty( $result['error'] ) ) {
+
+			// Write details to PHP log.
+			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
+				$e = new \Exception();
+				$trace = $e->getTraceAsString();
+				error_log( print_r( [
+					'method' => __METHOD__,
+					'params' => $params,
+					'result' => $result,
+					'backtrace' => $trace,
+				], true ) );
+			}
+
+			return $group_contact;
+
+		}
+
+		// Return early if something went wrong.
+		if ( empty( $result['values'] ) ) {
+			return false;
+		}
+
+		// There should only be one entry.
+		$group_contact = array_pop( $result['values'] );
 
 		// --<
 		return $group_contact;
@@ -1312,15 +1348,73 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 
 	/**
-	 * Delete a CiviCRM Contact from a CiviCRM Group.
+	 * Adds a CiviCRM Contact to a CiviCRM Group.
 	 *
 	 * @since 0.1
 	 *
-	 * @param integer $civi_group_id The ID of the CiviCRM Group.
-	 * @param array $civi_contact_id The numeric ID of a CiviCRM Contact.
-	 * @return array $group_contact The CiviCRM API data for the Contact.
+	 * @param integer $civi_group_id The numeric ID of the CiviCRM Group.
+	 * @param integer $civi_contact_id The numeric ID of a CiviCRM Contact.
+	 * @return array|bool $group_contact The CiviCRM API data for the Contact, or false on failure.
+	 */
+	public function group_contact_create( $civi_group_id, $civi_contact_id ) {
+
+		// Bail if CiviCRM is not active.
+		if ( ! $this->is_active() ) {
+			return false;
+		}
+
+		// Init API params.
+		$params = [
+			'version' => 3,
+			'contact_id' => $civi_contact_id,
+			'group_id' => $civi_group_id,
+			'status' => 'Added',
+		];
+
+		// Call CiviCRM API.
+		$group_contact = civicrm_api( 'GroupContact', 'create', $params );
+
+		// Return early if something went wrong.
+		if ( ! empty( $group_contact['error'] ) ) {
+
+			// Write details to PHP log.
+			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
+				$e = new \Exception();
+				$trace = $e->getTraceAsString();
+				error_log( print_r( [
+					'method' => __METHOD__,
+					'params' => $params,
+					'result' => $group_contact,
+					'backtrace' => $trace,
+				], true ) );
+			}
+
+			return false;
+
+		}
+
+		// The API will not add a Group Contact if it already exists.
+		return $group_contact;
+
+	}
+
+
+
+	/**
+	 * Deletes a CiviCRM Contact from a CiviCRM Group.
+	 *
+	 * @since 0.1
+	 *
+	 * @param integer $civi_group_id The numeric ID of the CiviCRM Group.
+	 * @param integer $civi_contact_id The numeric ID of a CiviCRM Contact.
+	 * @return array|bool $group_contact The CiviCRM API data for the Group Contact, or false on failure.
 	 */
 	public function group_contact_delete( $civi_group_id, $civi_contact_id ) {
+
+		// Bail if CiviCRM is not active.
+		if ( ! $this->is_active() ) {
+			return false;
+		}
 
 		// Init API params.
 		$params = [
@@ -1330,10 +1424,29 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			'status' => 'Removed',
 		];
 
-		// Call API.
+		// Call CiviCRM API.
 		$group_contact = civicrm_api( 'GroupContact', 'create', $params );
 
-		// --<
+		// Return early if something went wrong.
+		if ( ! empty( $group_contact['error'] ) ) {
+
+			// Write details to PHP log.
+			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
+				$e = new \Exception();
+				$trace = $e->getTraceAsString();
+				error_log( print_r( [
+					'method' => __METHOD__,
+					'params' => $params,
+					'result' => $group_contact,
+					'backtrace' => $trace,
+				], true ) );
+			}
+
+			return false;
+
+		}
+
+		// The API will not remove a Group Contact if it is already removed.
 		return $group_contact;
 
 	}
@@ -1356,7 +1469,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// If we don't get one.
 		if ( ! $civi_contact_id ) {
 
-			// What to do?
+			// Write details to PHP log.
 			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
 
 				// Construct verbose error string.
@@ -1395,27 +1508,43 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			'group_id' => $civi_group_id,
 		];
 
-		/*
-		 * Removing a Contact from a Group has issues:
-		 *
-		 * When we try and "delete" a GroupContact, CiviCRM creates a record that
-		 * the Contact was a Member of the Group but has been removed - even if
-		 * they have *never been* a Member of the Group.
-		 *
-		 * Ideally the CiviCRM API should find out if the User was a Member before
-		 * registering the "delete" event, but we may be able to pass "skip_undelete"
-		 * to the API to achieve the desired result. Needs testing.
-		 */
-
-		// Set status based on operation type.
+		// Act based on operation type.
 		if ( $op == 'add' ) {
+
+			// Add the Contact to the Group.
 			$groupParams['status'] = $params['is_active'] ? 'Added' : 'Pending';
+			$group_contact = civicrm_api( 'GroupContact', 'create', $groupParams );
+
 		} else {
+
+			/*
+			 * Removing a Contact from a Group has the following complication:
+			 *
+			 * When we try and "delete" a GroupContact, CiviCRM creates a record that
+			 * the Contact was a Member of the Group but has been removed - even if
+			 * they have *never been* a Member of the Group.
+			 *
+			 * Ideally the CiviCRM API should find out if the User was a Member before
+			 * registering the "delete" event, but we have to do it ourselves.
+			 */
+
+			// "Remove" the Contact from the Group.
 			$groupParams['status'] = 'Removed';
+
+			// Does this Contact already have a "Removed" Group membership?
+			$is_removed = $this->group_contact_exists( $civi_group_id, $civi_contact_id, 'Removed' );
+
+			// Call the CiviCRM API.
+			if ( $is_removed === false ) {
+				$group_contact = civicrm_api( 'GroupContact', 'create', $groupParams );
+			}
+
 		}
 
-		// We have to call 'create'. WTF?
-		$group_contact = civicrm_api( 'GroupContact', 'create', $groupParams );
+		// Sanity check.
+		if ( ! isset( $params['bp_status'] ) ) {
+			$params['bp_status'] = '';
+		}
 
 		// Do we have an Admin User - or Admin being demoted?
 		if (
@@ -1425,7 +1554,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		) {
 
 			// Get the Group ID of the ACL Group.
-			$civi_group_id = $this->find_group_id(
+			$civi_acl_group_id = $this->find_group_id(
 				$this->acl_group_get_sync_name( $params['bp_group_id'] )
 			);
 
@@ -1433,14 +1562,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			$groupParams = [
 				'version' => 3,
 				'contact_id' => $civi_contact_id,
-				'group_id' => $civi_group_id,
+				'group_id' => $civi_acl_group_id,
 				'status' => $params['is_admin'] ? 'Added' : 'Removed',
 			];
-
-			// Sanity check.
-			if ( ! isset( $params['bp_status'] ) ) {
-				$params['bp_status'] = '';
-			}
 
 			// Set status based on operation type and BP status.
 			if ( $op == 'add' && $params['bp_status'] != 'ex-admin' ) {
@@ -1449,7 +1573,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				$groupParams['status'] = 'Removed';
 			}
 
-			// We have to call 'create'. WTF?
+			// Call the CiviCRM API.
 			$acl_group_contact = civicrm_api( 'GroupContact', 'create', $groupParams );
 
 		}
