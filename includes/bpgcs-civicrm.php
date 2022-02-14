@@ -232,12 +232,16 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 */
 	public function sync_groups_create( $bp_group ) {
 
+		// Escalate permissions.
+		$this->permissions_escalate();
+
 		// First prepare the CiviCRM Member Group.
 		$member_group_params = $this->member_group_prepare( $bp_group );
 
 		// Create the CiviCRM Member Group.
 		$member_group = $this->group_create( $member_group_params );
 		if ( $member_group === false ) {
+			$this->permissions_escalate_stop();
 			return false;
 		}
 
@@ -255,6 +259,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			// Clean up by deleting the Member Group.
 			$this->group_delete( $member_group['id'] );
 
+			// Remove permissions.
+			$this->permissions_escalate_stop();
+
 			// --<
 			return false;
 
@@ -271,6 +278,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Create ACL for the CiviCRM Groups.
 		$success = $this->acl->update_for_groups( $acl_group, $member_group );
 		if ( $success === false ) {
+			$this->permissions_escalate_stop();
 			return false;
 		}
 
@@ -289,6 +297,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Update the corresponding CiviCRM Group memberships.
 		$this->group_contact->memberships_sync( $args );
 
+		// Remove permissions.
+		$this->permissions_escalate_stop();
+
 		// --<
 		return $group_ids;
 
@@ -306,6 +317,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 */
 	public function sync_groups_update( $bp_group ) {
 
+		// Escalate permissions.
+		$this->permissions_escalate();
+
 		// Get the Synced Group IDs from the BuddyPress Group meta.
 		$sync_groups = groups_get_groupmeta( $bp_group->id, 'civicrm_groups' );
 
@@ -320,6 +334,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Update the CiviCRM Member Group.
 		$member_group = $this->group_update( $member_group_params );
 		if ( $member_group === false ) {
+			$this->permissions_escalate_stop();
 			return false;
 		}
 
@@ -334,14 +349,19 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Update the CiviCRM ACL Group.
 		$acl_group = $this->group_update( $acl_group_params );
 		if ( $acl_group === false ) {
+			$this->permissions_escalate_stop();
 			return false;
 		}
 
 		// Update ACL for the CiviCRM Groups.
 		$success = $this->acl->update_for_groups( $acl_group, $member_group );
 		if ( $success === false ) {
+			$this->permissions_escalate_stop();
 			return false;
 		}
+
+		// Remove permissions.
+		$this->permissions_escalate_stop();
 
 		// --<
 		return true;
@@ -363,6 +383,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Init return.
 		$success = false;
 
+		// Escalate permissions.
+		$this->permissions_escalate();
+
 		// Get the Synced Group IDs from the BuddyPress Group meta.
 		$sync_groups = groups_get_groupmeta( $bp_group->id, 'civicrm_groups' );
 
@@ -383,6 +406,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( $acl_deleted && $member_group_deleted && $acl_group_deleted ) {
 			$success = true;
 		}
+
+		// Remove permissions.
+		$this->permissions_escalate_stop();
 
 		// --<
 		return $success;
@@ -1145,6 +1171,59 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// --<
 		return $sync_name;
+
+	}
+
+
+
+	// -------------------------------------------------------------------------
+
+
+
+	/**
+	 * Filters the CiviCRM Permissions to escalate permissions.
+	 *
+	 * @since 0.4
+	 */
+	public function permissions_escalate() {
+		add_action( 'civicrm_permission_check', [ $this, 'permissions_grant' ], 10, 2 );
+	}
+
+
+
+	/**
+	 * Removes the CiviCRM Permissions filter to restore permissions.
+	 *
+	 * @since 0.4
+	 */
+	public function permissions_escalate_stop() {
+		remove_action( 'civicrm_permission_check', [ $this, 'permissions_grant' ], 10 );
+	}
+
+
+
+	/**
+	 * Grant the permissions necessary for BuddyPress Members to create Synced
+	 * CiviCRM Groups when they create a BuddyPress Group.
+	 *
+	 * @since 0.4
+	 *
+	 * @param str $permission The requested permission.
+	 * @param bool $granted True if permission granted, false otherwise.
+	 */
+	public function permissions_grant( $permission, &$granted ) {
+
+		// Build array of necessary permissions.
+		$permissions = [
+			'administer civicrm',
+			'all civicrm permissions and acls',
+			'edit groups',
+		];
+
+		// Allow the relevant ones.
+		if ( in_array( strtolower( $permission ), $permissions ) ) {
+			$granted = 1;
+		}
 
 	}
 
