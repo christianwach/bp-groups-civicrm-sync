@@ -697,6 +697,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 			// Build params to get ACL Entity Role.
 			$params = [
 				'limit' => 0,
+				'checkPermissions' => false,
 			];
 			$params['where'] = [
 				[ 'acl_role_id', '=', (int) $acl_role_id ],
@@ -778,6 +779,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 			// Build params to get ACL Entity Role.
 			$params = [
 				'limit' => 0,
+				'checkPermissions' => false,
 			];
 			$params['where'] = [
 				[ 'entity_table', '=', 'civicrm_group' ],
@@ -863,7 +865,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 		if ( version_compare( $version, '5.39', '>=' ) ) {
 
 			// Build params to create ACL Entity Role.
-			$params = [];
+			$params = [
+				'checkPermissions' => false,
+			];
 			$params['values'] = [
 				'entity_table' => 'civicrm_group',
 			] + $acl_entity_role;
