@@ -148,10 +148,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 	 *
 	 * @since 0.1
 	 * @since 0.4 Moved to this class and renamed.
+	 * @since 0.4 Returns keyed array of results.
 	 *
 	 * @param array $args The array of arguments.
+	 * @return array|bool $result The array of result data, or false on failure.
 	 */
 	public function memberships_sync( $args ) {
+
+		// Init return.
+		$result = [];
 
 		// Sanity check BuddyPress membership status.
 		if ( empty( $args['status'] ) ) {
@@ -159,10 +164,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		}
 
 		// Get the CiviCRM Contact ID.
-		$contact_id = $this->contact_id_get_by_user_id( $args['user_id'] );
+		$contact_id = $this->civicrm->contact->id_get_by_user_id( $args['user_id'] );
 		if ( empty( $contact_id ) ) {
-			return;
+			return false;
 		}
+
+		// Add Contact ID to return array.
+		$result['contact_id'] = $contact_id;
 
 		// Get the Synced Group IDs from the BuddyPress Group meta.
 		$sync_groups = groups_get_groupmeta( $args['group_id'], 'civicrm_groups' );
@@ -184,7 +192,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		}
 
 		// Params to update the Group Contact for the CiviCRM Member Group.
-		$group_params = [
+		$member_group_params = [
 			'contact_id' => $contact_id,
 			'group_id' => $member_group_id,
 		];
@@ -196,22 +204,25 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		if ( $args['action'] == 'add' ) {
 
 			// Add the Contact to the Group.
-			$group_params['status'] = $args['is_active'] ? 'Added' : 'Pending';
-			$group_contact = $this->membership_create( $group_params );
+			$member_group_params['status'] = $args['is_active'] ? 'Added' : 'Pending';
+			$member_group_contact = $this->membership_create( $member_group_params );
 
 		} else {
 
 			// Remove this Group membership.
-			$group_contact = $this->membership_delete( $group_params );
+			$member_group_contact = $this->membership_delete( $member_group_params );
 
 		}
+
+		// Add Member Group Contact to return array.
+		$result['member_group_contact'] = $member_group_contact;
 
 		// Restore callbacks.
 		$this->register_hooks();
 
 		// Skip ACL Group unless we have a Group Admin or a Group Admin is being demoted.
 		if ( ! in_array( $args['status'], [ 'admin', 'ex-admin' ] ) ) {
-			return;
+			return $result;
 		}
 
 		/*
@@ -232,7 +243,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		}
 
 		// Define params.
-		$group_params = [
+		$acl_group_params = [
 			'contact_id' => $contact_id,
 			'group_id' => $acl_group_id,
 		];
@@ -244,18 +255,24 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		if ( $args['action'] === 'add' && $args['status'] !== 'ex-admin' ) {
 
 			// Add to ACL Group.
-			$group_params['status'] = $args['is_active'] ? 'Added' : 'Pending';
-			$acl_group_contact = $this->membership_create( $group_params );
+			$acl_group_params['status'] = $args['is_active'] ? 'Added' : 'Pending';
+			$acl_group_contact = $this->membership_create( $acl_group_params );
 
 		} else {
 
 			// Remove this Group membership.
-			$acl_group_contact = $this->membership_delete( $group_params );
+			$acl_group_contact = $this->membership_delete( $acl_group_params );
 
 		}
 
+		// Add ACL Group Contact to return array.
+		$result['acl_group_contact'] = $acl_group_contact;
+
 		// Restore callbacks.
 		$this->register_hooks();
+
+		// --<
+		return $result;
 
 	}
 
@@ -306,7 +323,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		}
 
 		// Get full data for the Contacts.
-		$contacts = $this->contacts_get_by_ids( $contact_ids );
+		$contacts = $this->civicrm->contact->contacts_get_by_ids( $contact_ids );
 
 		// Assume Member Group.
 		$is_admin = 0;
@@ -409,7 +426,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		}
 
 		// Get full data for the Contacts.
-		$contacts = $this->contacts_get_by_ids( $contact_ids );
+		$contacts = $this->civicrm->contact->contacts_get_by_ids( $contact_ids );
 
 		// Demote and return early if this a CiviCRM ACL Group.
 		if ( $this->civicrm->is_acl_group( $group ) ) {
@@ -703,202 +720,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 		// We're only updating the status of the Group Contact.
 		return $this->membership_create( $params );
-
-	}
-
-
-
-	// -------------------------------------------------------------------------
-
-
-
-	/**
-	 * Gets the CiviCRM Contact ID for a given WordPress User ID.
-	 *
-	 * @since 0.1
-	 * @since 0.4 Moved to this class and renamed.
-	 *
-	 * @param int $user_id The numeric ID of the WordPress User.
-	 * @return int|bool $contact_id The numeric ID of the CiviCRM Contact, false on failure.
-	 */
-	public function contact_id_get_by_user_id( $user_id ) {
-
-		// Try and initialise CiviCRM.
-		if ( ! $this->civicrm->is_initialised() ) {
-			return false;
-		}
-
-		// Make sure CiviCRM file is included.
-		require_once 'CRM/Core/BAO/UFMatch.php';
-
-		// Do initial search.
-		$contact_id = CRM_Core_BAO_UFMatch::getContactId( $user_id );
-		if ( ! empty( $contact_id ) && is_numeric( $contact_id ) ) {
-			return $contact_id;
-		}
-
-		// Get the User object.
-		$user = new WP_User( $user_id );
-		if ( ! $user->exists() ) {
-			return false;
-		}
-
-		// Sync this User.
-		CRM_Core_BAO_UFMatch::synchronizeUFMatch(
-			$user, // User object.
-			$user->ID, // ID.
-			$user->user_email, // Unique identifier.
-			'WordPress', // CMS.
-			null, // Status.
-			'Individual', // Contact type.
-			null // is_login.
-		);
-
-		// Get the CiviCRM Contact ID.
-		$contact_id = CRM_Core_BAO_UFMatch::getContactId( $user->ID );
-
-		// Log and bail on failure.
-		if ( ! $contact_id ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$error = sprintf(
-					/* translators: %d: The numeric ID of the WordPress User */
-					__( 'No CiviCRM Contact ID could be found for WordPress User ID %d', 'bp-groups-civicrm-sync' ),
-					$user_id
-				);
-				$e = new \Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method' => __METHOD__,
-					'error' => $error,
-					'user' => $user,
-					'backtrace' => $trace,
-				], true ) );
-			}
-			return false;
-		}
-
-		// --<
-		return $contact_id;
-
-	}
-
-
-
-	/**
-	 * Gets the data for multiple CiviCRM Contacts for an array of Contact IDs.
-	 *
-	 * @since 0.4
-	 *
-	 * @param array $contact_ids The array of CiviCRM Contact IDs.
-	 * @return array $contacts The array of data for multiple CiviCRM Contacts.
-	 */
-	public function contacts_get_by_ids( $contact_ids ) {
-
-		// Init return.
-		$contacts = [];
-
-		// Try and initialise CiviCRM.
-		if ( ! $this->civicrm->is_initialised() ) {
-			return $contacts;
-		}
-
-		// Get the Contacts with the given IDs.
-		$params = [
-			'version' => 3,
-			'id' => [
-				'IN' => $contact_ids,
-			],
-			'options' => [
-				'limit' => 0,
-			],
-		];
-
-		// Call the CiviCRM API.
-		$result = civicrm_api( 'Contact', 'get', $params );
-
-		// Bail if we get any errors.
-		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
-			return $contacts;
-		}
-
-		// Bail if there are no values.
-		if ( empty( $result['values'] ) ) {
-			return $contacts;
-		}
-
-		// We want the array of values.
-		$contacts = $result['values'];
-
-		// --<
-		return $contacts;
-
-	}
-
-
-
-	/**
-	 * Get CiviCRM Contact data by Contact ID.
-	 *
-	 * @since 0.1
-	 * @since 0.4 Moved to this class and renamed.
-	 *
-	 * @param int $contact_id The numeric ID of the CiviCRM Contact.
-	 * @return array|bool $contact The array CiviCRM Contact data, or false otherwise.
-	 */
-	public function contact_get_by_id( $contact_id ) {
-
-		// Init return.
-		$contact = false;
-
-		// Try and initialise CiviCRM.
-		if ( ! $this->civicrm->is_initialised() ) {
-			return $contact;
-		}
-
-		// Get all Contact data.
-		$params = [
-			'version' => 3,
-			'contact_id' => $contact_id,
-		];
-
-		// Use API.
-		$result = civicrm_api( 'Contact', 'get', $params );
-
-		// Bail if we get any errors.
-		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
-			return $contact;
-		}
-
-		// Bail if there are no values.
-		if ( empty( $result['values'] ) ) {
-			return $contact;
-		}
-
-		// Get Contact.
-		$contact = array_shift( $result['values'] );
-
-		// --<
-		return $contact;
 
 	}
 

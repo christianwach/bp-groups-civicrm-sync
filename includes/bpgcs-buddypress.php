@@ -1518,7 +1518,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 				// Create a UFMatch record if the User was successfully created.
 				if ( ! is_wp_error( $user_id ) && isset( $contact['contact_id'] ) ) {
-					$this->civicrm->ufmatch_create( $contact['contact_id'], $user_id, $contact['email'] );
+					$this->civicrm->contact->ufmatch_create( $contact['contact_id'], $user_id, $contact['email'] );
 				}
 
 			}
@@ -1600,7 +1600,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		$user_id = $this->temp_contact['user_id'];
 
 		// Create a UFMatch record.
-		$this->civicrm->ufmatch_create( $object_ref->contact_id, $user_id, $object_ref->email );
+		$this->civicrm->contact->ufmatch_create( $object_ref->contact_id, $user_id, $object_ref->email );
 
 		// Remove filters.
 		$this->remove_filters();

@@ -64,6 +64,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	public $acl;
 
 	/**
+	 * CiviCRM Contact object.
+	 *
+	 * @since 0.4
+	 * @access public
+	 * @var object $contact The CiviCRM Contact object.
+	 */
+	public $contact;
+
+	/**
 	 * CiviCRM Meta Group object.
 	 *
 	 * @since 0.4
@@ -155,6 +164,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	public function include_files() {
 
 		// Include class files.
+		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/bpgcs-civicrm-contact.php';
 		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/bpgcs-civicrm-group-meta.php';
 		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/bpgcs-civicrm-group-contact.php';
 		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/bpgcs-civicrm-group-nesting.php';
@@ -173,6 +183,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	public function setup_objects() {
 
 		// Initialise objects.
+		$this->contact = new BP_Groups_CiviCRM_Sync_CiviCRM_Contact( $this );
 		$this->meta_group = new BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta( $this );
 		$this->group_contact = new BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact( $this );
 		$this->group_nesting = new BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting( $this );
@@ -245,8 +256,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return false;
 		}
 
-		// TODO: Update Member Group to preserve Group Creator.
-
 		// Next prepare the CiviCRM ACL Group.
 		$acl_group_params = $this->acl_group_prepare( $bp_group );
 
@@ -266,8 +275,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			return false;
 
 		}
-
-		// TODO: Update ACL Group to preserve Group Creator.
 
 		// Populate return array.
 		$group_ids = [
@@ -295,7 +302,26 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		];
 
 		// Update the corresponding CiviCRM Group memberships.
-		$this->group_contact->memberships_sync( $args );
+		$result = $this->group_contact->memberships_sync( $args );
+
+		// If there's a Contact ID we can use.
+		if ( ! empty( $result['contact_id'] ) ) {
+
+			// Update Member Group to preserve Group Creator.
+			$member_group_params['id'] = $member_group['id'];
+			$member_group_params['created_id'] = $result['contact_id'];
+
+			// Update the CiviCRM Member Group.
+			$member_group = $this->group_update( $member_group_params );
+
+			// Update ACL Group to preserve Group Creator.
+			$acl_group_params['id'] = $acl_group['id'];
+			$acl_group_params['created_id'] = $result['contact_id'];
+
+			// Update the CiviCRM ACL Group.
+			$acl_group = $this->group_update( $acl_group_params );
+
+		}
 
 		// Remove permissions.
 		$this->permissions_escalate_stop();
@@ -331,6 +357,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			$member_group_params['id'] = $sync_groups['member_group_id'];
 		}
 
+		// Add the BuddyPress Group creator's Contact ID to the params.
+		if ( ! empty( $bp_group->creator_id ) ) {
+			$contact_id = $this->contact->id_get_by_user_id( $bp_group->creator_id );
+			if ( ! empty( $contact_id ) ) {
+				$member_group_params['created_id'] = $contact_id;
+			}
+		}
+
 		// Update the CiviCRM Member Group.
 		$member_group = $this->group_update( $member_group_params );
 		if ( $member_group === false ) {
@@ -344,6 +378,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Add the ACL Group ID to the params.
 		if ( ! empty( $sync_groups ) ) {
 			$acl_group_params['id'] = $sync_groups['acl_group_id'];
+		}
+
+		// Add the BuddyPress Group creator's Contact ID to the params.
+		if ( ! empty( $bp_group->creator_id ) ) {
+			$contact_id = $this->contact->id_get_by_user_id( $bp_group->creator_id );
+			if ( ! empty( $contact_id ) ) {
+				$acl_group_params['created_id'] = $contact_id;
+			}
 		}
 
 		// Update the CiviCRM ACL Group.
@@ -1224,104 +1266,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( in_array( strtolower( $permission ), $permissions ) ) {
 			$granted = 1;
 		}
-
-	}
-
-
-
-	// -------------------------------------------------------------------------
-
-
-
-	/**
-	 * Updates a CiviCRM Contact when a WordPress User is updated.
-	 *
-	 * @since 0.1
-	 *
-	 * @param object $user The WordPress User object.
-	 */
-	public function civicrm_contact_update( $user ) {
-
-		// Try and initialise CiviCRM.
-		if ( ! $this->is_initialised() ) {
-			return false;
-		}
-
-		// Make sure CiviCRM file is included.
-		require_once 'CRM/Core/BAO/UFMatch.php';
-
-		// The synchronizeUFMatch method returns the Contact object.
-		$contact = CRM_Core_BAO_UFMatch::synchronizeUFMatch(
-			$user, // User object.
-			$user->ID, // ID.
-			$user->user_email, // Unique identifier.
-			'WordPress', // CMS.
-			null, // Unused.
-			'Individual' // Contact type.
-		);
-
-	}
-
-
-
-	/**
-	 * Create a link between a WordPress User and a CiviCRM Contact.
-	 *
-	 * This method optionally allows a Domain ID to be specified.
-	 *
-	 * @since 0.4
-	 *
-	 * @param integer $contact_id The numeric ID of the CiviCRM Contact.
-	 * @param integer $user_id The numeric ID of the WordPress User.
-	 * @param str $username The WordPress username.
-	 * @param integer $domain_id The CiviCRM Domain ID (defaults to current Domain ID).
-	 * @return array|bool The UFMatch data on success, or false on failure.
-	 */
-	public function ufmatch_create( $contact_id, $user_id, $username, $domain_id = '' ) {
-
-		// Try and initialise CiviCRM.
-		if ( ! $this->is_initialised() ) {
-			return false;
-		}
-
-		// Sanity checks.
-		if ( ! is_numeric( $contact_id ) || ! is_numeric( $user_id ) ) {
-			return false;
-		}
-
-		// Construct params.
-		$params = [
-			'version' => 3,
-			'uf_id' => $user_id,
-			'uf_name' => $username,
-			'contact_id' => $contact_id,
-		];
-
-		// Maybe add Domain ID.
-		if ( ! empty( $domain_id ) ) {
-			$params['domain_id'] = $domain_id;
-		}
-
-		// Create record via API.
-		$result = civicrm_api( 'UFMatch', 'create', $params );
-
-		// Log and bail on failure.
-		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
-			return false;
-		}
-
-		// --<
-		return $result;
 
 	}
 
