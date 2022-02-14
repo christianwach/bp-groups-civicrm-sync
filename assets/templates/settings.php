@@ -26,13 +26,23 @@
 
 		<?php wp_nonce_field( 'bp_groups_civicrm_sync_settings_action', 'bp_groups_civicrm_sync_nonce' ); ?>
 
-		<p><?php echo sprintf( __( '%1$sPlease Note:%2$s it is strongly recommended to choose the following settings before you sync groups. You can change these settings later, but it will require some heavy processing if you have a large number of groups.', 'bp-groups-civicrm-sync' ), '<strong>', '</strong>' ); ?></p>
+		<p><?php echo sprintf(
+			/* translators: 1: The opening strong tag, 2: The closing strong tag */
+			__( '%1$sPlease Note:%2$s it is strongly recommended to choose the following settings before you sync groups. You can change these settings later, but it will require some heavy processing if you have a large number of groups.', 'bp-groups-civicrm-sync' ),
+			'<strong>',
+			'</strong>'
+		); ?></p>
 
 		<hr>
 
 		<h3><?php esc_html_e( 'Parent Group', 'bp-groups-civicrm-sync' ); ?></h3>
 
-		<p><?php echo sprintf( __( 'Depending on your use case, select whether you want your CiviCRM groups to be assigned to a "BuddyPress Groups" parent group in CiviCRM. If you do, then CiviCRM groups will be nested under - and inherit permissions from - the "BuddyPress Groups" parent group. Please refer to %1$sthe documentation%2$s to decide if this is useful to you or not.', 'bp-groups-civicrm-sync' ), '<a href="https://docs.civicrm.org/user/en/latest/organising-your-data/groups-and-tags/">', '</a>' ); ?></p>
+		<p><?php echo sprintf(
+			/* translators: 1: The opening anchor tag, 2: The closing anchor tag */
+			__( 'Depending on your use case, select whether you want your CiviCRM groups to be assigned to a "BuddyPress Groups" parent group in CiviCRM. If you do, then CiviCRM groups will be nested under - and inherit permissions from - the "BuddyPress Groups" parent group. Please refer to %1$sthe documentation%2$s to decide if this is useful to you or not.', 'bp-groups-civicrm-sync' ),
+			'<a href="https://docs.civicrm.org/user/en/latest/organising-your-data/groups-and-tags/">',
+			'</a>'
+		); ?></p>
 
 		<table class="form-table">
 
@@ -46,25 +56,16 @@
 
 		</table>
 
-		<?php if ( $bp_group_hierarchy ) : ?>
-			<hr>
+		<?php
 
-			<h3><?php esc_html_e( 'BuddyPress Group Hierarchy', 'bp-groups-civicrm-sync' ); ?></h3>
+		/**
+		 * Allow extra content to be added.
+		 *
+		 * @since 0.4
+		 */
+		do_action( 'bpgcs/submit/before' );
 
-			<p><?php echo sprintf( __( 'Depending on your use case, select whether you want your CiviCRM groups to be hierarchically organised in CiviCRM. If you do, then CiviCRM groups will be nested under one another, mirroring the BuddyPress Group Hierarchy. Again, please refer to %1$sthe documentation%2$s to decide if this is useful to you or not.', 'bp-groups-civicrm-sync' ), '<a href="https://docs.civicrm.org/user/en/latest/organising-your-data/groups-and-tags/">', '</a>' ); ?></p>
-
-			<table class="form-table">
-
-				<tr>
-					<th scope="row"><label class="bp_groups_civicrm_sync_settings_label" for="bp_groups_civicrm_sync_settings_hierarchy"><?php esc_html_e( 'Use Hierarchy', 'bp-groups-civicrm-sync' ); ?></label></th>
-					<td>
-						<input type="checkbox" class="settings-checkbox" name="bp_groups_civicrm_sync_settings_hierarchy" id="bp_groups_civicrm_sync_settings_hierarchy" value="1"<?php echo $hierarchy_checked; ?> />
-						<label class="bp_groups_civicrm_sync_settings_label" for="bp_groups_civicrm_sync_settings_hierarchy"><?php esc_html_e( 'Nest CiviCRM groups hierarchically.', 'bp-groups-civicrm-sync' ); ?></label>
-					</td>
-				</tr>
-
-			</table>
-		<?php endif; ?>
+		?>
 
 		<hr>
 

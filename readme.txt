@@ -3,7 +3,7 @@ Contributors: needle, cuny-academic-commons
 Donate link: https://www.paypal.me/interactivist
 Tags: civicrm, buddypress, user, groups, sync
 Requires at least: 4.9
-Tested up to: 5.5
+Tested up to: 5.9
 Stable tag: 0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -23,7 +23,7 @@ When a new user is added to (or joins) a *BuddyPress* group, they are automatica
 
 ### Requirements
 
-This plugin requires a minimum of *WordPress 4.9*, *BuddyPress 1.8* and *CiviCRM 4.7*. Having the latest version of each plugin active is, of course, highly recommended.
+This plugin requires a minimum of *WordPress 4.9*, *BuddyPress 1.8* and *CiviCRM 5.39*. Having the latest version of each plugin active is, of course, highly recommended.
 
 ### Plugin Development
 

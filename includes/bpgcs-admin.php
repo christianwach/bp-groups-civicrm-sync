@@ -27,18 +27,18 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $parent_obj The plugin object.
+	 * @var object $plugin The plugin object.
 	 */
-	public $parent_obj;
+	public $plugin;
 
 	/**
 	 * CiviCRM utilities object.
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $civi The CiviCRM utilities object.
+	 * @var object $civicrm The CiviCRM utilities object.
 	 */
-	public $civi;
+	public $civicrm;
 
 	/**
 	 * BuddyPress utilities object.
@@ -88,39 +88,19 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Initialise this object.
+	 * Constructor.
 	 *
 	 * @since 0.1
 	 *
-	 * @param object $parent_obj The parent object.
+	 * @param object $parent The parent object.
 	 */
-	public function __construct( $parent_obj ) {
+	public function __construct( $parent ) {
 
 		// Store reference to parent.
-		$this->parent_obj = $parent_obj;
+		$this->plugin = $parent;
 
 		// Add action for admin init.
-		add_action( 'plugins_loaded', [ $this, 'initialise' ] );
-
-	}
-
-
-
-	/**
-	 * Set references to other objects.
-	 *
-	 * @since 0.1
-	 *
-	 * @param object $bp_object Reference to this plugin's BuddyPress object.
-	 * @param object $civi_object Reference to this plugin's CiviCRM object.
-	 */
-	public function set_references( &$bp_object, &$civi_object ) {
-
-		// Store BuddyPress reference.
-		$this->bp = $bp_object;
-
-		// Store CiviCRM reference.
-		$this->civi = $civi_object;
+		add_action( 'bpgcs/loaded', [ $this, 'initialise' ] );
 
 	}
 
@@ -159,11 +139,15 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 
 	/**
-	 * Initialise when all plugins are loaded.
+	 * Initialises this class.
 	 *
 	 * @since 0.1
 	 */
 	public function initialise() {
+
+		// Store references.
+		$this->bp = $this->plugin->bp;
+		$this->civicrm = $this->plugin->civicrm;
 
 		// Load plugin version.
 		$this->plugin_version = get_option( 'bp_groups_civicrm_sync_version', false );
@@ -180,7 +164,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		if ( is_admin() ) {
 
 			// Add AJAX handler.
-			add_action( 'wp_ajax_sync_bp_and_civi', [ $this, 'sync_bp_and_civi' ] );
+			add_action( 'wp_ajax_sync_bp_and_civi', [ $this, 'bp_groups_sync_to_civicrm' ] );
 
 			// Add menu to Network or Settings submenu.
 			if ( is_multisite() ) {
@@ -190,6 +174,13 @@ class BP_Groups_CiviCRM_Sync_Admin {
 			}
 
 		}
+
+		/**
+		 * Broadcast that this class is now loaded.
+		 *
+		 * @since 0.4
+		 */
+		do_action( 'bpgcs/admin/loaded' );
 
 	}
 
@@ -499,26 +490,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 			$checked = '';
 		}
 
-		// Assume no BuddyPress Group Hierarchy plugin.
-		$bp_group_hierarchy = false;
-
-		// Test for presence BuddyPress Group Hierarchy plugin.
-		if ( defined( 'BP_GROUP_HIERARCHY_IS_INSTALLED' ) ) {
-
-			// Set flag.
-			$bp_group_hierarchy = true;
-
-			// Get our settings.
-			$hierarchy = absint( $this->setting_get( 'nesting' ) );
-
-			// Checked by default.
-			$hierarchy_checked = ' checked="checked"';
-			if ( isset( $hierarchy ) && $hierarchy === 0 ) {
-				$hierarchy_checked = '';
-			}
-
-		}
-
 		// Include template file.
 		include BP_GROUPS_CIVICRM_SYNC_PATH . 'assets/templates/settings.php';
 
@@ -544,43 +515,8 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// Init messages.
 		$messages = '';
 
-		// Did we ask to check for Group Sync integrity?
-		$checking_bp = false;
-		if ( ! empty( $_POST['bp_groups_civicrm_sync_bp_check'] ) ) {
-			$checking_bp = true;
-		}
-
-		// Did we ask to check for Organic Groups?
-		$checking_og = false;
-		$has_og_groups = false;
-		if ( ! empty( $_POST['bp_groups_civicrm_sync_og_check'] ) ) {
-			$checking_og = true;
-			$has_og_groups = $this->civi->has_og_groups();
-		}
-
-		// If we've updated.
-		if ( isset( $_GET['updated'] ) ) {
-
-			// Are we checking OG?
-			if ( $checking_og ) {
-
-				// Show settings updated message.
-				if ( $has_og_groups !== false ) {
-					$messages .= '<div id="message" class="updated"><p>' . __( 'Organic Groups found. You can now choose to migrate them to BuddyPress.', 'bp-groups-civicrm-sync' ) . '</p></div>';
-				} else {
-					// Show settings updated message.
-					$messages .= '<div id="message" class="updated"><p>' . __( 'No Organic Groups found.', 'bp-groups-civicrm-sync' ) . '</p></div>';
-				}
-
-			}
-
-		}
-
 		// Show "Organic Group to BuddyPress Sync" if we have Organic Groups.
-		$og_to_bp_do_sync = false;
-		if ( $checking_og && $has_og_groups ) {
-			$og_to_bp_do_sync = true;
-		}
+		$has_og_groups = $this->civicrm->group_admin->has_og_groups();
 
 		// Include template file.
 		include BP_GROUPS_CIVICRM_SYNC_PATH . 'assets/templates/utilities.php';
@@ -751,7 +687,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// Were any sync operations requested?
 		if (
 			isset( $_POST['bp_groups_civicrm_sync_bp_check'] ) ||
-			isset( $_POST['bp_groups_civicrm_sync_bp_check_sync'] ) ||
 			isset( $_POST['bp_groups_civicrm_sync_convert'] )
 		) {
 			$this->settings_update_sync();
@@ -783,48 +718,22 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// Sanitise and set option.
 		$this->setting_set( 'parent_group', ( $settings_parent_group ? 1 : 0 ) );
 
-		// Test for presence BuddyPress Group Hierarchy plugin.
-		if ( defined( 'BP_GROUP_HIERARCHY_IS_INSTALLED' ) ) {
-
-			// Get existing option.
-			$existing_hierarchy = $this->setting_get( 'nesting' );
-
-			// Did we ask to enable hierarchy?
-			$settings_hierarchy = 0;
-			if ( isset( $_POST['bp_groups_civicrm_sync_settings_hierarchy'] ) ) {
-				$settings_hierarchy = absint( $_POST['bp_groups_civicrm_sync_settings_hierarchy'] );
-			}
-
-			// Sanitise and set option.
-			$this->setting_set( 'nesting', ( $settings_hierarchy ? 1 : 0 ) );
-
-		}
+		/**
+		 * Broadcast that we are about to update our settings.
+		 *
+		 * @since 0.4
+		 */
+		do_action( 'bpgcs/admin/settings/update/before' );
 
 		// Save settings.
 		$this->settings_save();
 
-		// Test for presence BuddyPress Group Hierarchy plugin.
-		if ( defined( 'BP_GROUP_HIERARCHY_IS_INSTALLED' ) ) {
-
-			// Is the hierarchy setting changing?
-			if ( $existing_hierarchy != $settings_hierarchy ) {
-
-				// Are we switching from "no hierarchy" to "use hierarchy"?
-				if ( $existing_hierarchy == 0 ) {
-
-					// Build CiviCRM Group hierarchy.
-					$this->civi->group_hierarchy_build();
-
-				} else {
-
-					// Collapse CiviCRM Group hierarchy.
-					$this->civi->group_hierarchy_collapse();
-
-				}
-
-			}
-
-		}
+		/**
+		 * Broadcast that we have updated our settings.
+		 *
+		 * @since 0.4
+		 */
+		do_action( 'bpgcs/admin/settings/update/after' );
 
 		// Is the Parent Group setting changing?
 		if ( $existing_parent_group != $settings_parent_group ) {
@@ -833,18 +742,18 @@ class BP_Groups_CiviCRM_Sync_Admin {
 			if ( $existing_parent_group == 0 ) {
 
 				// Create a Meta Group to hold all BuddyPress Groups.
-				$this->civi->meta_group_create();
+				$this->civicrm->meta_group->group_create();
 
-				// Assign BuddyPress Sync Groups with no parent to the Meta Group.
-				$this->civi->meta_group_groups_assign();
+				// Assign all Synced CiviCRM Groups with no parent to the Meta Group.
+				$this->civicrm->meta_group->groups_assign();
 
 			} else {
 
-				// Remove top-level BuddyPress Sync Groups from the "BuddyPress Groups" container Group.
-				$this->civi->meta_group_groups_remove();
+				// Remove top-level Synced CiviCRM Groups from the Meta Group.
+				$this->civicrm->meta_group->groups_remove();
 
-				// Delete "BuddyPress Groups" Meta Group.
-				$this->civi->meta_group_delete();
+				// Delete the Meta Group.
+				$this->civicrm->meta_group->group_delete();
 
 			}
 
@@ -874,24 +783,18 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// Init vars.
 		$bp_groups_civicrm_sync_convert = '';
 		$bp_groups_civicrm_sync_bp_check = '';
-		$bp_groups_civicrm_sync_bp_check_sync = '';
 
 		// Get variables.
 		extract( $_POST );
 
 		// Did we ask to sync existing BuddyPress Groups with CiviCRM?
 		if ( ! empty( $bp_groups_civicrm_sync_bp_check ) ) {
-			$this->sync_bp_and_civi();
-		}
-
-		// Did we ask to check the sync of BuddyPress Groups and CiviCRM Groups?
-		if ( ! empty( $bp_groups_civicrm_sync_bp_check_sync ) ) {
-			//$this->check_sync_between_bp_and_civi();
+			$this->bp_groups_sync_to_civicrm();
 		}
 
 		// Did we ask to convert Organic Groups?
 		if ( ! empty( $bp_groups_civicrm_sync_convert ) ) {
-			$this->civi->og_groups_to_bp_groups_convert();
+			$this->civicrm->group_admin->og_groups_to_bp_groups_convert();
 		}
 
 		// Get admin URLs.
@@ -980,11 +883,12 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * sync, one to stop the sync.
 	 *
 	 * @since 0.1
+	 * @since 0.4 Renamed.
 	 */
-	public function sync_bp_and_civi() {
+	public function bp_groups_sync_to_civicrm() {
 
 		// Init or bail.
-		if ( ! $this->civi->is_active() ) {
+		if ( ! $this->civicrm->is_initialised() ) {
 			return;
 		}
 
@@ -1040,16 +944,16 @@ class BP_Groups_CiviCRM_Sync_Admin {
 				// Get name of Group.
 				$data['group_name'] = bp_get_group_name();
 
-				// Get the CiviCRM Group ID of this BuddyPress Group.
-				$civi_group_id = $this->civi->find_group_id(
-					$this->civi->member_group_get_sync_name( $group_id )
+				// Get the ID of the CiviCRM Member Group for this BuddyPress Group.
+				$member_group_id = $this->civicrm->group_id_find(
+					$this->civicrm->member_group_get_sync_name( $group_id )
 				);
 
-				// If we don't get an ID, create the Group.
-				if ( ! $civi_group_id ) {
-					$this->bp->create_civi_group( $group_id, null, $group );
+				// If we don't get an ID, create the CiviCRM Group(s).
+				if ( $member_group_id === false ) {
+					$this->bp->civicrm_group_create( $group_id, null, $group );
 				} else {
-					$this->bp->update_civi_group( $group_id, $group );
+					$this->bp->civicrm_group_update( $group_id, $group );
 				}
 
 				// Get paging value, or start at the beginning if not present.
@@ -1058,7 +962,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 				$member_params = [
 					'exclude_admins_mods' => 0,
 					'page' => $members_page,
-					'per_page' => 10,
+					'per_page' => 20,
 					'group_id' => $group_id,
 				];
 
@@ -1075,9 +979,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 						bp_group_the_member();
 
 						// Update their Membership.
-						$this->bp->civi_update_group_membership( bp_get_group_member_id(), $group_id );
+						$this->bp->civicrm_group_membership_update( bp_get_group_member_id(), $group_id );
 
-					} // End while.
+					}
 
 					// Increment Members paging option.
 					update_option( '_bgcs_members_page', (string) ( $members_page + 1 ) );
@@ -1095,7 +999,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 				}
 
-			} // End while
+			} // End loop.
 
 		} else {
 
@@ -1107,75 +1011,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		}
 
-		// Is this an AJAX request?
-		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
-
-			// Set reasonable headers.
-			header( 'Content-type: text/plain' );
-			header( 'Cache-Control: no-cache' );
-			header( 'Expires: -1' );
-
-			// Echo.
-			echo wp_json_encode( $data );
-
-			// Die.
-			exit();
-
-		}
-
-	}
-
-
-
-	/**
-	 * Check the Sync between BuddyPress Groups and CiviCRM Groups.
-	 *
-	 * @since 0.1
-	 */
-	public function check_sync_between_bp_and_civi() {
-
-		// Init or die.
-		if ( ! $this->civi->is_active() ) {
-			return;
-		}
-
-		// Define params to get all Groups.
-		$params = [
-			'version' => 3,
-			'options' => [
-				'limit' => 0, // API defaults to 25.
-			],
-		];
-
-		// Get all Groups with no parent ID - get ALL for now.
-		$result = civicrm_api( 'Group', 'get', $params );
-
-		// Bail if there's an error.
-		if ( ! empty( $result['is_error'] ) && $result['is_error'] == 1 ) {
-			return;
-		}
-
-		// Bail if there are no results.
-		if ( empty( $result['values'] ) ) {
-			return;
-		}
-
-		// Loop through them.
-		foreach ( $all_groups['values'] as $civi_group ) {
-
-			// Is this Group supposed to have a BuddyPress Group?
-			$has_group = $this->civi->has_bp_group( $civi_group );
-
-			// If it is.
-			if ( $has_group ) {
-
-				// Get the ID of the BuddyPress Group it was supposed to sync with.
-				$group_id = $this->civi->get_bp_group_id_by_civi_group( $civi_group );
-
-				// Does this Group exist?
-
-			}
-
+		// Send data to browser if AJAX request.
+		if ( wp_doing_ajax() ) {
+			wp_send_json( $data );
 		}
 
 	}

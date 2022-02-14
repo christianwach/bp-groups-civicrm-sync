@@ -4,7 +4,7 @@
 **Donate link:** https://www.paypal.me/interactivist<br/>
 **Tags:** civicrm, buddypress, user, groups, sync<br/>
 **Requires at least:** 4.9<br/>
-**Tested up to:** 5.5<br/>
+**Tested up to:** 5.9<br/>
 **Stable tag:** 0.4<br/>
 **License:** GPLv2 or later<br/>
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
@@ -22,7 +22,7 @@ When a new user is added to (or joins) a *BuddyPress* group, they are automatica
 
 #### Notes ####
 
-This plugin requires a minimum of *WordPress 3.9*, *BuddyPress 1.8* and *CiviCRM 4.6*. Having the latest version of each plugin active is, of course, highly recommended.
+This plugin requires a minimum of *WordPress 4.9*, *BuddyPress 1.8* and *CiviCRM 5.39*. Having the latest version of each plugin active is, of course, highly recommended.
 
 #### Installation ####
 

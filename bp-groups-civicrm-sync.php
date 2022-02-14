@@ -2,6 +2,7 @@
 /**
  * Plugin Name: BP Groups CiviCRM Sync
  * Plugin URI: https://github.com/christianwach/bp-groups-civicrm-sync
+ * GitHub Plugin URI: https://github.com/christianwach/bp-groups-civicrm-sync
  * Description: Enables two-way synchronisation between BuddyPress Groups and CiviCRM Groups.
  * Author: Christian Wach
  * Version: 0.4
@@ -56,10 +57,11 @@ class BP_Groups_CiviCRM_Sync {
 	 * CiviCRM utilities object.
 	 *
 	 * @since 0.1
+	 * @since 0.4 Renamed.
 	 * @access public
 	 * @var object $civi The CiviCRM utilities object.
 	 */
-	public $civi;
+	public $civicrm;
 
 	/**
 	 * BuddyPress utilities object.
@@ -82,14 +84,14 @@ class BP_Groups_CiviCRM_Sync {
 
 
 	/**
-	 * Initialises this object.
+	 * Constructor.
 	 *
 	 * @since 0.1
 	 */
 	public function __construct() {
 
 		// Init loading process.
-		$this->initialise();
+		add_action( 'plugins_loaded', [ $this, 'initialise' ] );
 
 	}
 
@@ -100,25 +102,106 @@ class BP_Groups_CiviCRM_Sync {
 
 
 	/**
-	 * Do stuff on plugin init.
+	 * Initialise this plugin.
 	 *
 	 * @since 0.1
 	 */
 	public function initialise() {
 
-		// Use translation files.
-		add_action( 'plugins_loaded', [ $this, 'enable_translation' ] );
+		// Bail if no CiviCRM init function.
+		if ( ! $this->check_dependencies() ) {
+			return;
+		}
 
-		// Include files.
+		// Use translation.
+		$this->enable_translation();
+
+		// Bootstrap this plugin.
 		$this->include_files();
-
-		// Set up objects.
 		$this->setup_objects();
 
-		// Set up references.
-		$this->setup_references();
+		/**
+		 * Broadcast that this plugin is loaded.
+		 *
+		 * Used internally by included classes in order to bootstrap.
+		 *
+		 * @since 0.4
+		 */
+		do_action( 'bpgcs/loaded' );
 
 	}
+
+
+
+	/**
+	 * Check plugin dependencies.
+	 *
+	 * If any of these checks fail, this plugin will not initialise.
+	 *
+	 * @since 0.4
+	 *
+	 * @return bool True if dependencies are present, false otherwise.
+	 */
+	public function check_dependencies() {
+
+		// Bail if no CiviCRM init function.
+		if ( ! function_exists( 'civi_wp' ) ) {
+			return false;
+		}
+
+		// Bail if CiviCRM is not fully installed.
+		if ( ! defined( 'CIVICRM_INSTALLED' ) ) {
+			return false;
+		}
+		if ( ! CIVICRM_INSTALLED ) {
+			return false;
+		}
+
+		// Bail if BuddyPress is not installed.
+		if ( ! function_exists( 'buddypress' ) ) {
+			return false;
+		}
+
+		// --<
+		return true;
+
+	}
+
+
+
+	/**
+	 * Include files.
+	 *
+	 * @since 0.3.6
+	 */
+	public function include_files() {
+
+		// Load our class files.
+		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/bpgcs-civicrm.php';
+		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/bpgcs-buddypress.php';
+		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/bpgcs-admin.php';
+
+	}
+
+
+
+	/**
+	 * Set up this plugin's objects.
+	 *
+	 * @since 0.3.6
+	 */
+	public function setup_objects() {
+
+		// Instantiate objects.
+		$this->civicrm = new BP_Groups_CiviCRM_Sync_CiviCRM( $this );
+		$this->bp = new BP_Groups_CiviCRM_Sync_BuddyPress( $this );
+		$this->admin = new BP_Groups_CiviCRM_Sync_Admin( $this );
+
+	}
+
+
+
+	// -------------------------------------------------------------------------
 
 
 
@@ -170,54 +253,6 @@ class BP_Groups_CiviCRM_Sync {
 			false, // Deprecated argument.
 			dirname( plugin_basename( __FILE__ ) ) . '/languages/' // Relative path to translation files.
 		);
-
-	}
-
-
-
-	/**
-	 * Include files.
-	 *
-	 * @since 0.3.6
-	 */
-	public function include_files() {
-
-		// Load our class files.
-		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/bp-groups-civicrm-sync-civi.php';
-		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/bp-groups-civicrm-sync-bp.php';
-		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/bp-groups-civicrm-sync-admin.php';
-
-	}
-
-
-
-	/**
-	 * Set up this plugin's objects.
-	 *
-	 * @since 0.3.6
-	 */
-	public function setup_objects() {
-
-		// Instantiate objects.
-		$this->civi = new BP_Groups_CiviCRM_Sync_CiviCRM( $this );
-		$this->bp = new BP_Groups_CiviCRM_Sync_BuddyPress( $this );
-		$this->admin = new BP_Groups_CiviCRM_Sync_Admin( $this );
-
-	}
-
-
-
-	/**
-	 * Set up references to other objects.
-	 *
-	 * @since 0.3.6
-	 */
-	public function setup_references() {
-
-		// Store references.
-		$this->civi->set_references( $this->bp, $this->admin );
-		$this->bp->set_references( $this->civi, $this->admin );
-		$this->admin->set_references( $this->bp, $this->civi );
 
 	}
 
