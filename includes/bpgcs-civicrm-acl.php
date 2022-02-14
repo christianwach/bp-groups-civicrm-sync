@@ -327,7 +327,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 		*/
 
 		// Next get the existing "ACL".
-		$existing_acl = $this->acl_get( $existing_acl_role['value'], $member_group['id'] );
+		$existing_acl = $this->acl_get( $acl_role['value'], $member_group['id'] );
 
 		// Construct "name" for ACL.
 		$name = sprintf(
