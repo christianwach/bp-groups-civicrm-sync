@@ -269,7 +269,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		];
 
 		// Create ACL for the CiviCRM Groups.
-		$success = $this->acl->create_for_groups( $acl_group, $member_group );
+		$success = $this->acl->update_for_groups( $acl_group, $member_group );
 		if ( $success === false ) {
 			return false;
 		}

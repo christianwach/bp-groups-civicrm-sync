@@ -112,6 +112,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 	/**
 	 * Creates the ACL for an ACL Group's permissions over a Member Group.
 	 *
+	 * Not used at present because the `update_for_groups()` method does repair
+	 * for all Synced Groups as well as creating the necessary ACL items.
+	 *
+	 * @see self::update_for_groups()
+	 *
 	 * @since 0.4
 	 *
 	 * @param array $acl_group The array of CiviCRM ACL Group data.
@@ -178,6 +183,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 	/**
 	 * Updates the ACL for an ACL Group's permissions over a Member Group.
 	 *
+	 * This method now contains repair code to make sure that the ACLs for the
+	 * Synced CiviCRM ACL Group are correct every time a BuddyPress Group is
+	 * updated.
+	 *
+	 * The repair method does mean that each CiviCRM ACL Group can have one and
+	 * only one ACL applied to it. This is probably fine but might need another
+	 * look in future versions.
+	 *
 	 * @since 0.4
 	 *
 	 * @param array $acl_group The array of CiviCRM ACL Group data.
@@ -188,20 +201,103 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 		// First get the existing "ACL Role".
 		$existing_acl_role = $this->acl_role_get( $acl_group['source'] );
+
+		// Create one if none found.
 		if ( empty( $existing_acl_role ) ) {
+
+			// Define params to create an "ACL Role".
+			$params = [
+				'description' => $acl_group['source'],
+				'label' => $acl_group['title'],
+				'is_active' => 1,
+			];
+
+			// Create the "ACL Role".
+			$acl_role = $this->acl_role_create( $params );
+
+		} else {
+
+			// Only the ACL Role "Label" needs to change.
+			$params = [
+				'id' => $existing_acl_role['id'],
+				'label' => $acl_group['title'],
+			];
+
+			// Update the "ACL Role".
+			$acl_role = $this->acl_role_update( $params );
+
+			// Add the existing ACL Role value if missing.
+			if ( empty( $acl_role['value'] ) ) {
+				$acl_role['value'] = $existing_acl_role['value'];
+			}
+
+		}
+
+		// Bail if no "ACL Role".
+		if ( empty( $acl_role ) ) {
 			return false;
 		}
 
-		// Only the ACL Role "Label" needs to change.
-		$params = [
-			'id' => $existing_acl_role['id'],
-			'label' => $acl_group['title'],
-		];
+		/*
+		 * It seems that previous versions of this plugin created corrupted
+		 * "ACL Entity Roles" where the "ACL Role" is not set. Additionally,
+		 * some Groups are missing their "ACL Entity Role" while others have
+		 * multiple entries.
+		 *
+		 * Let's try and repair the situation by deleting all the existing
+		 * "ACL Entity Roles" for the ACL Group and rebuilding with properly
+		 * configured ones.
+		 */
 
-		// Update the "ACL Role".
-		$acl_role = $this->acl_role_update( $params );
-		if ( empty( $acl_role ) ) {
-			return false;
+		// Get all existing "ACL Entity Roles".
+		$existing_acl_entity_roles = $this->acl_entity_roles_get_for_group( $acl_group['id'] );
+
+		// Create one if none found.
+		if ( empty( $existing_acl_entity_roles ) ) {
+
+			// Define params to create an "ACL Entity Role".
+			$params = [
+				'entity_id' => $acl_group['id'],
+				'acl_role_id' => $acl_role['value'],
+				'is_active' => 1,
+			];
+
+			// Create the "ACL Entity Role".
+			$acl_entity_role = $this->acl_entity_role_create( $params );
+			if ( empty( $acl_entity_role ) ) {
+				return false;
+			}
+
+		} else {
+
+			// Delete the ones that do not have the correct "ACL Role" value.
+			$remaining = [];
+			foreach( $existing_acl_entity_roles as $item ) {
+				if ( (int) $item['acl_role_id'] !== (int) $acl_role['value'] ) {
+					$this->acl_entity_role_delete( $item['id'] );
+					continue;
+				}
+				$remaining[] = $item;
+			}
+
+			// Create one if there are none remaining.
+			if ( empty( $remaining ) ) {
+
+				// Define params to create an "ACL Entity Role".
+				$params = [
+					'entity_id' => $acl_group['id'],
+					'acl_role_id' => $acl_role['value'],
+					'is_active' => 1,
+				];
+
+				// Create the "ACL Entity Role".
+				$acl_entity_role = $this->acl_entity_role_create( $params );
+				if ( empty( $acl_entity_role ) ) {
+					return false;
+				}
+
+			}
+
 		}
 
 		/*
@@ -232,9 +328,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 		// Next get the existing "ACL".
 		$existing_acl = $this->acl_get( $existing_acl_role['value'], $member_group['id'] );
-		if ( empty( $existing_acl ) ) {
-			return false;
-		}
 
 		// Construct "name" for ACL.
 		$name = sprintf(
@@ -243,14 +336,35 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 			$member_group['title']
 		);
 
-		// Only the ACL "Name" needs to change.
-		$params = [
-			'id' => $existing_acl['id'],
-			'name' => $name,
-		];
+		// Create one if none found.
+		if ( empty( $existing_acl ) ) {
 
-		// Update the "ACL".
-		$acl = $this->acl_update( $params );
+			// Define params to create an "ACL".
+			$params = [
+				'object_id' => $member_group['id'],
+				'entity_id' => $acl_role['value'],
+				'operation' => 'Edit',
+				'name' => $name,
+				'is_active' => 1,
+			];
+
+			// Create the "ACL".
+			$acl = $this->acl_create( $params );
+
+		} else {
+
+			// Only the ACL "Name" needs to change.
+			$params = [
+				'id' => $existing_acl['id'],
+				'name' => $name,
+			];
+
+			// Update the "ACL".
+			$acl = $this->acl_update( $params );
+
+		}
+
+		// Bail if something went wrong.
 		if ( empty( $acl ) ) {
 			return false;
 		}
@@ -582,7 +696,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 			// Build params to get ACL Entity Role.
 			$params = [
-				'limit' => 25,
+				'limit' => 0,
 			];
 			$params['where'] = [
 				[ 'acl_role_id', '=', (int) $acl_role_id ],
@@ -606,7 +720,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 			// New instance of Entity Role class.
 			$dao = new CRM_ACL_DAO_EntityRole();
 
-			// FInd by using properties.
+			// Find by using properties.
 			$dao->acl_role_id = (int) $acl_role_id;
 			$dao->entity_table = 'civicrm_group';
 			$dao->entity_id = (int) $acl_group_id;
@@ -624,6 +738,87 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 				'entity_table' => 'civicrm_group',
 				'entity_id' => $dao->entity_id,
 			];
+
+		}
+
+		// --<
+		return $acl_entity_role_data;
+
+	}
+
+
+
+	/**
+	 * Gets all "ACL Entity Roles" for a given Synced ACL Group.
+	 *
+	 * @since 0.4
+	 *
+	 * @param integer $acl_group_id The numeric ID of the Synced ACL Group.
+	 * @return array|bool $acl_entity_role_data The array of ACL Entity Role data, or false on failure.
+	 */
+	public function acl_entity_roles_get_for_group( $acl_group_id ) {
+
+		// Init return.
+		$acl_entity_role_data = false;
+
+		// Try and initialise CiviCRM.
+		if ( ! $this->civicrm->is_initialised() ) {
+			return $acl_entity_role_data;
+		}
+
+		/*
+		 * If the API4 Entity is available, use it.
+		 *
+		 * @see https://github.com/civicrm/civicrm-core/blob/master/Civi/Api4/ACLEntityRole.php#L17
+		 */
+		$version = CRM_Utils_System::version();
+		//if ( version_compare( $version, '5.39', '>=' ) ) {
+		if ( 1 === 2 ) {
+
+			// Build params to get ACL Entity Role.
+			$params = [
+				'limit' => 0,
+			];
+			$params['where'] = [
+				[ 'entity_table', '=', 'civicrm_group' ],
+				[ 'entity_id', '=', (int) $acl_group_id ],
+			];
+
+			// Call CiviCRM API4.
+			$result = civicrm_api4( 'ACLEntityRole', 'get', $params );
+
+			// Bail if there are no results.
+			if ( empty( $result->count() ) ) {
+				return $acl_entity_role_data;
+			}
+
+			// Add the results to the return array.
+			$acl_entity_role_data = [];
+			foreach ( $result as $item ) {
+				$acl_entity_role_data[] = $item;
+			}
+
+		} else {
+
+			// New instance of Entity Role class.
+			$dao = new CRM_ACL_DAO_EntityRole();
+
+			// Find by using properties.
+			$dao->entity_table = 'civicrm_group';
+			$dao->entity_id = (int) $acl_group_id;
+
+			// Add the results to the return array.
+			if ( $dao->find() ) {
+				$acl_entity_role_data = [];
+				while ( $dao->fetch() ) {
+					$acl_entity_role_data[] = [
+						'id' => $dao->id,
+						'acl_role_id' => $dao->acl_role_id,
+						'entity_table' => 'civicrm_group',
+						'entity_id' => $dao->entity_id,
+					];
+				}
+			}
 
 		}
 
