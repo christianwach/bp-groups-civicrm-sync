@@ -168,9 +168,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 			// Add menu to Network or Settings submenu.
 			if ( $this->plugin->is_network_activated() ) {
-				add_action( 'network_admin_menu', [ $this, 'admin_menu' ], 30 );
+				add_action( 'network_admin_menu', [ $this, 'admin_menu' ], 40 );
 			} else {
-				add_action( 'admin_menu', [ $this, 'admin_menu' ], 30 );
+				add_action( 'admin_menu', [ $this, 'admin_menu' ], 40 );
 			}
 
 		}
