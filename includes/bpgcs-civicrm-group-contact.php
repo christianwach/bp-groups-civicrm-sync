@@ -173,7 +173,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		$result['contact_id'] = $contact_id;
 
 		// Get the Synced Group IDs from the BuddyPress Group meta.
-		$sync_groups = groups_get_groupmeta( $args['group_id'], 'civicrm_groups' );
+		$sync_groups = $this->bp->civicrm_groups_get( $args['group_id'] );
 
 		/*
 		 * First handle membership of the CiviCRM Member Group.
@@ -347,7 +347,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		}
 
 		// Get the Synced Group IDs from the BuddyPress Group meta.
-		$sync_groups = groups_get_groupmeta( $bp_group_id, 'civicrm_groups' );
+		$sync_groups = $this->bp->civicrm_groups_get( $bp_group_id );
 
 		// Get the CiviCRM Member Group ID for this BuddyPress Group.
 		if ( ! empty( $sync_groups ) ) {
@@ -438,7 +438,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		$this->bp->group_members_delete( $bp_group_id, $contacts );
 
 		// Get the Synced Group IDs from the BuddyPress Group meta.
-		$sync_groups = groups_get_groupmeta( $bp_group_id, 'civicrm_groups' );
+		$sync_groups = $this->bp->civicrm_groups_get( $bp_group_id );
 
 		// Get the CiviCRM Member Group ID for this BuddyPress Group.
 		if ( ! empty( $sync_groups ) ) {

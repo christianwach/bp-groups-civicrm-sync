@@ -270,7 +270,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 		}
 
 		// Get the Synced Group IDs from the BuddyPress Group meta.
-		$sync_groups = groups_get_groupmeta( $bp_group_id, 'civicrm_groups' );
+		$sync_groups = $this->bp->civicrm_groups_get( $bp_group_id );
 
 		/*
 		 * First handle the nesting of the CiviCRM Member Group.

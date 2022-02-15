@@ -283,6 +283,35 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 
+	/**
+	 * Checks if BuddyPress plugin is properly configured.
+	 *
+	 * @since 0.4
+	 *
+	 * @return bool True if properly configured, false otherwise.
+	 */
+	public function is_configured() {
+
+		static $bp_initialised;
+		if ( isset( $bp_initialised ) ) {
+			return $bp_initialised;
+		}
+
+		// Assume not configured.
+		$bp_initialised = false;
+
+		// Is the Groups component active?
+		if ( bp_is_active( 'groups' ) ) {
+			$bp_initialised = true;
+		}
+
+		// --<
+		return $bp_initialised;
+
+	}
+
+
+
 	// -------------------------------------------------------------------------
 
 
@@ -309,8 +338,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			return;
 		}
 
-		// Update our Group Meta with the IDs of the CiviCRM Groups.
-		groups_update_groupmeta( $group_id, 'civicrm_groups', $civicrm_groups );
+		// Save the IDs of the CiviCRM Groups.
+		$this->civicrm_groups_set( $group_id, $civicrm_groups );
 
 	}
 
@@ -388,6 +417,64 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 
 
+	// -------------------------------------------------------------------------
+
+
+
+	/**
+	 * Gets the Synced CiviCRM Group IDs for a given BuddyPress Group ID.
+	 *
+	 * @since 0.4
+	 *
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @return array|bool $sync_groups The array of Synced CiviCRM Group IDs, false otherwise.
+	 */
+	public function civicrm_groups_get( $group_id ) {
+
+		// Check BuddyPress config.
+		if ( ! $this->is_configured() ) {
+			return false;
+		}
+
+		// Get the Synced Group IDs from the BuddyPress Group meta.
+		$sync_groups = groups_get_groupmeta( $group_id, 'civicrm_groups' );
+		if ( empty( $sync_groups ) ) {
+			return false;
+		}
+
+		// --<
+		return $sync_groups;
+
+	}
+
+
+
+	/**
+	 * Stores the Synced CiviCRM Groups for a BuddyPress Group.
+	 *
+	 * @since 0.4
+	 *
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @param array $civicrm_groups The array of Synced CiviCRM Group IDs.
+	 */
+	public function civicrm_groups_set( $group_id, $civicrm_groups ) {
+
+		// Check BuddyPress config.
+		if ( ! $this->is_configured() ) {
+			return;
+		}
+
+		// Update our Group Meta with the IDs of the CiviCRM Groups.
+		groups_update_groupmeta( $group_id, 'civicrm_groups', $civicrm_groups );
+
+	}
+
+
+
+	// -------------------------------------------------------------------------
+
+
+
 	/**
 	 * Get all BuddyPress Groups.
 	 *
@@ -400,6 +487,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 		// Init return as empty array.
 		$groups = [];
+
+		// Check BuddyPress config.
+		if ( ! $this->is_configured() ) {
+			return $groups;
+		}
 
 		// Init with unlikely per_page value so we get all.
 		$params = [
@@ -435,9 +527,14 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 * @param string $title The title of the BuddyPress Group.
 	 * @param string $description The description of the BuddyPress Group.
 	 * @param int $creator_id The numeric ID of the WordPress User.
-	 * @return int $group_id The numeric ID of the new BuddyPress Group.
+	 * @return int|bool $group_id The ID of the new BuddyPress Group, false otherwise.
 	 */
 	public function group_create( $title, $description, $creator_id = null ) {
+
+		// Check BuddyPress config.
+		if ( ! $this->is_configured() ) {
+			return false;
+		}
 
 		// Set creator to current WordPress User if no CiviCRM Contact passed.
 		if ( empty( $creator_id ) ) {
@@ -513,6 +610,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		// Init return as empty array.
 		$members = [];
 
+		// Check BuddyPress config.
+		if ( ! $this->is_configured() ) {
+			return $members;
+		}
+
 		// Params to get all Group Members.
 		$params = [
 			'exclude_admins_mods' => 0,
@@ -548,6 +650,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 * @param bool $is_admin Makes this Member a Group Admin.
 	 */
 	public function group_members_create( $group_id, $contacts, $is_admin = 0 ) {
+
+		// Check BuddyPress config.
+		if ( ! $this->is_configured() ) {
+			return;
+		}
 
 		// Bail if sync should not happen for this Group.
 		if ( ! $this->group_should_be_synced( $group_id ) ) {
@@ -620,6 +727,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 */
 	public function group_members_delete( $group_id, $contacts ) {
 
+		// Check BuddyPress config.
+		if ( ! $this->is_configured() ) {
+			return;
+		}
+
 		// Bail if sync should not happen for this Group.
 		if ( ! $this->group_should_be_synced( $group_id ) ) {
 			return;
@@ -683,6 +795,12 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 * @param int $contacts An array of CiviCRM Contact data.
 	 */
 	public function group_members_demote( $group_id, $contacts ) {
+
+		// Check BuddyPress config.
+		if ( ! $this->is_configured() ) {
+			return;
+		}
+
 
 		// Bail if sync should not happen for this Group.
 		if ( ! $this->group_should_be_synced( $group_id ) ) {
@@ -748,6 +866,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 * @param string $status The status to which the Members will be promoted.
 	 */
 	public function group_members_promote( $group_id, $contacts, $status ) {
+
+		// Check BuddyPress config.
+		if ( ! $this->is_configured() ) {
+			return;
+		}
 
 		// Bail if sync should not happen for this Group.
 		if ( ! $this->group_should_be_synced( $group_id ) ) {
@@ -818,6 +941,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 * @return bool $success True if successful, false if not.
 	 */
 	public function group_member_create( $group_id, $user_id, $is_admin = 0 ) {
+
+		// Check BuddyPress config.
+		if ( ! $this->is_configured() ) {
+			return false;
+		}
 
 		// Bail if sync should not happen for this Group.
 		if ( ! $this->group_should_be_synced( $group_id ) ) {
@@ -895,6 +1023,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 */
 	public function group_member_delete( $group_id, $user_id ) {
 
+		// Check BuddyPress config.
+		if ( ! $this->is_configured() ) {
+			return false;
+		}
+
 		// Bail if sync should not happen for this Group.
 		if ( ! $this->group_should_be_synced( $group_id ) ) {
 			return false;
@@ -941,6 +1074,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 * @return bool $success True if successful, false if not.
 	 */
 	public function group_member_demote( $group_id, $user_id ) {
+
+		// Check BuddyPress config.
+		if ( ! $this->is_configured() ) {
+			return false;
+		}
 
 		// Bail if sync should not happen for this Group.
 		if ( ! $this->group_should_be_synced( $group_id ) ) {
@@ -989,6 +1127,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 * @return bool $success True if successful, false if not.
 	 */
 	public function group_member_promote( $group_id, $user_id, $status ) {
+
+		// Check BuddyPress config.
+		if ( ! $this->is_configured() ) {
+			return false;
+		}
 
 		// Bail if sync should not happen for this Group.
 		if ( ! $this->group_should_be_synced( $group_id ) ) {
@@ -1286,6 +1429,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 */
 	public function group_status_get_for_user( $user_id, $group_id ) {
 
+		// Check BuddyPress config.
+		if ( ! $this->is_configured() ) {
+			return false;
+		}
+
 		// Access BuddyPress.
 		$bp = buddypress();
 
@@ -1378,6 +1526,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 * @return bool $should_be_synced Whether or not the Group should be synced.
 	 */
 	public function group_should_be_synced( $group_id ) {
+
+		// Never sync if BuddyPress isn't configured.
+		if ( ! $this->is_configured() ) {
+			return false;
+		}
 
 		// Assume User should be synced.
 		$should_be_synced = true;

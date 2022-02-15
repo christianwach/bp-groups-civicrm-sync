@@ -221,6 +221,11 @@ class BP_Groups_CiviCRM_Sync_Admin {
 			return false;
 		}
 
+		// Check BuddyPress config.
+		if ( ! $this->bp->is_configured() ) {
+			return false;
+		}
+
 		// Multisite?
 		if ( is_multisite() ) {
 

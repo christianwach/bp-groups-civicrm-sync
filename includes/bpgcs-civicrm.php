@@ -347,7 +347,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$this->permissions_escalate();
 
 		// Get the Synced Group IDs from the BuddyPress Group meta.
-		$sync_groups = groups_get_groupmeta( $bp_group->id, 'civicrm_groups' );
+		$sync_groups = $this->bp->civicrm_groups_get( $bp_group->id );
 
 		// First prepare the CiviCRM Member Group.
 		$member_group_params = $this->member_group_prepare( $bp_group );
@@ -429,7 +429,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$this->permissions_escalate();
 
 		// Get the Synced Group IDs from the BuddyPress Group meta.
-		$sync_groups = groups_get_groupmeta( $bp_group->id, 'civicrm_groups' );
+		$sync_groups = $this->bp->civicrm_groups_get( $bp_group->id );
 
 		// Get the full Group data for deleting the ACL.
 		$member_group = $this->group_get_by_id( $sync_groups['member_group_id'] );
