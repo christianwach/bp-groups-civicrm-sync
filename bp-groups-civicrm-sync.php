@@ -54,30 +54,30 @@ if ( ! defined( 'BP_GROUPS_CIVICRM_SYNC_DEBUG' ) ) {
 class BP_Groups_CiviCRM_Sync {
 
 	/**
-	 * CiviCRM utilities object.
+	 * CiviCRM object.
 	 *
 	 * @since 0.1
 	 * @since 0.4 Renamed.
 	 * @access public
-	 * @var object $civi The CiviCRM utilities object.
+	 * @var object $civi The CiviCRM object.
 	 */
 	public $civicrm;
 
 	/**
-	 * BuddyPress utilities object.
+	 * BuddyPress object.
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $bp The BuddyPress utilities object.
+	 * @var object $bp The BuddyPress object.
 	 */
 	public $bp;
 
 	/**
-	 * Admin utilities object.
+	 * Admin object.
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $admin The Admin utilities object.
+	 * @var object $admin The Admin object.
 	 */
 	public $admin;
 
@@ -228,6 +228,45 @@ class BP_Groups_CiviCRM_Sync {
 
 		// Tear down plugin admin.
 		$this->admin->deactivate();
+
+	}
+
+
+
+	/**
+	 * Test if this plugin is network activated.
+	 *
+	 * @since 0.4
+	 *
+	 * @return bool $is_network_active True if network activated, false otherwise.
+	 */
+	public function is_network_activated() {
+
+		// Only need to test once.
+		static $is_network_active;
+		if ( isset( $is_network_active ) ) {
+			return $is_network_active;
+		}
+
+		// If not multisite, set flag and bail.
+		if ( ! is_multisite() ) {
+			$is_network_active = false;
+			return $is_network_active;
+		}
+
+		// Make sure plugin file is included when outside admin.
+		if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
+			require_once ABSPATH . '/wp-admin/includes/plugin.php';
+		}
+
+		// Get path from 'plugins' directory to this plugin.
+		$this_plugin = plugin_basename( BP_GROUPS_CIVICRM_SYNC_FILE );
+
+		// Test if network active.
+		$is_network_active = is_plugin_active_for_network( $this_plugin );
+
+		// --<
+		return $is_network_active;
 
 	}
 

@@ -32,11 +32,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 	public $plugin;
 
 	/**
-	 * CiviCRM utilities object.
+	 * CiviCRM object.
 	 *
 	 * @since 0.4
 	 * @access public
-	 * @var object $civicrm The CiviCRM utilities object.
+	 * @var object $civicrm The CiviCRM object.
 	 */
 	public $civicrm;
 

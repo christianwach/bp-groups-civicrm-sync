@@ -32,29 +32,29 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_BPGH {
 	public $plugin;
 
 	/**
-	 * BuddyPress utilities object.
+	 * BuddyPress object.
 	 *
 	 * @since 0.4
 	 * @access public
-	 * @var object $bp The BuddyPress utilities object.
+	 * @var object $bp The BuddyPress object.
 	 */
 	public $bp;
 
 	/**
-	 * CiviCRM utilities object.
+	 * CiviCRM object.
 	 *
 	 * @since 0.4
 	 * @access public
-	 * @var object $civicrm The CiviCRM utilities object.
+	 * @var object $civicrm The CiviCRM object.
 	 */
 	public $civicrm;
 
 	/**
-	 * Admin utilities object.
+	 * Admin object.
 	 *
 	 * @since 0.4
 	 * @access public
-	 * @var object $admin The Admin utilities object.
+	 * @var object $admin The Admin object.
 	 */
 	public $admin;
 

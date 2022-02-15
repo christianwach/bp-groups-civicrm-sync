@@ -15,7 +15,7 @@
 
 	<h2 class="nav-tab-wrapper">
 		<a href="<?php echo $urls['settings']; ?>" class="nav-tab nav-tab-active"><?php esc_html_e( 'Settings', 'bp-groups-civicrm-sync' ); ?></a>
-		<a href="<?php echo $urls['utilities']; ?>" class="nav-tab"><?php esc_html_e( 'Utilities', 'bp-groups-civicrm-sync' ); ?></a>
+		<a href="<?php echo $urls['manual_sync']; ?>" class="nav-tab"><?php esc_html_e( 'Manual Sync', 'bp-groups-civicrm-sync' ); ?></a>
 	</h2>
 
 	<?php if ( ! empty( $messages ) ) : ?>

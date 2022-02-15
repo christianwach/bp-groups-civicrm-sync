@@ -1,23 +1,23 @@
 /**
- * BP Groups CiviCRM Sync Utilities Javascript.
+ * BP Groups CiviCRM Sync Manual Sync Javascript.
  *
- * Implements sync functionality on the plugin's Utilities admin page.
+ * Implements sync functionality on the plugin's Manual Sync page.
  *
- * @package WordPress
- * @subpackage BP_Groups_CiviCRM_Sync_Utilities
+ * @package BP_Groups_CiviCRM_Sync
+ * @since 0.2.2
  */
 
 
 
 /**
- * Create BP Groups CiviCRM Sync Utilities object.
+ * Create BP Groups CiviCRM Sync Manual Sync object.
  *
  * This works as a "namespace" of sorts, allowing us to hang properties, methods
  * and "sub-namespaces" from it.
  *
  * @since 0.2.2
  */
-var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
+var BPGCS_Manual_Sync = BPGCS_Manual_Sync || {};
 
 
 
@@ -35,7 +35,7 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 	 *
 	 * @since 0.2.2
 	 */
-	BP_Groups_CiviCRM_Sync_Utilities.settings = new function() {
+	BPGCS_Manual_Sync.settings = new function() {
 
 		// Prevent reference collisions.
 		var me = this;
@@ -77,8 +77,8 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 		 * @since 0.2.2
 		 */
 		this.init_localisation = function() {
-			if ( 'undefined' !== typeof BP_Groups_CiviCRM_Sync_Utils ) {
-				me.localisation = BP_Groups_CiviCRM_Sync_Utils.localisation;
+			if ( 'undefined' !== typeof BPGCS_Settings ) {
+				me.localisation = BPGCS_Settings.localisation;
 			}
 		};
 
@@ -103,8 +103,8 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 		 * @since 0.2.2
 		 */
 		this.init_settings = function() {
-			if ( 'undefined' !== typeof BP_Groups_CiviCRM_Sync_Utils ) {
-				me.settings = BP_Groups_CiviCRM_Sync_Utils.settings;
+			if ( 'undefined' !== typeof BPGCS_Settings ) {
+				me.settings = BPGCS_Settings.settings;
 			}
 		};
 
@@ -127,7 +127,7 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 	 *
 	 * @since 0.2.2
 	 */
-	BP_Groups_CiviCRM_Sync_Utilities.progress_bar = new function() {
+	BPGCS_Manual_Sync.progress_bar = new function() {
 
 		// Prevent reference collisions.
 		var me = this;
@@ -170,11 +170,11 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 			// Assign properties.
 			me.bar = $('#progress-bar');
 			me.label = $('#progress-bar .progress-label');
-			me.total = BP_Groups_CiviCRM_Sync_Utilities.settings.get_setting( 'total_groups' );
-			me.label_init = BP_Groups_CiviCRM_Sync_Utilities.settings.get_localisation( 'total' );
-			me.label_current = BP_Groups_CiviCRM_Sync_Utilities.settings.get_localisation( 'current' );
-			me.label_complete = BP_Groups_CiviCRM_Sync_Utilities.settings.get_localisation( 'complete' );
-			me.label_done = BP_Groups_CiviCRM_Sync_Utilities.settings.get_localisation( 'done' );
+			me.total = BPGCS_Manual_Sync.settings.get_setting( 'total_groups' );
+			me.label_init = BPGCS_Manual_Sync.settings.get_localisation( 'total' );
+			me.label_current = BPGCS_Manual_Sync.settings.get_localisation( 'current' );
+			me.label_complete = BPGCS_Manual_Sync.settings.get_localisation( 'complete' );
+			me.label_done = BPGCS_Manual_Sync.settings.get_localisation( 'done' );
 
 		};
 
@@ -288,7 +288,7 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 			$.post(
 
 				// URL to post to.
-				BP_Groups_CiviCRM_Sync_Utilities.settings.get_setting( 'ajax_url' ),
+				BPGCS_Manual_Sync.settings.get_setting( 'ajax_url' ),
 
 				// Token received by WordPress.
 				{ action: 'sync_bp_and_civi' },
@@ -323,10 +323,10 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 	};
 
 	// Init settings.
-	BP_Groups_CiviCRM_Sync_Utilities.settings.init();
+	BPGCS_Manual_Sync.settings.init();
 
 	// Init Progress Bar.
-	BP_Groups_CiviCRM_Sync_Utilities.progress_bar.init();
+	BPGCS_Manual_Sync.progress_bar.init();
 
 } )( jQuery );
 
@@ -340,10 +340,8 @@ var BP_Groups_CiviCRM_Sync_Utilities = BP_Groups_CiviCRM_Sync_Utilities || {};
 jQuery(document).ready(function($) {
 
 	// The DOM is loaded now.
-	BP_Groups_CiviCRM_Sync_Utilities.settings.dom_ready();
-
-	// The DOM is loaded now.
-	BP_Groups_CiviCRM_Sync_Utilities.progress_bar.dom_ready();
+	BPGCS_Manual_Sync.settings.dom_ready();
+	BPGCS_Manual_Sync.progress_bar.dom_ready();
 
 }); // End document.ready()
 

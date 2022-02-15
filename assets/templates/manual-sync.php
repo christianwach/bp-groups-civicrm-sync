@@ -1,30 +1,30 @@
 <?php
 /**
- * Utilities page template.
+ * Manual Sync page template.
  *
- * Contains markup for this plugin's Utilities page.
+ * Contains markup for this plugin's Manual Sync page.
  *
  * @package BP_Groups_CiviCRM_Sync
  * @since 0.1
  */
 
-?><!-- assets/templates/utilities.php -->
+?><!-- assets/templates/manual-sync.php -->
 <div id="icon-options-general" class="icon32"></div>
 
 <div class="wrap">
 
 	<h2 class="nav-tab-wrapper">
 		<a href="<?php echo $urls['settings']; ?>" class="nav-tab"><?php esc_html_e( 'Settings', 'bp-groups-civicrm-sync' ); ?></a>
-		<a href="<?php echo $urls['utilities']; ?>" class="nav-tab nav-tab-active"><?php esc_html_e( 'Utilities', 'bp-groups-civicrm-sync' ); ?></a>
+		<a href="<?php echo $urls['manual_sync']; ?>" class="nav-tab nav-tab-active"><?php esc_html_e( 'Manual Sync', 'bp-groups-civicrm-sync' ); ?></a>
 	</h2>
 
 	<?php if ( ! empty( $messages ) ) : ?>
 		<?php echo $messages; ?>
 	<?php endif; ?>
 
-	<form method="post" id="bp_groups_civicrm_sync_utilities_form" action="<?php echo $this->admin_form_url_get(); ?>">
+	<form method="post" id="bp_groups_civicrm_sync_manual_sync_form" action="<?php echo $this->admin_form_url_get(); ?>">
 
-		<?php wp_nonce_field( 'bp_groups_civicrm_sync_utilities_action', 'bp_groups_civicrm_sync_nonce' ); ?>
+		<?php wp_nonce_field( 'bp_groups_civicrm_sync_manual_sync_action', 'bp_groups_civicrm_sync_nonce' ); ?>
 
 		<h3><?php esc_html_e( 'BuddyPress to CiviCRM Sync', 'bp-groups-civicrm-sync' ); ?></h3>
 

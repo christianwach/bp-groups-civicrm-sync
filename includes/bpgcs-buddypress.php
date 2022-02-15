@@ -32,21 +32,21 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	public $plugin;
 
 	/**
-	 * CiviCRM utilities object.
+	 * CiviCRM object.
 	 *
 	 * @since 0.1
 	 * @since 0.4 Renamed.
 	 * @access public
-	 * @var object $civicrm The CiviCRM utilities object.
+	 * @var object $civicrm The CiviCRM object.
 	 */
 	public $civicrm;
 
 	/**
-	 * Admin utilities object.
+	 * Admin object.
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $admin The Admin utilities object.
+	 * @var object $admin The Admin object.
 	 */
 	public $admin;
 
