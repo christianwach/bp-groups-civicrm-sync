@@ -773,8 +773,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 		 * @see https://github.com/civicrm/civicrm-core/blob/master/Civi/Api4/ACLEntityRole.php#L17
 		 */
 		$version = CRM_Utils_System::version();
-		//if ( version_compare( $version, '5.39', '>=' ) ) {
-		if ( 1 === 2 ) {
+		if ( version_compare( $version, '5.39', '>=' ) ) {
 
 			// Build params to get ACL Entity Role.
 			$params = [
