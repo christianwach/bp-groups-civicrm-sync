@@ -272,7 +272,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 			// Delete the ones that do not have the correct "ACL Role" value.
 			$remaining = [];
-			foreach( $existing_acl_entity_roles as $item ) {
+			foreach ( $existing_acl_entity_roles as $item ) {
 				if ( (int) $item['acl_role_id'] !== (int) $acl_role['value'] ) {
 					$this->acl_entity_role_delete( $item['id'] );
 					continue;

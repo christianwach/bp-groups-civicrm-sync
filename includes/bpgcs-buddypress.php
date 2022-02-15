@@ -801,7 +801,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			return;
 		}
 
-
 		// Bail if sync should not happen for this Group.
 		if ( ! $this->group_should_be_synced( $group_id ) ) {
 			return;
