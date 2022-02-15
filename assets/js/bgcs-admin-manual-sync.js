@@ -239,7 +239,7 @@ var BPGCS_Manual_Sync = BPGCS_Manual_Sync || {};
 				// Get current value of progress bar.
 				val = me.bar.progressbar( 'value' ) || 0;
 
-				// Are we still syncing group members?
+				// Are we still syncing Group Members?
 				if ( data.members == 'done' ) {
 
 					// Update progress bar label.

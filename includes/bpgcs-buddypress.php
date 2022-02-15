@@ -559,7 +559,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		 * @see groups_create_group()
 		 */
 		$args = [
-			// Group ID is not passed so that we create a group.
+			// Group ID is not passed so that we create a Group.
 			'creator_id' => $creator_id,
 			'name' => $title,
 			'description' => $description,
