@@ -42,6 +42,12 @@ This plugin is in active development. For feature requests and bug reports (or i
 
 == Changelog ==
 
+= 0.4 =
+
+* Fixes CiviCRM ACLs for Groups
+* Prevents errors when BP Groups component not active
+* Relocates admin page menu item
+
 = 0.3.7 =
 
 * Adds filter to exclude BuddyPress groups from sync
