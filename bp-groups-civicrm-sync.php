@@ -357,7 +357,7 @@ function bp_groups_civicrm_sync_plugin_action_links( $links, $file ) {
 		if ( is_network_admin() ) {
 			$link = add_query_arg( [ 'page' => 'bp_groups_civicrm_sync_parent' ], network_admin_url( 'settings.php' ) );
 		} else {
-			$link = add_query_arg( [ 'page' => 'bp_groups_civicrm_sync_parent' ], admin_url( 'options-general.php' ) );
+			$link = add_query_arg( [ 'page' => 'bp_groups_civicrm_sync_parent' ], admin_url( 'admin.php' ) );
 		}
 
 		// Add settings link.
