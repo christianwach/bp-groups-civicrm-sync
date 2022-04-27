@@ -8,6 +8,10 @@
  * @since 0.1
  */
 
+// phpcs:disable Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace
+// phpcs:disable Generic.Formatting.DisallowMultipleStatements.SameLine
+// phpcs:disable Generic.CodeAnalysis.EmptyStatement.DetectedIf
+
 ?><!-- assets/templates/manual-sync.php -->
 <div id="icon-options-general" class="icon32"></div>
 
@@ -34,7 +38,7 @@
 
 			<tr valign="top">
 				<th scope="row"><?php esc_html_e( 'Sync BuddyPress Groups to CiviCRM', 'bp-groups-civicrm-sync' ); ?></th>
-				<td><input type="submit" id="bp_groups_civicrm_sync_bp_check" name="bp_groups_civicrm_sync_bp_check" value="<?php if ( 'fgffgs' == get_option( '_bgcs_groups_page', 'fgffgs' ) ) { esc_attr_e( 'Sync Now', 'bp-groups-civicrm-sync' ); } else { esc_attr_e( 'Continue Sync', 'bp-groups-civicrm-sync' ); } ?>" class="button-primary" data-security="<?php echo esc_attr( wp_create_nonce( 'bp_groups_civicrm_sync_bp_nonce' ) ) ?>" /><?php if ( 'fgffgs' == get_option( '_bgcs_groups_page', 'fgffgs' ) ) {} else { ?> <input type="submit" id="bp_groups_civicrm_sync_bp_stop" name="bp_groups_civicrm_sync_bp_stop" value="<?php esc_attr_e( 'Stop Sync', 'bp-groups-civicrm-sync' ); ?>" class="button-secondary" /><?php } ?></td>
+				<td><input type="submit" id="bp_groups_civicrm_sync_bp_check" name="bp_groups_civicrm_sync_bp_check" value="<?php if ( 'fgffgs' == get_option( '_bgcs_groups_page', 'fgffgs' ) ) { esc_attr_e( 'Sync Now', 'bp-groups-civicrm-sync' ); } else { esc_attr_e( 'Continue Sync', 'bp-groups-civicrm-sync' ); } ?>" class="button-primary" data-security="<?php echo esc_attr( wp_create_nonce( 'bp_groups_civicrm_sync_bp_nonce' ) ); ?>" /><?php if ( 'fgffgs' == get_option( '_bgcs_groups_page', 'fgffgs' ) ) {} else { ?> <input type="submit" id="bp_groups_civicrm_sync_bp_stop" name="bp_groups_civicrm_sync_bp_stop" value="<?php esc_attr_e( 'Stop Sync', 'bp-groups-civicrm-sync' ); ?>" class="button-secondary" /><?php } ?></td>
 			</tr>
 
 		</table>

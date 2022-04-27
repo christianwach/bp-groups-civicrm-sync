@@ -114,9 +114,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		add_action( 'civicrm_config', [ $this, 'register_directories' ], 10, 1 );
 
 		// Intercept CiviCRM Group create form.
+		// phpcs:ignore Squiz.Commenting.InlineComment.InvalidEndChar
 		//add_action( 'civicrm_buildForm', [ $this, 'form_create_bp_group_options' ], 10, 2 );
 
 		// Intercept CiviCRM Group create form submission.
+		// phpcs:ignore Squiz.Commenting.InlineComment.InvalidEndChar
 		//add_action( 'civicrm_postProcess', [ $this, 'form_create_bp_group_process' ], 10, 2 );
 
 		// Intercept CiviCRM Drupal Organic Groups edit form.
@@ -169,6 +171,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 
 		// Register template directories.
 		$template_include_path = $custom_path . PATH_SEPARATOR . get_include_path();
+		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_set_include_path
 		set_include_path( $template_include_path );
 
 	}

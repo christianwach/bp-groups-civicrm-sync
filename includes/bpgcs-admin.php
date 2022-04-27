@@ -812,6 +812,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		$bp_groups_civicrm_sync_bp_check = '';
 
 		// Get variables.
+		// phpcs:ignore WordPress.PHP.DontExtract.extract_extract
 		extract( $_POST );
 
 		// Did we ask to sync existing BuddyPress Groups with CiviCRM?

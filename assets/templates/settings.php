@@ -8,6 +8,10 @@
  * @since 0.1
  */
 
+// phpcs:disable Squiz.PHP.EmbeddedPhp.ContentBeforeOpen
+// phpcs:disable Squiz.PHP.EmbeddedPhp.ContentAfterOpen
+// phpcs:disable Squiz.PHP.EmbeddedPhp.ContentBeforeEnd
+
 ?><!-- assets/templates/settings.php -->
 <div id="icon-options-general" class="icon32"></div>
 
