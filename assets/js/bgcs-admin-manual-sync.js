@@ -214,8 +214,11 @@ var BPGCS_Manual_Sync = BPGCS_Manual_Sync || {};
 				// Initialise progress bar label.
 				me.label.html( me.label_init.replace( '{{total}}', me.total ) );
 
+				// Get security token.
+				var token = button.data( 'security' );
+
 				// Send.
-				me.send();
+				me.send( token );
 
 			});
 
@@ -232,6 +235,11 @@ var BPGCS_Manual_Sync = BPGCS_Manual_Sync || {};
 
 			// Declare vars.
 			var val;
+
+			// Bail if we encountered an error.
+			if ( data.success == 'false' ) {
+				return;
+			}
 
 			// Are we still in progress?
 			if ( data.finished == 'false' ) {
@@ -260,8 +268,11 @@ var BPGCS_Manual_Sync = BPGCS_Manual_Sync || {};
 
 				}
 
+				// Get security token.
+				var token = $('#bp_groups_civicrm_sync_bp_check').data( 'security' );
+
 				// Trigger next batch.
-				me.send();
+				me.send( token );
 
 			} else {
 
@@ -281,34 +292,45 @@ var BPGCS_Manual_Sync = BPGCS_Manual_Sync || {};
 		 * Send AJAX request.
 		 *
 		 * @since 0.2.2
+		 *
+		 * @param {String} token The AJAX security token.
 		 */
-		this.send = function() {
+		this.send = function( token ) {
+
+			// Declare vars.
+			var url, data;
+
+			// URL to post to.
+			url = BPGCS_Manual_Sync.settings.get_setting( 'ajax_url' );
+
+			// Data received by WordPress.
+			data = {
+				action: 'sync_bp_and_civicrm',
+				_ajax_nonce: token
+			};
 
 			// Use jQuery post.
-			$.post(
+			$.post( url, data,
 
-				// URL to post to.
-				BPGCS_Manual_Sync.settings.get_setting( 'ajax_url' ),
+				/**
+				 * AJAX callback which receives response from the server.
+				 *
+				 * Calls update method on success or shows an error in the console.
+				 *
+				 * @since 0.2.2
+				 *
+				 * @param {Mixed} response The received JSON data array.
+				 * @param {String} textStatus The status of the response.
+				 */
+				function( response, textStatus ) {
 
-				// Token received by WordPress.
-				{ action: 'sync_bp_and_civi' },
-
-				// Callback.
-				function( data, textStatus ) {
-
-					// If success.
+					// Update progress bar on success, otherwise show error.
 					if ( textStatus == 'success' ) {
-
-						// Update progress bar.
-						me.update( data );
-
+						me.update( response );
 					} else {
-
-						// Show error.
 						if ( console.log ) {
 							console.log( textStatus );
 						}
-
 					}
 
 				},

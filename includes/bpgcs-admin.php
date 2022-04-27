@@ -164,7 +164,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		if ( is_admin() ) {
 
 			// Add AJAX handler.
-			add_action( 'wp_ajax_sync_bp_and_civi', [ $this, 'bp_groups_sync_to_civicrm' ] );
+			add_action( 'wp_ajax_sync_bp_and_civicrm', [ $this, 'bp_groups_sync_to_civicrm' ] );
 
 			// Add menu to Network or Settings submenu.
 			if ( $this->plugin->is_network_activated() ) {
@@ -900,13 +900,27 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 */
 	public function bp_groups_sync_to_civicrm() {
 
-		// Init or bail.
+		// Init AJAX return.
+		$data = [
+			'success' => 'false',
+		];
+
+		// Init CiviCRM or bail.
 		if ( ! $this->civicrm->is_initialised() ) {
-			return;
+			if ( wp_doing_ajax() ) {
+				wp_send_json( $data );
+			} else {
+				return;
+			}
 		}
 
-		// Init AJAX return.
-		$data = [];
+		// If this is an AJAX request, check security.
+		if ( wp_doing_ajax() ) {
+			$result = check_ajax_referer( 'bp_groups_civicrm_sync_bp_nonce', false, false );
+			if ( $result === false ) {
+				wp_send_json( $data );
+			}
+		}
 
 		// If the Groups paging value doesn't exist.
 		if ( 'fgffgs' == get_option( '_bgcs_groups_page', 'fgffgs' ) ) {
@@ -1023,6 +1037,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 			$data['finished'] = 'true';
 
 		}
+
+		// Set success flag.
+		$data['success'] = 'true';
 
 		// Send data to browser if AJAX request.
 		if ( wp_doing_ajax() ) {
