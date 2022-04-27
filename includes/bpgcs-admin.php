@@ -253,6 +253,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		}
 
+		// Register our form submit hander.
+		add_action( 'load-' . $this->parent_page, [ $this, 'settings_update_router' ] );
+
 		// Implement menu highlighting.
 		add_action( 'admin_head-' . $this->parent_page, [ $this, 'admin_head' ], 50 );
 		add_action( 'admin_head-' . $this->parent_page, [ $this, 'admin_menu_highlight' ], 50 );
@@ -266,6 +269,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 			'bp_groups_civicrm_sync_settings', // Slug name.
 			[ $this, 'page_settings' ] // Callback.
 		);
+
+		// Register our form submit hander.
+		add_action( 'load-' . $this->settings_page, [ $this, 'settings_update_router' ] );
 
 		// Implement menu highlighting.
 		add_action( 'admin_head-' . $this->settings_page, [ $this, 'admin_head' ], 50 );
@@ -281,6 +287,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 			[ $this, 'page_manual_sync' ] // Callback.
 		);
 
+		// Register our form submit hander.
+		add_action( 'load-' . $this->sync_page, [ $this, 'settings_update_router' ] );
+
 		// Implement menu highlighting.
 		add_action( 'admin_head-' . $this->sync_page, [ $this, 'admin_head' ], 50 );
 		add_action( 'admin_head-' . $this->sync_page, [ $this, 'admin_menu_highlight' ], 50 );
@@ -288,9 +297,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// Add styles and scripts only on our Manual Sync page.
 		add_action( 'admin_print_styles-' . $this->sync_page, [ $this, 'page_manual_sync_styles' ] );
 		add_action( 'admin_print_scripts-' . $this->sync_page, [ $this, 'page_manual_sync_scripts' ] );
-
-		// Try and update options.
-		$this->settings_update_router();
 
 	}
 
@@ -324,6 +330,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 */
 	public function admin_menu_highlight() {
 
+		// We have to override these to highlight correctly.
 		global $plugin_page, $submenu_file;
 
 		// Define subpages.
@@ -334,8 +341,10 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		// This tweaks the Settings subnav menu to show only one menu item.
 		if ( in_array( $plugin_page, $subpages ) ) {
+			// phpcs:disable WordPress.WP.GlobalVariablesOverride.Prohibited
 			$plugin_page = 'bp_groups_civicrm_sync_parent';
 			$submenu_file = 'bp_groups_civicrm_sync_parent';
+			// phpcs:enable WordPress.WP.GlobalVariablesOverride.Prohibited
 		}
 
 	}
@@ -628,11 +637,14 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 */
 	public function admin_form_url_get() {
 
-		// Sanitise admin page url.
-		$target_url = wp_unslash( $_SERVER['REQUEST_URI'] );
-		$url_array = explode( '&', $target_url );
-		if ( $url_array ) {
-			$target_url = htmlentities( $url_array[0] . '&updated=true' );
+		// Sanitise admin page URL.
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$target_url = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '';
+		if ( ! empty( $target_url ) ) {
+			$url_array = explode( '&', $target_url );
+			if ( $url_array ) {
+				$target_url = htmlentities( $url_array[0] . '&updated=true' );
+			}
 		}
 
 		// --<
@@ -685,6 +697,8 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 */
 	public function settings_update_router() {
 
+		// phpcs:disable WordPress.Security.NonceVerification.Missing
+
 		// Was the settings form submitted?
 		if ( isset( $_POST['bp_groups_civicrm_sync_settings_submit'] ) ) {
 			$this->settings_update_options();
@@ -692,9 +706,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		// Was the "Stop Sync" button pressed?
 		if ( isset( $_POST['bp_groups_civicrm_sync_bp_stop'] ) ) {
-			delete_option( '_bgcs_members_page' );
-			delete_option( '_bgcs_groups_page' );
-			return;
+			$this->settings_stop_sync();
 		}
 
 		// Were any sync operations requested?
@@ -704,6 +716,8 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		) {
 			$this->settings_update_sync();
 		}
+
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 	}
 
@@ -809,6 +823,31 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		if ( ! empty( $bp_groups_civicrm_sync_convert ) ) {
 			$this->civicrm->group_admin->og_groups_to_bp_groups_convert();
 		}
+
+		// Get admin URLs.
+		$urls = $this->page_get_urls();
+
+		// Redirect to Manual Sync page with message.
+		wp_safe_redirect( add_query_arg( [ 'updated' => 'true' ], $urls['manual_sync'] ) );
+		exit;
+
+	}
+
+
+
+	/**
+	 * Stop the sync procedure.
+	 *
+	 * @since 0.4.1
+	 */
+	public function settings_stop_sync() {
+
+		// Check that we trust the source of the data.
+		check_admin_referer( 'bp_groups_civicrm_sync_manual_sync_action', 'bp_groups_civicrm_sync_nonce' );
+
+		// Delete the sync options.
+		delete_option( '_bgcs_members_page' );
+		delete_option( '_bgcs_groups_page' );
 
 		// Get admin URLs.
 		$urls = $this->page_get_urls();

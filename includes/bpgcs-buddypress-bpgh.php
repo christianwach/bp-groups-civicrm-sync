@@ -245,8 +245,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_BPGH {
 
 		// Did we ask to enable hierarchy?
 		$hierarchy = 0;
+		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		if ( isset( $_POST['bp_groups_civicrm_sync_settings_hierarchy'] ) ) {
-			$hierarchy = (int) trim( $_POST['bp_groups_civicrm_sync_settings_hierarchy'] );
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$hierarchy = (int) trim( wp_unslash( $_POST['bp_groups_civicrm_sync_settings_hierarchy'] ) );
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
 		}
 
 		// Sanitise and set option.
@@ -304,18 +307,21 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_BPGH {
 			$hierarchy_checked = '';
 		}
 
+		// Define text.
+		$text = sprintf(
+			/* translators: 1: The opening strong tag, 2: The closing strong tag */
+			__( 'Depending on your use case, select whether you want your CiviCRM Groups to be hierarchically organised in CiviCRM. If you do, then CiviCRM Groups will be nested under one another, mirroring the BuddyPress Group Hierarchy. Again, please refer to %1$sthe documentation%2$s to decide if this is useful to you or not.', 'bp-groups-civicrm-sync' ),
+			'<a href="https://docs.civicrm.org/user/en/latest/organising-your-data/groups-and-tags/">',
+			'</a>'
+		);
+
 		?>
 
 		<hr>
 
 		<h3><?php esc_html_e( 'BuddyPress Group Hierarchy', 'bp-groups-civicrm-sync' ); ?></h3>
 
-		<p><?php echo sprintf(
-			/* translators: 1: The opening strong tag, 2: The closing strong tag */
-			__( 'Depending on your use case, select whether you want your CiviCRM Groups to be hierarchically organised in CiviCRM. If you do, then CiviCRM Groups will be nested under one another, mirroring the BuddyPress Group Hierarchy. Again, please refer to %1$sthe documentation%2$s to decide if this is useful to you or not.', 'bp-groups-civicrm-sync' ),
-			'<a href="https://docs.civicrm.org/user/en/latest/organising-your-data/groups-and-tags/">',
-			'</a>'
-		); ?></p>
+		<p><?php echo $text; ?></p>
 
 		<table class="form-table">
 
