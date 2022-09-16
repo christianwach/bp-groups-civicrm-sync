@@ -17,8 +17,6 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-
-
 // Set our version here.
 define( 'BP_GROUPS_CIVICRM_SYNC_VERSION', '0.4.1a' );
 
@@ -41,8 +39,6 @@ if ( ! defined( 'BP_GROUPS_CIVICRM_SYNC_PATH' ) ) {
 if ( ! defined( 'BP_GROUPS_CIVICRM_SYNC_DEBUG' ) ) {
 	define( 'BP_GROUPS_CIVICRM_SYNC_DEBUG', false );
 }
-
-
 
 /**
  * BP Groups CiviCRM Sync Class.
@@ -81,8 +77,6 @@ class BP_Groups_CiviCRM_Sync {
 	 */
 	public $admin;
 
-
-
 	/**
 	 * Constructor.
 	 *
@@ -95,11 +89,7 @@ class BP_Groups_CiviCRM_Sync {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Initialise this plugin.
@@ -130,8 +120,6 @@ class BP_Groups_CiviCRM_Sync {
 		do_action( 'bpgcs/loaded' );
 
 	}
-
-
 
 	/**
 	 * Check plugin dependencies.
@@ -167,8 +155,6 @@ class BP_Groups_CiviCRM_Sync {
 
 	}
 
-
-
 	/**
 	 * Include files.
 	 *
@@ -182,8 +168,6 @@ class BP_Groups_CiviCRM_Sync {
 		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/bpgcs-admin.php';
 
 	}
-
-
 
 	/**
 	 * Set up this plugin's objects.
@@ -199,11 +183,7 @@ class BP_Groups_CiviCRM_Sync {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Do stuff on plugin activation.
@@ -217,8 +197,6 @@ class BP_Groups_CiviCRM_Sync {
 
 	}
 
-
-
 	/**
 	 * Do stuff on plugin deactivation.
 	 *
@@ -230,8 +208,6 @@ class BP_Groups_CiviCRM_Sync {
 		$this->admin->deactivate();
 
 	}
-
-
 
 	/**
 	 * Test if this plugin is network activated.
@@ -270,11 +246,7 @@ class BP_Groups_CiviCRM_Sync {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Load translation files.
@@ -295,11 +267,7 @@ class BP_Groups_CiviCRM_Sync {
 
 	}
 
-
-
-} // Class ends.
-
-
+}
 
 /**
  * Utility for retrieving a reference to this plugin.
@@ -336,8 +304,6 @@ register_deactivation_hook( __FILE__, [ bp_groups_civicrm_sync(), 'deactivate' ]
  * Uninstall uses the 'uninstall.php' method.
  * @see https://developer.wordpress.org/reference/functions/register_uninstall_hook/
  */
-
-
 
 /**
  * Utility to add link to settings page.

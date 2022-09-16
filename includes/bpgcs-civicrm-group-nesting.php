@@ -11,8 +11,6 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-
-
 /**
  * BP Groups CiviCRM Sync CiviCRM Group Nesting Class.
  *
@@ -58,8 +56,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 	 */
 	public $admin;
 
-
-
 	/**
 	 * Constructor.
 	 *
@@ -80,8 +76,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 
 	}
 
-
-
 	/**
 	 * Initialises this class.
 	 *
@@ -101,8 +95,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 
 	}
 
-
-
 	/**
 	 * Register hooks.
 	 *
@@ -111,8 +103,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 	public function register_hooks() {
 
 	}
-
-
 
 	/**
 	 * Unregister hooks.
@@ -123,11 +113,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Gets a CiviCRM Group Nesting.
@@ -185,8 +171,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 		return $group_nesting_data;
 
 	}
-
-
 
 	/**
 	 * Create a CiviCRM Group Nesting.
@@ -250,8 +234,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 		return $nesting;
 
 	}
-
-
 
 	/**
 	 * Updates a CiviCRM Group's hierarchy when a BuddyPress Group's hierarchy is updated.
@@ -338,8 +320,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 
 	}
 
-
-
 	/**
 	 * Clears the CiviCRM Group Nestings for a given Group ID.
 	 *
@@ -375,8 +355,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 		}
 
 	}
-
-
 
 	/**
 	 * Deletes the CiviCRM Group Nesting for a given Group ID and Parent ID.
@@ -428,8 +406,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 
 	}
 
-
-
 	/**
 	 * For a given BuddyPress Parent Group ID, get the ID of the synced CiviCRM Group.
 	 *
@@ -479,6 +455,4 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 
 	}
 
-
-
-} // Class ends.
+}

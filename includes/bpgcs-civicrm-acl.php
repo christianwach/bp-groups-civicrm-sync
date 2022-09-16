@@ -11,8 +11,6 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-
-
 /**
  * BP Groups CiviCRM Sync CiviCRM ACL Class.
  *
@@ -40,8 +38,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 	 */
 	public $civicrm;
 
-
-
 	/**
 	 * Constructor.
 	 *
@@ -59,8 +55,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 		add_action( 'bpgcs/civicrm/loaded', [ $this, 'initialise' ] );
 
 	}
-
-
 
 	/**
 	 * Initialises this class.
@@ -81,8 +75,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 	}
 
-
-
 	/**
 	 * Register hooks.
 	 *
@@ -91,8 +83,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 	public function register_hooks() {
 
 	}
-
-
 
 	/**
 	 * Unregister hooks.
@@ -103,11 +93,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Creates the ACL for an ACL Group's permissions over a Member Group.
@@ -177,8 +163,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 		return true;
 
 	}
-
-
 
 	/**
 	 * Updates the ACL for an ACL Group's permissions over a Member Group.
@@ -374,8 +358,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 	}
 
-
-
 	/**
 	 * Deletes the ACL for an ACL Group's permissions over a Member Group.
 	 *
@@ -419,11 +401,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Gets an "ACL Role" for a given "sync name".
@@ -486,8 +464,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 		return $acl_role_data;
 
 	}
-
-
 
 	/**
 	 * Creates an "ACL Role".
@@ -553,8 +529,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 	}
 
-
-
 	/**
 	 * Updates a CiviCRM ACL Role with a given set of data.
 	 *
@@ -587,8 +561,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 		return $this->acl_role_create( $acl_role );
 
 	}
-
-
 
 	/**
 	 * Deletes a CiviCRM "ACL Role" for a given ID.
@@ -654,11 +626,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Gets an "ACL Entity Role" for a given ACL Role and Synced ACL Group.
@@ -747,8 +715,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 	}
 
-
-
 	/**
 	 * Gets all "ACL Entity Roles" for a given Synced ACL Group.
 	 *
@@ -827,8 +793,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 		return $acl_entity_role_data;
 
 	}
-
-
 
 	/**
 	 * Creates an "ACL Entity Role".
@@ -922,8 +886,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 	}
 
-
-
 	/**
 	 * Updates a CiviCRM "ACL Entity Role" with a given set of data.
 	 *
@@ -956,8 +918,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 		return $this->acl_entity_role_create( $acl_entity_role );
 
 	}
-
-
 
 	/**
 	 * Deletes a CiviCRM "ACL Entity Role" for a given ID.
@@ -1023,11 +983,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Gets an "ACL" for a given set of data.
@@ -1088,8 +1044,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 	}
 
-
-
 	/**
 	 * Creates an "ACL".
 	 *
@@ -1146,8 +1100,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 	}
 
-
-
 	/**
 	 * Updates a CiviCRM ACL with a given set of data.
 	 *
@@ -1180,8 +1132,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 		return $this->acl_create( $acl );
 
 	}
-
-
 
 	/**
 	 * Deletes a CiviCRM "ACL" for a given ID.
@@ -1247,11 +1197,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Gets a CiviCRM Option Group by name.
@@ -1319,6 +1265,4 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 	}
 
-
-
-} // Class ends.
+}

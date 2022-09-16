@@ -11,8 +11,6 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-
-
 /**
  * BP Groups CiviCRM Sync CiviCRM Class.
  *
@@ -108,8 +106,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 */
 	public $group_admin;
 
-
-
 	/**
 	 * Constructor.
 	 *
@@ -126,8 +122,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		add_action( 'bpgcs/loaded', [ $this, 'initialise' ] );
 
 	}
-
-
 
 	/**
 	 * Initialises this class.
@@ -154,8 +148,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 	}
 
-
-
 	/**
 	 * Include files.
 	 *
@@ -172,8 +164,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/bpgcs-civicrm-acl.php';
 
 	}
-
-
 
 	/**
 	 * Set up this plugin's objects.
@@ -192,8 +182,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 	}
 
-
-
 	/**
 	 * Register hooks on plugin init.
 	 *
@@ -210,8 +198,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 	}
 
-
-
 	/**
 	 * Checks if CiviCRM plugin is initialised.
 	 *
@@ -226,11 +212,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Creates the Synced CiviCRM Groups when a BuddyPress Group is created.
@@ -331,8 +313,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 	}
 
-
-
 	/**
 	 * Updates the Synced CiviCRM Groups when a BuddyPress Group is updated.
 	 *
@@ -410,8 +390,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 	}
 
-
-
 	/**
 	 * Deletes the Synced CiviCRM Groups when a BuddyPress Group is deleted.
 	 *
@@ -457,11 +435,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Get all CiviCRM Group data.
@@ -515,11 +489,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Creates a CiviCRM Group.
@@ -582,8 +552,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 	}
 
-
-
 	/**
 	 * Updates a CiviCRM Group with a given set of data.
 	 *
@@ -616,8 +584,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		return $this->group_create( $group );
 
 	}
-
-
 
 	/**
 	 * Deletes a CiviCRM Group.
@@ -683,11 +649,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Find a CiviCRM Group ID by source and (optionally) by title.
@@ -734,8 +696,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		return $group_id;
 
 	}
-
-
 
 	/**
 	 * Gets a CiviCRM Group given a Group ID.
@@ -792,8 +752,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		return $group;
 
 	}
-
-
 
 	/**
 	 * Gets a CiviCRM Group given a "source".
@@ -866,8 +824,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 	}
 
-
-
 	/**
 	 * Gets a CiviCRM Group given a Group title.
 	 *
@@ -939,8 +895,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 	}
 
-
-
 	/**
 	 * Gets the type of CiviCRM Group by "source" string.
 	 *
@@ -969,8 +923,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		return $group_type;
 
 	}
-
-
 
 	/**
 	 * Gets the API "type array" of a CiviCRM Group for a given type string.
@@ -1020,8 +972,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 	}
 
-
-
 	/**
 	 * Checks if a CiviCRM Group has an associated BuddyPress Group.
 	 *
@@ -1047,11 +997,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Check if a CiviCRM Group is a BuddyPress Member Group.
@@ -1077,8 +1023,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		return false;
 
 	}
-
-
 
 	/**
 	 * Construct params for a CiviCRM Member Group from a BuddyPress Group.
@@ -1108,8 +1052,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 	}
 
-
-
 	/**
 	 * Construct "sync name" for CiviCRM Group.
 	 *
@@ -1128,11 +1070,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Check if a CiviCRM Group is a BuddyPress ACL Group.
@@ -1158,8 +1096,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		return false;
 
 	}
-
-
 
 	/**
 	 * Constructs the params for a CiviCRM ACL Group from a BuddyPress Group.
@@ -1196,8 +1132,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 	}
 
-
-
 	/**
 	 * Construct name for CiviCRM ACL Group.
 	 *
@@ -1216,11 +1150,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Filters the CiviCRM Permissions to escalate permissions.
@@ -1231,8 +1161,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		add_action( 'civicrm_permission_check', [ $this, 'permissions_grant' ], 10, 2 );
 	}
 
-
-
 	/**
 	 * Removes the CiviCRM Permissions filter to restore permissions.
 	 *
@@ -1241,8 +1169,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	public function permissions_escalate_stop() {
 		remove_action( 'civicrm_permission_check', [ $this, 'permissions_grant' ], 10 );
 	}
-
-
 
 	/**
 	 * Grant the permissions necessary for BuddyPress Members to create Synced
@@ -1269,6 +1195,4 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 	}
 
-
-
-} // Class ends.
+}

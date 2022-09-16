@@ -11,8 +11,6 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-
-
 /**
  * BP Groups CiviCRM Sync CiviCRM Group Admin Class.
  *
@@ -58,8 +56,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 	 */
 	public $admin;
 
-
-
 	/**
 	 * Constructor.
 	 *
@@ -80,8 +76,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 
 	}
 
-
-
 	/**
 	 * Initialises this class.
 	 *
@@ -100,8 +94,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		do_action( 'bpgcs/civicrm/group/nesting/loaded' );
 
 	}
-
-
 
 	/**
 	 * Register hooks.
@@ -129,8 +121,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 
 	}
 
-
-
 	/**
 	 * Unregister hooks.
 	 *
@@ -140,11 +130,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Register directories that CiviCRM searches for php and template files.
@@ -176,11 +162,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Enables a BuddyPress Group to be created when creating a CiviCRM Group.
@@ -227,8 +209,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 
 	}
 
-
-
 	/**
 	 * Maybe create a BuddyPress Group when creating a CiviCRM Group.
 	 *
@@ -266,8 +246,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		$this->civicrm_group_to_bp_group_convert( $group );
 
 	}
-
-
 
 	/**
 	 * Create a BuddyPress Group from a CiviCRM Group.
@@ -402,11 +380,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Enable a BuddyPress Group to be created from pre-existing Drupal Organic Groups in CiviCRM.
@@ -459,8 +433,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 
 	}
 
-
-
 	/**
 	 * Create a BuddyPress Group based on pre-existing CiviCRM/Drupal/Organic Groups.
 	 *
@@ -495,8 +467,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 
 	}
 
-
-
 	/**
 	 * Convert all legacy Organic Groups CiviCRM Groups to BuddyPress CiviCRM Groups.
 	 *
@@ -527,8 +497,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		$this->civicrm->meta_group->groups_assign();
 
 	}
-
-
 
 	/**
 	 * Create a BuddyPress Group based on pre-existing CiviCRM/Drupal/Organic Groups.
@@ -676,8 +644,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 
 	}
 
-
-
 	/**
 	 * Checks if a CiviCRM Group has an associated Organic Group.
 	 *
@@ -702,8 +668,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		return true;
 
 	}
-
-
 
 	/**
 	 * Do we have any legacy Organic Groups CiviCRM Groups?
@@ -755,6 +719,4 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 
 	}
 
-
-
-} // Class ends.
+}

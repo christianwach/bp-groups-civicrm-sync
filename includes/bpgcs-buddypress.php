@@ -11,8 +11,6 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-
-
 /**
  * BP Groups CiviCRM Sync BuddyPress Class.
  *
@@ -59,8 +57,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 */
 	public $bpgh;
 
-
-
 	/**
 	 * Constructor.
 	 *
@@ -77,8 +73,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		add_action( 'bpgcs/loaded', [ $this, 'initialise' ] );
 
 	}
-
-
 
 	/**
 	 * Initialises this class.
@@ -107,8 +101,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	/**
 	 * Include files.
 	 *
@@ -121,8 +113,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	/**
 	 * Set up this plugin's objects.
 	 *
@@ -134,8 +124,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		$this->bpgh = new BP_Groups_CiviCRM_Sync_BuddyPress_BPGH( $this );
 
 	}
-
-
 
 	/**
 	 * Register hooks on BuddyPress loaded.
@@ -162,8 +150,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	/**
 	 * Register hooks for BuddyPress Group modifications.
 	 *
@@ -179,8 +165,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	/**
 	 * Unregister hooks for BuddyPress Group modifications.
 	 *
@@ -195,8 +179,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		remove_action( 'groups_before_delete_group', [ $this, 'civicrm_group_delete' ], 100 );
 
 	}
-
-
 
 	/**
 	 * Add hooks when the Groups admin page is loaded.
@@ -227,8 +209,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	/**
 	 * Register hooks for BuddyPress Group Membership modifications.
 	 *
@@ -257,8 +237,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	/**
 	 * Unregister hooks for BuddyPress Group Membership modifications.
 	 *
@@ -280,8 +258,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		remove_action( 'groups_accept_invite', [ $this, 'member_changed_status' ], 10 );
 
 	}
-
-
 
 	/**
 	 * Checks if BuddyPress plugin is properly configured.
@@ -310,11 +286,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Creates a CiviCRM Group when a BuddyPress Group is created.
@@ -343,8 +315,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	/**
 	 * Updates a CiviCRM Group when a BuddyPress Group is updated.
 	 *
@@ -367,8 +337,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	/**
 	 * Updates a CiviCRM Group when a BuddyPress Group is updated.
 	 *
@@ -388,8 +356,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		$success = $this->civicrm->sync_groups_update( $group );
 
 	}
-
-
 
 	/**
 	 * Deletes a CiviCRM Group when a BuddyPress Group is deleted.
@@ -415,11 +381,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Gets the Synced CiviCRM Group IDs for a given BuddyPress Group ID.
@@ -447,8 +409,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	/**
 	 * Stores the Synced CiviCRM Groups for a BuddyPress Group.
 	 *
@@ -469,11 +429,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Get all BuddyPress Groups.
@@ -516,8 +472,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		return $groups;
 
 	}
-
-
 
 	/**
 	 * Creates a BuddyPress Group given a title and description.
@@ -591,11 +545,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Get all Members of a BuddyPress Group.
@@ -637,8 +587,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		return $members;
 
 	}
-
-
 
 	/**
 	 * Create BuddyPress Group Members given an array of CiviCRM Contacts.
@@ -715,8 +663,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	/**
 	 * Delete BuddyPress Group Members given an array of CiviCRM Contacts.
 	 *
@@ -784,8 +730,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	/**
 	 * Demote BuddyPress Group Members given an array of CiviCRM Contacts.
 	 *
@@ -852,8 +796,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		}
 
 	}
-
-
 
 	/**
 	 * Promote BuddyPress Group Members given an array of CiviCRM Contacts.
@@ -923,11 +865,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Creates a BuddyPress Group Membership given a title and description.
@@ -1006,8 +944,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	/**
 	 * Delete a BuddyPress Group Membership given a WordPress User.
 	 *
@@ -1061,8 +997,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	/**
 	 * Demote a BuddyPress Group Member given a WordPress User.
 	 *
@@ -1112,8 +1046,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		return $success;
 
 	}
-
-
 
 	/**
 	 * Promote a BuddyPress Group Member given a WordPress User and a status.
@@ -1167,11 +1099,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Called when User joins Group.
@@ -1187,8 +1115,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		$this->civicrm_group_membership_update( $user_id, $group_id );
 
 	}
-
-
 
 	/**
 	 * Called when User's Group status is about to change.
@@ -1244,8 +1170,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	/**
 	 * Called when User's Group status is being reduced.
 	 *
@@ -1282,8 +1206,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	/**
 	 * Called when User's Group status has changed.
 	 *
@@ -1303,8 +1225,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	/**
 	 * Called when a User has been removed from a Group.
 	 *
@@ -1323,11 +1243,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Inform CiviCRM of Membership status change.
@@ -1373,8 +1289,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	/**
 	 * Inform CiviCRM of Membership status change.
 	 *
@@ -1407,13 +1321,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
 	// Moved.
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Get BuddyPress Group Membership status for a User.
@@ -1514,8 +1424,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	/**
 	 * Check if a Group should by synced.
 	 *
@@ -1547,8 +1455,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	/**
 	 * Get a BuddyPress Group ID by CiviCRM Group data.
 	 *
@@ -1574,13 +1480,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
 	// To move.
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Creates a WordPress User given a CiviCRM Contact.
@@ -1700,8 +1602,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	/**
 	 * Called when a CiviCRM Contact's primary email address is updated.
 	 *
@@ -1793,8 +1693,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	/**
 	 * Generate a unique username for a WordPress User.
 	 *
@@ -1832,8 +1730,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		return $new_username;
 
 	}
-
-
 
 	/**
 	 * Remove filters (that we know of) that will interfere with creating a WordPress User.
@@ -1876,8 +1772,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
 	/**
 	 * Add filters (that we know of) after creating a WordPress User.
 	 *
@@ -1919,6 +1813,4 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 	}
 
-
-
-} // Class ends.
+}

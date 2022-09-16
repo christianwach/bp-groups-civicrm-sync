@@ -11,8 +11,6 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-
-
 /**
  * BP Groups CiviCRM Sync Admin Class.
  *
@@ -85,8 +83,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 */
 	public $settings = [];
 
-
-
 	/**
 	 * Constructor.
 	 *
@@ -103,8 +99,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		add_action( 'bpgcs/loaded', [ $this, 'initialise' ] );
 
 	}
-
-
 
 	/**
 	 * Perform activation tasks.
@@ -123,8 +117,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 	}
 
-
-
 	/**
 	 * Perform deactivation tasks.
 	 *
@@ -135,8 +127,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// We delete our options in uninstall.php.
 
 	}
-
-
 
 	/**
 	 * Initialises this class.
@@ -184,8 +174,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 	}
 
-
-
 	/**
 	 * Store the plugin version.
 	 *
@@ -198,11 +186,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Add this plugin's Settings Page to the WordPress admin menu.
@@ -300,8 +284,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 	}
 
-
-
 	/**
 	 * Initialise plugin help.
 	 *
@@ -316,8 +298,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		$this->admin_help( $screen );
 
 	}
-
-
 
 	/**
 	 * This tells WordPress to highlight the plugin's menu item, regardless of
@@ -348,8 +328,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		}
 
 	}
-
-
 
 	/**
 	 * Adds help copy to admin page.
@@ -393,8 +371,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 	}
 
-
-
 	/**
 	 * Get help text.
 	 *
@@ -412,11 +388,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Show settings page.
@@ -447,8 +419,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 	}
 
-
-
 	/**
 	 * Show Manual Sync page.
 	 *
@@ -476,8 +446,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 	}
 
-
-
 	/**
 	 * Enqueues the styles needed by our Manual Sync page.
 	 *
@@ -496,8 +464,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		);
 
 	}
-
-
 
 	/**
 	 * Enqueues the scripts needed by our Manual Sync page.
@@ -545,11 +511,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Get admin page URLs.
@@ -588,8 +550,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 	}
 
-
-
 	/**
 	 * Get the url to access a particular menu page based on the slug it was registered with.
 	 * If the slug hasn't been registered properly no url will be returned.
@@ -626,8 +586,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 	}
 
-
-
 	/**
 	 * Get the URL for the form action.
 	 *
@@ -652,11 +610,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Get default plugin settings.
@@ -688,8 +642,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 	}
 
-
-
 	/**
 	 * Route settings updates to relevant methods.
 	 *
@@ -720,8 +672,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 	}
-
-
 
 	/**
 	 * Update options supplied by our admin page.
@@ -795,8 +745,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 	}
 
-
-
 	/**
 	 * Do sync procedure, depending on which one has been selected.
 	 *
@@ -834,8 +782,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 	}
 
-
-
 	/**
 	 * Stop the sync procedure.
 	 *
@@ -859,8 +805,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 	}
 
-
-
 	/**
 	 * Save the plugin's settings array.
 	 *
@@ -874,8 +818,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		return update_option( 'bp_groups_civicrm_sync_settings', $this->settings );
 
 	}
-
-
 
 	/**
 	 * Return a value for a specified setting.
@@ -898,8 +840,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 	}
 
-
-
 	/**
 	 * Set a value for a specified setting.
 	 *
@@ -920,11 +860,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Sync BuddyPress Groups to CiviCRM.
@@ -1088,6 +1024,4 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 	}
 
-
-
-} // Class ends.
+}

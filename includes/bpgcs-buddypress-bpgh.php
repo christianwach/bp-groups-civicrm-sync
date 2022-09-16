@@ -11,8 +11,6 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-
-
 /**
  * BP Groups CiviCRM Sync "BP Group Hierarchy" compatibility Class.
  *
@@ -58,8 +56,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_BPGH {
 	 */
 	public $admin;
 
-
-
 	/**
 	 * Constructor.
 	 *
@@ -85,8 +81,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_BPGH {
 
 	}
 
-
-
 	/**
 	 * Initialises this class.
 	 *
@@ -106,8 +100,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_BPGH {
 
 	}
 
-
-
 	/**
 	 * Register hooks.
 	 *
@@ -126,8 +118,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_BPGH {
 
 	}
 
-
-
 	/**
 	 * Unregister hooks.
 	 *
@@ -137,11 +127,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_BPGH {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Registers when BuddyPress Group Hierarchy plugin is saving a Group.
@@ -161,8 +147,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_BPGH {
 
 	}
 
-
-
 	/**
 	 * Registers when BuddyPress Group Hierarchy plugin has saved a Group.
 	 *
@@ -177,11 +161,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_BPGH {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Create all CiviCRM Group Nestings.
@@ -204,8 +184,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_BPGH {
 
 	}
 
-
-
 	/**
 	 * Delete all CiviCRM Group Nestings.
 	 *
@@ -227,11 +205,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_BPGH {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Update the compatibility settings.
@@ -256,8 +230,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_BPGH {
 		$this->admin->setting_set( 'nesting', ( $hierarchy ? 1 : 0 ) );
 
 	}
-
-
 
 	/**
 	 * Update the hierarchy when settings have changed.
@@ -288,8 +260,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_BPGH {
 		}
 
 	}
-
-
 
 	/**
 	 * Renders our settings markup.
@@ -339,6 +309,4 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_BPGH {
 
 	}
 
-
-
-} // Class ends.
+}

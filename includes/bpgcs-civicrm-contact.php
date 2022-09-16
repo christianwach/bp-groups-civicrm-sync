@@ -11,8 +11,6 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-
-
 /**
  * BP Groups CiviCRM Sync CiviCRM Contact Class.
  *
@@ -58,8 +56,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 	 */
 	public $admin;
 
-
-
 	/**
 	 * Constructor.
 	 *
@@ -80,8 +76,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 
 	}
 
-
-
 	/**
 	 * Initialises this class.
 	 *
@@ -101,8 +95,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 
 	}
 
-
-
 	/**
 	 * Register hooks.
 	 *
@@ -111,8 +103,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 	public function register_hooks() {
 
 	}
-
-
 
 	/**
 	 * Unregister hooks.
@@ -123,11 +113,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Gets the data for multiple CiviCRM Contacts for an array of Contact IDs.
@@ -189,11 +175,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Gets the CiviCRM Contact ID for a given WordPress User ID.
@@ -265,11 +247,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Create a link between a WordPress User and a CiviCRM Contact.
@@ -332,11 +310,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Gets the CiviCRM Contact data for a given ID.
@@ -394,8 +368,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 
 	}
 
-
-
 	/**
 	 * Updates a CiviCRM Contact for a given WordPress User.
 	 *
@@ -426,6 +398,4 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 
 	}
 
-
-
-} // Class ends.
+}

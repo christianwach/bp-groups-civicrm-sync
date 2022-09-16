@@ -11,8 +11,6 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-
-
 /**
  * BP Groups CiviCRM Sync CiviCRM Group Contact Class.
  *
@@ -58,8 +56,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 	 */
 	public $admin;
 
-
-
 	/**
 	 * Constructor.
 	 *
@@ -80,8 +76,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 	}
 
-
-
 	/**
 	 * Initialises this class.
 	 *
@@ -101,8 +95,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 	}
 
-
-
 	/**
 	 * Register hooks.
 	 *
@@ -121,8 +113,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 	}
 
-
-
 	/**
 	 * Unregister hooks.
 	 *
@@ -137,11 +127,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Update the CiviCRM Group memberships for a BuddyPress Group Member.
@@ -276,11 +262,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Update a BuddyPress Group when a CiviCRM Contact is added to a Group.
@@ -383,8 +365,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 	}
 
-
-
 	/**
 	 * Update a BuddyPress Group when a CiviCRM Contact is deleted (or removed) from a Group.
 	 *
@@ -470,8 +450,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 	}
 
-
-
 	/**
 	 * Update a BuddyPress Group when a CiviCRM Contact is re-added to a Group.
 	 *
@@ -513,11 +491,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Checks if a Contact is a member of a CiviCRM Group.
@@ -562,8 +536,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		return $group_contact;
 
 	}
-
-
 
 	/**
 	 * Checks if a Contact is a member of a CiviCRM Group with a given status.
@@ -624,8 +596,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 	}
 
-
-
 	/**
 	 * Adds a CiviCRM Contact to a CiviCRM Group.
 	 *
@@ -670,8 +640,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 	}
 
-
-
 	/**
 	 * Updates a CiviCRM Contact's membership of a CiviCRM Group.
 	 *
@@ -685,8 +653,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 	public function membership_update( $group_contact ) {
 		return $this->membership_create( $group_contact );
 	}
-
-
 
 	/**
 	 * Removes a CiviCRM Contact from a CiviCRM Group.
@@ -723,6 +689,4 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 	}
 
-
-
-} // Class ends.
+}

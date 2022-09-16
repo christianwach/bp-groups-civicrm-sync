@@ -11,8 +11,6 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-
-
 /**
  * BP Groups CiviCRM Sync CiviCRM Meta Group Class.
  *
@@ -67,8 +65,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 	 */
 	public $sync_name = 'bp-groups-civicrm-sync';
 
-
-
 	/**
 	 * Constructor.
 	 *
@@ -89,8 +85,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 
 	}
 
-
-
 	/**
 	 * Initialises this class.
 	 *
@@ -110,8 +104,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 
 	}
 
-
-
 	/**
 	 * Register hooks.
 	 *
@@ -120,8 +112,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 	public function register_hooks() {
 
 	}
-
-
 
 	/**
 	 * Unregister hooks.
@@ -132,11 +122,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 
 	}
 
-
-
 	// -------------------------------------------------------------------------
-
-
 
 	/**
 	 * Get source (our unique code) for our Meta Group.
@@ -149,8 +135,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 	public function get_source() {
 		return $this->sync_name;
 	}
-
-
 
 	/**
 	 * Creates the CiviCRM Group which is the ultimate parent for all BuddyPress Groups.
@@ -203,8 +187,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 
 	}
 
-
-
 	/**
 	 * Deletes the CiviCRM Group which is the ultimate parent for all BuddyPress Groups.
 	 *
@@ -233,8 +215,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 		return $this->civicrm->group_delete( $meta_group_id );
 
 	}
-
-
 
 	/**
 	 * Assign all Synced CiviCRM Groups with no parent to our Meta Group.
@@ -306,8 +286,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 		}
 
 	}
-
-
 
 	/**
 	 * Remove all top-level Synced CiviCRM Groups from the Meta Group.
@@ -393,6 +371,4 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 
 	}
 
-
-
-} // Class ends.
+}
