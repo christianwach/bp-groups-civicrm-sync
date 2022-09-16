@@ -5,7 +5,7 @@
 **Tags:** civicrm, buddypress, user, groups, sync<br/>
 **Requires at least:** 4.9<br/>
 **Tested up to:** 6.0<br/>
-**Stable tag:** 0.4.1<br/>
+**Stable tag:** 0.4.2a<br/>
 **License:** GPLv2 or later<br/>
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
