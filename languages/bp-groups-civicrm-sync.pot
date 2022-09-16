@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the BP Groups CiviCRM Sync plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: BP Groups CiviCRM Sync 0.4.1a\n"
+"Project-Id-Version: BP Groups CiviCRM Sync 0.4.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bp-groups-civicrm-sync\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-09-16T12:33:39+00:00\n"
+"POT-Creation-Date: 2022-09-16T12:35:54+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.6.0\n"
 "X-Domain: bp-groups-civicrm-sync\n"
@@ -31,7 +31,7 @@ msgid "Christian Wach"
 msgstr ""
 
 #. Author URI of the plugin
-msgid "http://haystack.co.uk"
+msgid "https://haystack.co.uk"
 msgstr ""
 
 msgid "Settings"
