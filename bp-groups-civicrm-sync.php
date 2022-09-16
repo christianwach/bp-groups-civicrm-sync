@@ -6,7 +6,7 @@
  * Description: Enables two-way synchronisation between BuddyPress Groups and CiviCRM Groups.
  * Author: Christian Wach
  * Version: 0.4.1
- * Author URI: http://haystack.co.uk
+ * Author URI: https://haystack.co.uk
  * Text Domain: bp-groups-civicrm-sync
  * Domain Path: /languages
  * Depends: CiviCRM
