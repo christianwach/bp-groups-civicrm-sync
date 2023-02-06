@@ -98,6 +98,12 @@ class BP_Groups_CiviCRM_Sync {
 	 */
 	public function initialise() {
 
+		// Only do this once.
+		static $done;
+		if ( isset( $done ) && $done === true ) {
+			return;
+		}
+
 		// Bail if no CiviCRM init function.
 		if ( ! $this->check_dependencies() ) {
 			return;
@@ -118,6 +124,9 @@ class BP_Groups_CiviCRM_Sync {
 		 * @since 0.4
 		 */
 		do_action( 'bpgcs/loaded' );
+
+		// We're done.
+		$done = true;
 
 	}
 
@@ -192,6 +201,14 @@ class BP_Groups_CiviCRM_Sync {
 	 */
 	public function activate() {
 
+		// Bail if no CiviCRM init function.
+		if ( ! $this->check_dependencies() ) {
+			return;
+		}
+
+		// Maybe initialise plugin.
+		$this->initialise();
+
 		// Setup plugin admin.
 		$this->admin->activate();
 
@@ -203,6 +220,14 @@ class BP_Groups_CiviCRM_Sync {
 	 * @since 0.1
 	 */
 	public function deactivate() {
+
+		// Bail if no CiviCRM init function.
+		if ( ! $this->check_dependencies() ) {
+			return;
+		}
+
+		// Maybe initialise plugin.
+		$this->initialise();
 
 		// Tear down plugin admin.
 		$this->admin->deactivate();
