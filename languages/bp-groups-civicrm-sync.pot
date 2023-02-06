@@ -1,20 +1,23 @@
-# Copyright (C) 2022 Christian Wach
+# Copyright (C) 2023 Christian Wach
 # This file is distributed under the same license as the BP Groups CiviCRM Sync plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: BP Groups CiviCRM Sync 0.4.1\n"
+"Project-Id-Version: BP Groups CiviCRM Sync 0.4.2a\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bp-groups-civicrm-sync\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-09-16T12:35:54+00:00\n"
+"POT-Creation-Date: 2023-02-06T12:48:46+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.6.0\n"
+"X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: bp-groups-civicrm-sync\n"
 
 #. Plugin Name of the plugin
+#: includes/bpgcs-admin.php:219
+#: includes/bpgcs-admin.php:220
+#: includes/bpgcs-admin.php:365
 msgid "BP Groups CiviCRM Sync"
 msgstr ""
 
@@ -34,172 +37,236 @@ msgstr ""
 msgid "https://haystack.co.uk"
 msgstr ""
 
+#: assets/templates/manual-sync.php:21
+#: assets/templates/settings.php:21
+#: bp-groups-civicrm-sync.php:355
+#: includes/bpgcs-admin.php:251
 msgid "Settings"
 msgstr ""
 
+#: assets/templates/manual-sync.php:22
+#: assets/templates/settings.php:22
+#: includes/bpgcs-admin.php:268
 msgid "Manual Sync"
 msgstr ""
 
+#: assets/templates/manual-sync.php:33
 msgid "BuddyPress to CiviCRM Sync"
 msgstr ""
 
+#: assets/templates/manual-sync.php:35
 msgid "Synchronize BuddyPress Groups and their Memberships to their corresponding CiviCRM Member Groups and ACL Groups."
 msgstr ""
 
+#: assets/templates/manual-sync.php:40
 msgid "Sync BuddyPress Groups to CiviCRM"
 msgstr ""
 
+#: assets/templates/manual-sync.php:41
 msgid "Sync Now"
 msgstr ""
 
+#: assets/templates/manual-sync.php:41
 msgid "Continue Sync"
 msgstr ""
 
+#: assets/templates/manual-sync.php:41
 msgid "Stop Sync"
 msgstr ""
 
+#: assets/templates/manual-sync.php:52
 msgid "Convert Drupal OG Groups in CiviCRM to BuddyPress Groups"
 msgstr ""
 
+#: assets/templates/manual-sync.php:54
 msgid "WARNING: this will probably only work when there are a small number of groups. If you have lots of groups, it would be worth writing some kind of chunked update routine. I will upgrade this plugin to do so at some point."
 msgstr ""
 
+#: assets/templates/manual-sync.php:59
 msgid "Convert OG Groups to BuddyPress Groups"
 msgstr ""
 
+#: assets/templates/manual-sync.php:60
 msgid "Convert Now"
 msgstr ""
 
 #. translators: 1: The opening strong tag, 2: The closing strong tag
+#: assets/templates/settings.php:35
 msgid "%1$sPlease Note:%2$s it is strongly recommended to choose the following settings before you sync groups. You can change these settings later, but it will require some heavy processing if you have a large number of groups."
 msgstr ""
 
+#: assets/templates/settings.php:42
 msgid "Parent Group"
 msgstr ""
 
 #. translators: 1: The opening anchor tag, 2: The closing anchor tag
+#: assets/templates/settings.php:46
 msgid "Depending on your use case, select whether you want your CiviCRM Groups to be assigned to a \"BuddyPress Groups\" parent group in CiviCRM. If you do, then CiviCRM Groups will be nested under - and inherit permissions from - the \"BuddyPress Groups\" parent group. Please refer to %1$sthe documentation%2$s to decide if this is useful to you or not."
 msgstr ""
 
+#: assets/templates/settings.php:54
 msgid "Use Parent Group"
 msgstr ""
 
+#: assets/templates/settings.php:57
 msgid "Assign CiviCRM Groups to a \"BuddyPress Groups\" parent group."
 msgstr ""
 
+#: assets/templates/settings.php:77
 msgid "Save Changes"
 msgstr ""
 
+#: bp-groups-civicrm-sync.php:359
 msgid "Donate!"
 msgstr ""
 
+#: includes/bpgcs-admin.php:231
+#: includes/bpgcs-admin.php:232
 msgid "BP Groups Sync"
 msgstr ""
 
+#: includes/bpgcs-admin.php:250
 msgid "Settings: BP Groups CiviCRM Sync"
 msgstr ""
 
+#: includes/bpgcs-admin.php:267
 msgid "Manual Sync: BP Groups CiviCRM Sync"
 msgstr ""
 
+#: includes/bpgcs-admin.php:384
 msgid "For further information about using BP Groups CiviCRM Sync, please refer to the readme.txt that comes with this plugin."
 msgstr ""
 
+#: includes/bpgcs-admin.php:487
 msgid "{{total}} groups to sync..."
 msgstr ""
 
+#: includes/bpgcs-admin.php:488
 msgid "Processing group \"{{name}}\""
 msgstr ""
 
+#: includes/bpgcs-admin.php:489
 msgid "Processing group \"{{name}}\" complete"
 msgstr ""
 
+#: includes/bpgcs-admin.php:490
 msgid "All done!"
 msgstr ""
 
+#: includes/bpgcs-admin.php:835
 msgid "You must supply a setting to setting_get()"
 msgstr ""
 
+#: includes/bpgcs-admin.php:855
 msgid "You must supply a setting to setting_set()"
 msgstr ""
 
 #. translators: 1: The opening strong tag, 2: The closing strong tag
+#: includes/bpgcs-buddypress-bpgh.php:283
 msgid "Depending on your use case, select whether you want your CiviCRM Groups to be hierarchically organised in CiviCRM. If you do, then CiviCRM Groups will be nested under one another, mirroring the BuddyPress Group Hierarchy. Again, please refer to %1$sthe documentation%2$s to decide if this is useful to you or not."
 msgstr ""
 
+#: includes/bpgcs-buddypress-bpgh.php:292
 msgid "BuddyPress Group Hierarchy"
 msgstr ""
 
+#: includes/bpgcs-buddypress-bpgh.php:299
 msgid "Use Hierarchy"
 msgstr ""
 
+#: includes/bpgcs-buddypress-bpgh.php:302
 msgid "Nest CiviCRM Groups hierarchically."
 msgstr ""
 
 #. translators: %s: The name of the Member Group as shown in the description of the ACL
+#: includes/bpgcs-civicrm-acl.php:143
+#: includes/bpgcs-civicrm-acl.php:319
 msgid "Edit Contacts in Group: %s"
 msgstr ""
 
+#: includes/bpgcs-civicrm-acl.php:552
 msgid "An ID must be present to update an ACL Role."
 msgstr ""
 
+#: includes/bpgcs-civicrm-acl.php:590
 msgid "An ID must be present to delete an ACL Role."
 msgstr ""
 
+#: includes/bpgcs-civicrm-acl.php:909
 msgid "An ID must be present to update an ACL Entity Role."
 msgstr ""
 
+#: includes/bpgcs-civicrm-acl.php:947
 msgid "An ID must be present to delete an ACL Entity Role."
 msgstr ""
 
+#: includes/bpgcs-civicrm-acl.php:1123
 msgid "An ID must be present to update an ACL."
 msgstr ""
 
+#: includes/bpgcs-civicrm-acl.php:1161
 msgid "An ID must be present to delete an ACL."
 msgstr ""
 
 #. translators: %d: The numeric ID of the WordPress User
+#: includes/bpgcs-civicrm-contact.php:230
 msgid "No CiviCRM Contact ID could be found for WordPress User ID %d"
 msgstr ""
 
+#: includes/bpgcs-civicrm-group-admin.php:193
+#: includes/bpgcs-civicrm-group-admin.php:417
 msgid "BuddyPress Group Sync"
 msgstr ""
 
 #. translators: 1: The opening strong tag, 2: The closing strong tag
+#: includes/bpgcs-civicrm-group-admin.php:196
 msgid "%1$sNOTE:%2$s If you are going to create a BuddyPress Group, you only need to fill out the \"Group Title\" field (and optionally the \"Group Description\" field). The Group Type will be automatically set to \"Access Control\" and (if a container group has been specified) the Parent Group will be automatically assigned to the container group."
 msgstr ""
 
+#: includes/bpgcs-civicrm-group-admin.php:200
 msgid "Create a BuddyPress Group"
 msgstr ""
 
+#: includes/bpgcs-civicrm-group-admin.php:203
+#: includes/bpgcs-civicrm-group-admin.php:427
 msgid "Create BuddyPress Group"
 msgstr ""
 
 #. translators: 1: The opening strong tag, 2: The closing strong tag
+#: includes/bpgcs-civicrm-group-admin.php:420
 msgid "%1$sWARNING:%2$s You may wish to make sure your CiviCRM Contacts exist as WordPress Users before creating this group. CiviCRM Contacts that do not have a corresponding WordPress User will have one created for them. You will need to review roles for the new WordPress Users when this process is complete."
 msgstr ""
 
+#: includes/bpgcs-civicrm-group-admin.php:424
 msgid "Convert to BuddyPress Group"
 msgstr ""
 
+#: includes/bpgcs-civicrm-group-meta.php:165
+#: includes/bpgcs-civicrm-group-meta.php:166
 msgid "BuddyPress Groups"
 msgstr ""
 
+#: includes/bpgcs-civicrm-group-meta.php:167
 msgid "Container for all BuddyPress Groups."
 msgstr ""
 
+#: includes/bpgcs-civicrm.php:575
 msgid "An ID must be present to update a Group."
 msgstr ""
 
+#: includes/bpgcs-civicrm.php:613
 msgid "An ID must be present to delete a Group."
 msgstr ""
 
+#: includes/bpgcs-civicrm.php:810
 msgid "There are multiple groups with the same \"sync name\"."
 msgstr ""
 
+#: includes/bpgcs-civicrm.php:881
 msgid "There are mulitple groups with the same title."
 msgstr ""
 
 #. translators: %s: The name of the BuddyPress Group
+#: includes/bpgcs-civicrm.php:1113
 msgid "%s: Administrator"
 msgstr ""
