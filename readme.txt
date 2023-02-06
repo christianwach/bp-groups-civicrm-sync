@@ -44,6 +44,10 @@ This plugin is in active development. For feature requests and bug reports (or i
 
 == Changelog ==
 
+= 0.4.2 =
+
+* Fixes possible error on activation
+
 = 0.4.1 =
 
 * Fixes broken "Settings" link
