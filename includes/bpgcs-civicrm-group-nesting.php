@@ -423,11 +423,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 		$civicrm_parent_id = false;
 
 		// If the BuddyPress parent ID is 0, we're removing the BuddyPress parent or none is set.
-		if ( $bp_parent_id == 0 ) {
+		if ( 0 === (int) $bp_parent_id ) {
 
 			// Bail if we're not using a Meta Group.
 			$parent_group = (int) $this->admin->setting_get( 'parent_group' );
-			if ( $parent_group == 0 ) {
+			if ( 0 === $parent_group ) {
 				return $civicrm_parent_id;
 			}
 
@@ -437,9 +437,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 		} else {
 
 			// What kind of Group is this?
-			if ( $group_type == 'member' ) {
+			if ( 'member' === $group_type ) {
 				$sync_name = $this->civicrm->member_group_get_sync_name( $bp_parent_id );
-			} elseif ( $group_type == 'acl' ) {
+			} elseif ( 'acl' === $group_type ) {
 				$sync_name = $this->civicrm->acl_group_get_sync_name( $bp_parent_id );
 			} else {
 				return $civicrm_parent_id;

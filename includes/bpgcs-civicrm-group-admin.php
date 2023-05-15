@@ -170,7 +170,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 	public function form_create_bp_group_options( $formName, &$form ) {
 
 		// Is this the Group edit form?
-		if ( $formName != 'CRM_Group_Form_Edit' ) {
+		if ( 'CRM_Group_Form_Edit' !== $formName ) {
 			return;
 		}
 
@@ -226,7 +226,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		if ( ! isset( $values['bpgcs_create_from_new'] ) ) {
 			return;
 		}
-		if ( $values['bpgcs_create_from_new'] != '1' ) {
+		if ( 1 !== (int) $values['bpgcs_create_from_new'] ) {
 			return;
 		}
 
@@ -323,7 +323,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		$acl_group = civicrm_api( 'Group', 'create', $acl_group_params );
 
 		// Error check.
-		if ( $acl_group['is_error'] == '1' ) {
+		if ( 1 !== (int) $acl_group['is_error'] ) {
 
 			// Debug.
 			$e = new \Exception();
@@ -352,7 +352,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		$member_group = civicrm_api( 'Group', 'create', $member_group_params );
 
 		// Error check.
-		if ( $member_group['is_error'] == '1' ) {
+		if ( 1 === (int) $member_group['is_error'] ) {
 
 			// Debug.
 			$e = new \Exception();
@@ -388,7 +388,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 	public function form_edit_og_options( $formName, &$form ) {
 
 		// Is this the Group edit form?
-		if ( $formName != 'CRM_Group_Form_Edit' ) {
+		if ( 'CRM_Group_Form_Edit' !== $formName ) {
 			return;
 		}
 
@@ -450,7 +450,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		if ( ! isset( $values['bpgcs_create_from_og'] ) ) {
 			return;
 		}
-		if ( $values['bpgcs_create_from_og'] != '1' ) {
+		if ( 1 !== (int) $values['bpgcs_create_from_og'] ) {
 			return;
 		}
 
@@ -587,7 +587,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		$acl_group = civicrm_api( 'Group', 'create', $acl_group_params );
 
 		// Error check.
-		if ( $acl_group['is_error'] == '1' ) {
+		if ( 1 === (int) $acl_group['is_error'] ) {
 
 			// Debug.
 			$e = new \Exception();
@@ -616,7 +616,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		$member_group = civicrm_api( 'Group', 'create', $member_group_params );
 
 		// Error check.
-		if ( $member_group['is_error'] == '1' ) {
+		if ( 1 === (int) $member_group['is_error'] ) {
 
 			// Debug.
 			$e = new \Exception();

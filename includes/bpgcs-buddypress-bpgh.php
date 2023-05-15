@@ -242,12 +242,12 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_BPGH {
 		$hierarchy = $this->admin->setting_get( 'nesting' );
 
 		// Bail if the hierarchy setting has not changed.
-		if ( $this->existing_hierarchy == $hierarchy ) {
+		if ( (int) $this->existing_hierarchy === (int) $hierarchy ) {
 			return;
 		}
 
 		// Are we switching from "no hierarchy" to "use hierarchy"?
-		if ( $this->existing_hierarchy == 0 ) {
+		if ( 0 === (int) $this->existing_hierarchy ) {
 
 			// Build CiviCRM Group hierarchy.
 			$this->civicrm->group_nesting->hierarchy_build();
@@ -273,7 +273,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_BPGH {
 
 		// Checked by default.
 		$hierarchy_checked = ' checked="checked"';
-		if ( isset( $hierarchy ) && $hierarchy === 0 ) {
+		if ( isset( $hierarchy ) && 0 === $hierarchy ) {
 			$hierarchy_checked = '';
 		}
 

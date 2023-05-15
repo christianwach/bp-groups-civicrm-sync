@@ -100,7 +100,7 @@ class BP_Groups_CiviCRM_Sync {
 
 		// Only do this once.
 		static $done;
-		if ( isset( $done ) && $done === true ) {
+		if ( isset( $done ) && true === $done ) {
 			return;
 		}
 
@@ -342,7 +342,7 @@ register_deactivation_hook( __FILE__, [ bp_groups_civicrm_sync(), 'deactivate' ]
 function bp_groups_civicrm_sync_plugin_action_links( $links, $file ) {
 
 	// Add settings link.
-	if ( $file == plugin_basename( dirname( __FILE__ ) . '/bp-groups-civicrm-sync.php' ) ) {
+	if ( plugin_basename( dirname( __FILE__ ) . '/bp-groups-civicrm-sync.php' === $file ) ) {
 
 		// Is this Network Admin?
 		if ( is_network_admin() ) {

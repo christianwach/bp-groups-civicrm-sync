@@ -194,7 +194,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	public function register_hooks_bp_groups_admin( $doaction ) {
 
 		// Only add hooks if saving data.
-		if ( $doaction && $doaction == 'save' ) {
+		if ( $doaction && 'save' === $doaction ) {
 
 			// Group Membership hooks: Group Membership status is being modified.
 			add_action( 'groups_promote_member', [ $this, 'member_changing_status' ], 10, 3 );
@@ -306,7 +306,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 		// Create the corresponding CiviCRM Groups.
 		$civicrm_groups = $this->civicrm->sync_groups_create( $group );
-		if ( $civicrm_groups === false ) {
+		if ( false === $civicrm_groups ) {
 			return;
 		}
 
@@ -896,7 +896,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		if ( $is_member ) {
 
 			// If they are being promoted.
-			if ( $is_admin == 1 ) {
+			if ( 1 === (int) $is_admin ) {
 
 				// Promote them to Admin.
 				$this->group_member_promote( $group_id, $user_id, 'admin' );
@@ -1141,18 +1141,18 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		 * Group Admins cannot be banned.
 		 * @see BP_Groups_Member::ban()
 		 */
-		if ( $status == 'admin' && 'groups_ban_member' == current_action() ) {
+		if ( 'admin' === $status && current_action() === 'groups_ban_member' ) {
 			return;
 		}
 
 		// If a Group Admin is being demoted, set special status.
-		if ( $status == 'admin' && 'groups_demote_member' == current_action() ) {
+		if ( 'admin' === $status && current_action() === 'groups_demote_member' ) {
 			$status = 'ex-admin';
 		}
 
 		// Is this User being banned?
 		$is_active = 1;
-		if ( 'groups_ban_member' == current_action() ) {
+		if ( current_action() === 'groups_ban_member' ) {
 			$is_active = 0;
 		}
 
@@ -1192,12 +1192,12 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		 * Group Admins cannot be banned.
 		 * @see BP_Groups_Member::ban()
 		 */
-		if ( $status == 'admin' && 'groups_ban_member' == current_action() ) {
+		if ( 'admin' === $status && current_action() === 'groups_ban_member' ) {
 			return;
 		}
 
 		// If a Group Admin is being demoted, set special status.
-		if ( $status == 'admin' && 'groups_demote_member' == current_action() ) {
+		if ( 'admin' === $status && current_action() === 'groups_demote_member' ) {
 			$status = 'ex-admin';
 		}
 
@@ -1264,7 +1264,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		$status = $this->group_status_get_for_user( $user_id, $group_id );
 
 		// Check previous Member status.
-		if ( isset( $this->old_status ) && $this->old_status === 'ex-admin' ) {
+		if ( isset( $this->old_status ) && 'ex-admin' === $this->old_status ) {
 			$status = $this->old_status;
 			unset( $this->old_status );
 		}
@@ -1351,7 +1351,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 		// Get the current User's Group status.
 		// For efficiency, we try first to look at the current Group object.
-		if ( isset( $bp->groups->current_group->id ) && $group_id == $bp->groups->current_group->id ) {
+		if ( isset( $bp->groups->current_group->id ) && (int) $group_id === (int) $bp->groups->current_group->id ) {
 
 			// It's tricky to walk through the Admin/Mod lists over and over, so let's format.
 			if ( empty( $bp->groups->current_group->adminlist ) ) {
@@ -1389,7 +1389,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		}
 
 		// Fall back to BuddyPress functions if not set.
-		if ( $user_group_status === false ) {
+		if ( false === $user_group_status ) {
 			if ( groups_is_user_admin( $user_id, $group_id ) ) {
 				$user_group_status = 'admin';
 			} elseif ( groups_is_user_mod( $user_id, $group_id ) ) {
@@ -1528,7 +1528,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		$user_id = username_exists( $user_name );
 
 		// If not, check against email address.
-		if ( ! $user_id && email_exists( $contact['email'] ) == false ) {
+		if ( ! $user_id && false === email_exists( $contact['email'] ) ) {
 
 			// Generate a random password.
 			$length = 12;
@@ -1615,12 +1615,12 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	public function civicrm_email_updated( $op, $object_name, $object_id, $object_ref ) {
 
 		// Target our operation.
-		if ( $op != 'create' ) {
+		if ( 'create' !== $op ) {
 			return;
 		}
 
 		// Target our object type.
-		if ( $object_name != 'Email' ) {
+		if ( 'Email' !== $object_name ) {
 			return;
 		}
 
@@ -1643,7 +1643,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		}
 
 		// Bail if this is not the same Contact as above.
-		if ( $object_ref->contact_id != $this->temp_contact['civi']['contact_id'] ) {
+		if ( (int) $object_ref->contact_id !== (int) $this->temp_contact['civi']['contact_id'] ) {
 			unset( $this->temp_contact );
 			return;
 		}

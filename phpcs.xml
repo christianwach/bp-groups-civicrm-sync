@@ -17,9 +17,6 @@
 		<!-- Ignore docblock formatting -->
 		<exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType" />
 
-		<!-- Yoda? Really? -->
-		<exclude name="WordPress.PHP.YodaConditions.NotYoda" />
-
 		<!-- Allow false for deprecated param -->
 		<exclude name="WordPress.WP.DeprecatedParameters.Load_plugin_textdomainParam2Found" />
 
@@ -35,7 +32,6 @@
 		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
 
 		<!-- Remove some checks to allow phpcbf to run in bulk mode -->
-		<exclude name="WordPress.PHP.StrictComparisons.LooseComparison" />
 		<exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict" />
 		<exclude name="Squiz.Commenting.InlineComment.NoSpaceBefore" />
 		<exclude name="Squiz.PHP.CommentedOutCode.Found" />

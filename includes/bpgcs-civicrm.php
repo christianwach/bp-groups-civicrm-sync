@@ -233,7 +233,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Create the CiviCRM Member Group.
 		$member_group = $this->group_create( $member_group_params );
-		if ( $member_group === false ) {
+		if ( false === $member_group ) {
 			$this->permissions_escalate_stop();
 			return false;
 		}
@@ -245,7 +245,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$acl_group = $this->group_create( $acl_group_params );
 
 		// Bail on failure.
-		if ( $acl_group === false ) {
+		if ( false === $acl_group ) {
 
 			// Clean up by deleting the Member Group.
 			$this->group_delete( $member_group['id'] );
@@ -266,7 +266,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Create ACL for the CiviCRM Groups.
 		$success = $this->acl->update_for_groups( $acl_group, $member_group );
-		if ( $success === false ) {
+		if ( false === $success ) {
 			$this->permissions_escalate_stop();
 			return false;
 		}
@@ -347,7 +347,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Update the CiviCRM Member Group.
 		$member_group = $this->group_update( $member_group_params );
-		if ( $member_group === false ) {
+		if ( false === $member_group ) {
 			$this->permissions_escalate_stop();
 			return false;
 		}
@@ -370,14 +370,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Update the CiviCRM ACL Group.
 		$acl_group = $this->group_update( $acl_group_params );
-		if ( $acl_group === false ) {
+		if ( false === $acl_group ) {
 			$this->permissions_escalate_stop();
 			return false;
 		}
 
 		// Update ACL for the CiviCRM Groups.
 		$success = $this->acl->update_for_groups( $acl_group, $member_group );
-		if ( $success === false ) {
+		if ( false === $success ) {
 			$this->permissions_escalate_stop();
 			return false;
 		}
@@ -675,7 +675,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		$group = $this->group_get_by_source( $source );
 
 		// Return early if found.
-		if ( $group !== false && is_array( $group ) ) {
+		if ( false !== $group && is_array( $group ) ) {
 			return (int) $group['id'];
 		}
 
@@ -686,7 +686,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			$group = $this->group_get_by_title( $title );
 
 			// Return Group ID if found.
-			if ( $group !== false && is_array( $group ) ) {
+			if ( false !== $group && is_array( $group ) ) {
 				return (int) $group['id'];
 			}
 
@@ -936,7 +936,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	public function group_type_array_get_by_type( $group_type ) {
 
 		// If 'member'.
-		if ( $group_type == 'member' ) {
+		if ( 'member' === $group_type ) {
 
 			/**
 			 * Filter the CiviCRM Group Type.
@@ -952,7 +952,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		}
 
 		// If 'acl'.
-		if ( $group_type == 'acl' ) {
+		if ( 'acl' === $group_type ) {
 
 			/**
 			 * Filter the CiviCRM Group Type.

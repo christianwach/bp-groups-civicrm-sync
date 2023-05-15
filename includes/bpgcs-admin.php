@@ -111,7 +111,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		$this->store_version();
 
 		// Add default settings option only if it does not exist.
-		if ( 'fgffgs' == get_option( 'bp_groups_civicrm_sync_settings', 'fgffgs' ) ) {
+		if ( 'fgffgs' === get_option( 'bp_groups_civicrm_sync_settings', 'fgffgs' ) ) {
 			add_option( 'bp_groups_civicrm_sync_settings', $this->settings_get_default() );
 		}
 
@@ -143,7 +143,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		$this->plugin_version = get_option( 'bp_groups_civicrm_sync_version', false );
 
 		// Upgrade version if needed.
-		if ( $this->plugin_version != BP_GROUPS_CIVICRM_SYNC_VERSION ) {
+		if ( BP_GROUPS_CIVICRM_SYNC_VERSION !== $this->plugin_version ) {
 			$this->store_version();
 		}
 
@@ -406,11 +406,11 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		$urls = $this->page_get_urls();
 
 		// Get our settings.
-		$parent_group = absint( $this->setting_get( 'parent_group' ) );
+		$parent_group = (int) $this->setting_get( 'parent_group' );
 
 		// Checked by default.
 		$checked = ' checked="checked"';
-		if ( isset( $parent_group ) && $parent_group === 0 ) {
+		if ( isset( $parent_group ) && 0 === $parent_group ) {
 			$checked = '';
 		}
 
@@ -684,12 +684,12 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		check_admin_referer( 'bp_groups_civicrm_sync_settings_action', 'bp_groups_civicrm_sync_nonce' );
 
 		// Get existing option.
-		$existing_parent_group = $this->setting_get( 'parent_group' );
+		$existing_parent_group = (int) $this->setting_get( 'parent_group' );
 
 		// Did we ask to enable Parent Group?
 		$settings_parent_group = 0;
 		if ( isset( $_POST['bp_groups_civicrm_sync_settings_parent_group'] ) ) {
-			$settings_parent_group = absint( $_POST['bp_groups_civicrm_sync_settings_parent_group'] );
+			$settings_parent_group = (int) $_POST['bp_groups_civicrm_sync_settings_parent_group'];
 		}
 
 		// Sanitise and set option.
@@ -713,10 +713,10 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		do_action( 'bpgcs/admin/settings/update/after' );
 
 		// Is the Parent Group setting changing?
-		if ( $existing_parent_group != $settings_parent_group ) {
+		if ( $existing_parent_group !== $settings_parent_group ) {
 
 			// Are we switching from "No Parent Group"?
-			if ( $existing_parent_group == 0 ) {
+			if ( 0 === $existing_parent_group ) {
 
 				// Create a Meta Group to hold all BuddyPress Groups.
 				$this->civicrm->meta_group->group_create();
@@ -828,15 +828,10 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * @param mixed $default The default value of the setting.
 	 * @return mixed $setting The value of the setting.
 	 */
-	public function setting_get( $setting_name = '', $default = false ) {
-
-		// Sanity check.
-		if ( $setting_name == '' ) {
-			wp_die( __( 'You must supply a setting to setting_get()', 'bp-groups-civicrm-sync' ) );
-		}
+	public function setting_get( $setting_name, $default = false ) {
 
 		// Get setting.
-		return ( array_key_exists( $setting_name, $this->settings ) ) ? $this->settings[ $setting_name ] : $default;
+		return array_key_exists( $setting_name, $this->settings ) ? $this->settings[ $setting_name ] : $default;
 
 	}
 
@@ -848,12 +843,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * @param str $setting_name The name of the setting.
 	 * @param mixed $value The value for the setting.
 	 */
-	public function setting_set( $setting_name = '', $value = '' ) {
-
-		// Sanity check.
-		if ( $setting_name == '' ) {
-			wp_die( __( 'You must supply a setting to setting_set()', 'bp-groups-civicrm-sync' ) );
-		}
+	public function setting_set( $setting_name, $value = '' ) {
 
 		// Set setting.
 		$this->settings[ $setting_name ] = $value;
@@ -893,13 +883,13 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// If this is an AJAX request, check security.
 		if ( wp_doing_ajax() ) {
 			$result = check_ajax_referer( 'bp_groups_civicrm_sync_bp_nonce', false, false );
-			if ( $result === false ) {
+			if ( false === $result ) {
 				wp_send_json( $data );
 			}
 		}
 
 		// If the Groups paging value doesn't exist.
-		if ( 'fgffgs' == get_option( '_bgcs_groups_page', 'fgffgs' ) ) {
+		if ( 'fgffgs' === get_option( '_bgcs_groups_page', 'fgffgs' ) ) {
 
 			// Start at the beginning.
 			$groups_page = 1;
@@ -953,7 +943,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 				);
 
 				// If we don't get an ID, create the CiviCRM Group(s).
-				if ( $member_group_id === false ) {
+				if ( false === $member_group_id ) {
 					$this->bp->civicrm_group_create( $group_id, null, $group );
 				} else {
 					$this->bp->civicrm_group_update( $group_id, $group );

@@ -178,7 +178,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 		$group = $this->civicrm->group_create( $params );
 
 		// Bail on failure.
-		if ( $group === false ) {
+		if ( false === $group ) {
 			return false;
 		}
 
@@ -232,7 +232,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 		// Get the ID of the CiviCRM Meta Group.
 		$source = $this->get_source();
 		$meta_group_id = $this->civicrm->group_id_find( $source );
-		if ( $meta_group_id === false ) {
+		if ( false === $meta_group_id ) {
 			return;
 		}
 
@@ -303,7 +303,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 		// Get the ID of the CiviCRM Meta Group.
 		$source = $this->get_source();
 		$meta_group_id = $this->civicrm->group_id_find( $source );
-		if ( $meta_group_id === false ) {
+		if ( false === $meta_group_id ) {
 			return;
 		}
 

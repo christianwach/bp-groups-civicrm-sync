@@ -187,7 +187,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		$this->unregister_hooks();
 
 		// Act based on operation type.
-		if ( $args['action'] == 'add' ) {
+		if ( 'add' === $args['action'] ) {
 
 			// Add the Contact to the Group.
 			$member_group_params['status'] = $args['is_active'] ? 'Added' : 'Pending';
@@ -238,7 +238,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		$this->unregister_hooks();
 
 		// Act based on action and BuddyPress Group status.
-		if ( $args['action'] === 'add' && $args['status'] !== 'ex-admin' ) {
+		if ( 'add' === $args['action'] && 'ex-admin' !== $args['status'] ) {
 
 			// Add to ACL Group.
 			$acl_group_params['status'] = $args['is_active'] ? 'Added' : 'Pending';
@@ -278,12 +278,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 	public function memberships_added( $op, $object_name, $group_id, $contact_ids ) {
 
 		// Target our operation.
-		if ( $op !== 'create' ) {
+		if ( 'create' !== $op ) {
 			return;
 		}
 
 		// Target our object type.
-		if ( $object_name !== 'GroupContact' ) {
+		if ( 'GroupContact' !== $object_name ) {
 			return;
 		}
 
@@ -294,13 +294,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 		// Get CiviCRM Group data.
 		$group = $this->civicrm->group_get_by_id( $group_id );
-		if ( $group === false ) {
+		if ( false === $group ) {
 			return;
 		}
 
 		// Get BuddyPress Group ID.
 		$bp_group_id = $this->bp->group_id_get_by_civicrm_group( $group );
-		if ( $bp_group_id === false ) {
+		if ( false === $bp_group_id ) {
 			return;
 		}
 
@@ -324,7 +324,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		 */
 
 		// Bail if this is a CiviCRM Member Group.
-		if ( $is_admin == 0 ) {
+		if ( 0 === $is_admin ) {
 			return;
 		}
 
@@ -379,12 +379,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 	public function memberships_deleted( $op, $object_name, $group_id, $contact_ids ) {
 
 		// Target our operation.
-		if ( $op !== 'delete' ) {
+		if ( 'delete' !== $op ) {
 			return;
 		}
 
 		// Target our object type.
-		if ( $object_name !== 'GroupContact' ) {
+		if ( 'GroupContact' !== $object_name ) {
 			return;
 		}
 
@@ -395,13 +395,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 		// Get CiviCRM Group data.
 		$group = $this->civicrm->group_get_by_id( $group_id );
-		if ( $group === false ) {
+		if ( false === $group ) {
 			return;
 		}
 
 		// Get BuddyPress Group ID.
 		$bp_group_id = $this->bp->group_id_get_by_civicrm_group( $group );
-		if ( $bp_group_id === false ) {
+		if ( false === $bp_group_id ) {
 			return;
 		}
 
@@ -469,12 +469,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 	public function memberships_rejoined( $op, $object_name, $group_id, $contact_ids ) {
 
 		// Target our operation.
-		if ( $op !== 'edit' ) {
+		if ( 'edit' !== $op ) {
 			return;
 		}
 
 		// Target our object type.
-		if ( $object_name !== 'GroupContact' ) {
+		if ( 'GroupContact' !== $object_name ) {
 			return;
 		}
 
@@ -670,12 +670,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 		// Skip if there is no existing Membership at all.
 		$existing = $this->membership_exists( $group_contact['group_id'], $group_contact['contact_id'] );
-		if ( $existing === false ) {
+		if ( false === $existing ) {
 			return true;
 		}
 
 		// Skip if there is already a "Removed" Membership.
-		if ( $existing['status'] === 'Removed' ) {
+		if ( 'Removed' === $existing['status'] ) {
 			return $existing;
 		}
 
