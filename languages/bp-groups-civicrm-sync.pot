@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the BP Groups CiviCRM Sync plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: BP Groups CiviCRM Sync 0.4.2a\n"
+"Project-Id-Version: BP Groups CiviCRM Sync 0.4.3a\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bp-groups-civicrm-sync\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-02-06T12:48:46+00:00\n"
+"POT-Creation-Date: 2023-05-15T13:20:36+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: bp-groups-civicrm-sync\n"
@@ -153,15 +153,7 @@ msgstr ""
 msgid "All done!"
 msgstr ""
 
-#: includes/bpgcs-admin.php:835
-msgid "You must supply a setting to setting_get()"
-msgstr ""
-
-#: includes/bpgcs-admin.php:855
-msgid "You must supply a setting to setting_set()"
-msgstr ""
-
-#. translators: 1: The opening strong tag, 2: The closing strong tag
+#. translators: 1: The opening anchor tag, 2: The closing anchor tag.
 #: includes/bpgcs-buddypress-bpgh.php:283
 msgid "Depending on your use case, select whether you want your CiviCRM Groups to be hierarchically organised in CiviCRM. If you do, then CiviCRM Groups will be nested under one another, mirroring the BuddyPress Group Hierarchy. Again, please refer to %1$sthe documentation%2$s to decide if this is useful to you or not."
 msgstr ""
@@ -213,31 +205,31 @@ msgstr ""
 msgid "No CiviCRM Contact ID could be found for WordPress User ID %d"
 msgstr ""
 
-#: includes/bpgcs-civicrm-group-admin.php:193
-#: includes/bpgcs-civicrm-group-admin.php:417
+#: includes/bpgcs-civicrm-group-admin.php:188
+#: includes/bpgcs-civicrm-group-admin.php:412
 msgid "BuddyPress Group Sync"
 msgstr ""
 
 #. translators: 1: The opening strong tag, 2: The closing strong tag
-#: includes/bpgcs-civicrm-group-admin.php:196
+#: includes/bpgcs-civicrm-group-admin.php:191
 msgid "%1$sNOTE:%2$s If you are going to create a BuddyPress Group, you only need to fill out the \"Group Title\" field (and optionally the \"Group Description\" field). The Group Type will be automatically set to \"Access Control\" and (if a container group has been specified) the Parent Group will be automatically assigned to the container group."
 msgstr ""
 
-#: includes/bpgcs-civicrm-group-admin.php:200
+#: includes/bpgcs-civicrm-group-admin.php:195
 msgid "Create a BuddyPress Group"
 msgstr ""
 
-#: includes/bpgcs-civicrm-group-admin.php:203
-#: includes/bpgcs-civicrm-group-admin.php:427
+#: includes/bpgcs-civicrm-group-admin.php:198
+#: includes/bpgcs-civicrm-group-admin.php:422
 msgid "Create BuddyPress Group"
 msgstr ""
 
 #. translators: 1: The opening strong tag, 2: The closing strong tag
-#: includes/bpgcs-civicrm-group-admin.php:420
+#: includes/bpgcs-civicrm-group-admin.php:415
 msgid "%1$sWARNING:%2$s You may wish to make sure your CiviCRM Contacts exist as WordPress Users before creating this group. CiviCRM Contacts that do not have a corresponding WordPress User will have one created for them. You will need to review roles for the new WordPress Users when this process is complete."
 msgstr ""
 
-#: includes/bpgcs-civicrm-group-admin.php:424
+#: includes/bpgcs-civicrm-group-admin.php:419
 msgid "Convert to BuddyPress Group"
 msgstr ""
 
