@@ -9,7 +9,7 @@
 **License:** GPLv2 or later<br/>
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
-**Please note:** this is the development repository for *BP Groups CiviCRM Sync*. The plugin is also available in [the WordPress Plugin Directory](http://wordpress.org/plugins/bp-groups-civicrm-sync/), which is the best place to get it from if you're not a developer.
+**Please note:** this is the development repository for *BP Groups CiviCRM Sync*. The plugin is also available in [the WordPress Plugin Directory](https://wordpress.org/plugins/bp-groups-civicrm-sync/), which is the best place to get it from if you're not a developer.
 
 The *BP Groups CiviCRM Sync* plugin provides two-way synchronisation between *CiviCRM* Groups and *BuddyPress* Groups. For each *BuddyPress* Group, the plugin will automatically create two *CiviCRM* Groups:
 

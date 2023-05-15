@@ -6,7 +6,7 @@ Requires at least: 4.9
 Tested up to: 6.2
 Stable tag: 0.4.3a
 License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
 Enables two-way synchronisation between BuddyPress groups and CiviCRM groups.
 
@@ -43,6 +43,10 @@ This plugin is in active development. For feature requests and bug reports (or i
 
 
 == Changelog ==
+
+= 0.4.3 =
+
+* Removes a possibly recursive CiviCRM initialisation call
 
 = 0.4.2 =
 

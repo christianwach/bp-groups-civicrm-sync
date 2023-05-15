@@ -277,7 +277,8 @@ class BP_Groups_CiviCRM_Sync {
 	 * Load translation files.
 	 *
 	 * A good reference on how to implement translation in WordPress:
-	 * http://ottopress.com/2012/internationalization-youre-probably-doing-it-wrong/
+	 *
+	 * @see http://ottopress.com/2012/internationalization-youre-probably-doing-it-wrong/
 	 *
 	 * @since 0.1
 	 */
