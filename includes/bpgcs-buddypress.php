@@ -1547,14 +1547,16 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 			 */
 			do_action( 'bp_groups_civicrm_sync_before_insert_user', $contact );
 
-			// Create the User.
-			$user_id = wp_insert_user( [
+			$user_args = [
 				'user_login' => $user_name,
 				'user_pass' => $random_password,
 				'user_email' => $contact['email'],
 				'first_name' => $contact['first_name'],
 				'last_name' => $contact['last_name'],
-			] );
+			];
+
+			// Create the User.
+			$user_id = wp_insert_user( $user_args );
 
 			// Is the email address empty?
 			if ( empty( $contact['email'] ) ) {
@@ -1668,11 +1670,14 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		 */
 		do_action( 'bp_groups_civicrm_sync_before_update_user', $this->temp_contact, $object_ref, $user_id );
 
-		// Update the WordPress User with this email address.
-		$user_id = wp_update_user( [
+		// Build args array.
+		$user_args = [
 			'ID' => $user_id,
 			'user_email' => $object_ref->email,
-		] );
+		];
+
+		// Update the WordPress User with this email address.
+		$user_id = wp_update_user( $user_args );
 
 		// Re-add filters.
 		$this->add_filters();

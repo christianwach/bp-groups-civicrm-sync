@@ -35,7 +35,6 @@
 		<exclude name="PSR2.ControlStructures.SwitchDeclaration.BodyOnNextLineCASE" />
 		<exclude name="WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase" />
 		<exclude name="Squiz.Commenting.InlineComment.SpacingAfterAtFunctionEnd" />
-		<exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect" />
 		<exclude name="WordPress.Security.EscapeOutput.OutputNotEscaped" />
 
 		<!-- Remove when error logging has been moved to a function -->
