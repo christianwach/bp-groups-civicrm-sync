@@ -279,7 +279,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_BPGH {
 
 		// Define text.
 		$text = sprintf(
-			/* translators: 1: The opening strong tag, 2: The closing strong tag */
+			/* translators: 1: The opening anchor tag, 2: The closing anchor tag. */
 			__( 'Depending on your use case, select whether you want your CiviCRM Groups to be hierarchically organised in CiviCRM. If you do, then CiviCRM Groups will be nested under one another, mirroring the BuddyPress Group Hierarchy. Again, please refer to %1$sthe documentation%2$s to decide if this is useful to you or not.', 'bp-groups-civicrm-sync' ),
 			'<a href="https://docs.civicrm.org/user/en/latest/organising-your-data/groups-and-tags/">',
 			'</a>'
