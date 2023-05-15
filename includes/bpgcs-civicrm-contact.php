@@ -136,7 +136,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 		// Get the Contacts with the given IDs.
 		$params = [
 			'version' => 3,
-			'id' => [
+			'id'      => [
 				'IN' => $contact_ids,
 			],
 			'options' => [
@@ -153,9 +153,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 				$e = new Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -233,9 +233,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 				$e = new \Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'error' => $error,
-					'user' => $user,
+					'method'    => __METHOD__,
+					'error'     => $error,
+					'user'      => $user,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -276,9 +276,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 
 		// Construct params.
 		$params = [
-			'version' => 3,
-			'uf_id' => $user_id,
-			'uf_name' => $username,
+			'version'    => 3,
+			'uf_id'      => $user_id,
+			'uf_name'    => $username,
 			'contact_id' => $contact_id,
 		];
 
@@ -296,9 +296,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 				$e = new Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -333,7 +333,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 
 		// Get all Contact data.
 		$params = [
-			'version' => 3,
+			'version'    => 3,
 			'contact_id' => $contact_id,
 		];
 
@@ -346,9 +346,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 				$e = new Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}

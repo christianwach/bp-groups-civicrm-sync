@@ -263,7 +263,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		// Get all Contacts in this Group.
 		$params = [
 			'version' => 3,
-			'group' => $group->id,
+			'group'   => $group->id,
 		];
 
 		// Use API to get Members.
@@ -291,7 +291,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		// Get all Contacts in this Group.
 		$params = [
 			'version' => 3,
-			'group' => $civicrm_group_id,
+			'group'   => $civicrm_group_id,
 		];
 
 		// Use API to get Members.
@@ -313,7 +313,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		// Define CiviCRM ACL Group.
 		$acl_group_params = [
 			'version' => 3,
-			'id' => $civicrm_group->id,
+			'id'      => $civicrm_group->id,
 		];
 
 		// Get name for the CiviCRM Group.
@@ -329,7 +329,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 			$e = new \Exception();
 			$trace = $e->getTraceAsString();
 			error_log( print_r( [
-				'method' => __METHOD__,
+				'method'    => __METHOD__,
 				'acl_group' => $acl_group,
 				'backtrace' => $trace,
 			], true ) );
@@ -342,7 +342,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		// Define CiviCRM Group.
 		$member_group_params = [
 			'version' => 3,
-			'id' => $civicrm_group_id,
+			'id'      => $civicrm_group_id,
 		];
 
 		// Get name for the CiviCRM Group.
@@ -358,9 +358,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 			$e = new \Exception();
 			$trace = $e->getTraceAsString();
 			error_log( print_r( [
-				'method' => __METHOD__,
+				'method'       => __METHOD__,
 				'member_group' => $member_group,
-				'backtrace' => $trace,
+				'backtrace'    => $trace,
 			], true ) );
 
 			// Bail.
@@ -530,7 +530,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		// Get all Contacts in this Group.
 		$params = [
 			'version' => 3,
-			'group' => $group->id,
+			'group'   => $group->id,
 		];
 
 		// Use API to get Members.
@@ -555,7 +555,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		// Get all Contacts in this Group.
 		$params = [
 			'version' => 3,
-			'group' => $civicrm_group_id,
+			'group'   => $civicrm_group_id,
 		];
 
 		// Use API to get Members.
@@ -577,7 +577,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		// Define CiviCRM ACL Group.
 		$acl_group_params = [
 			'version' => 3,
-			'id' => $civicrm_group->id,
+			'id'      => $civicrm_group->id,
 		];
 
 		// Get name for the CiviCRM Group.
@@ -593,7 +593,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 			$e = new \Exception();
 			$trace = $e->getTraceAsString();
 			error_log( print_r( [
-				'method' => __METHOD__,
+				'method'    => __METHOD__,
 				'acl_group' => $acl_group,
 				'backtrace' => $trace,
 			], true ) );
@@ -606,7 +606,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		// Define CiviCRM Group.
 		$member_group_params = [
 			'version' => 3,
-			'id' => $civicrm_group_id,
+			'id'      => $civicrm_group_id,
 		];
 
 		// Get name for the CiviCRM Group.
@@ -622,9 +622,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 			$e = new \Exception();
 			$trace = $e->getTraceAsString();
 			error_log( print_r( [
-				'method' => __METHOD__,
+				'method'       => __METHOD__,
 				'member_group' => $member_group,
-				'backtrace' => $trace,
+				'backtrace'    => $trace,
 			], true ) );
 
 			// Bail.
@@ -681,7 +681,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		// Define params.
 		$params = [
 			'version' => 3,
-			'source' => [
+			'source'  => [
 				'LIKE' => '%OG Sync Group%',
 			],
 		];
@@ -695,9 +695,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 				$e = new Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}

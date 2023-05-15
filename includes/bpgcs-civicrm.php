@@ -261,7 +261,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Populate return array.
 		$group_ids = [
 			'member_group_id' => $member_group['id'],
-			'acl_group_id' => $acl_group['id'],
+			'acl_group_id'    => $acl_group['id'],
 		];
 
 		// Create ACL for the CiviCRM Groups.
@@ -276,10 +276,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Add the creator to the Groups.
 		$args = [
-			'action' => 'add',
-			'group_id' => $bp_group->id,
-			'user_id' => $bp_group->creator_id,
-			'status' => 'admin',
+			'action'    => 'add',
+			'group_id'  => $bp_group->id,
+			'user_id'   => $bp_group->creator_id,
+			'status'    => 'admin',
 			'is_active' => 1,
 		];
 
@@ -467,9 +467,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				$e = new Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -518,7 +518,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Build params to create Group.
 		$params = [
 			'version' => 3,
-			'debug' => 1,
+			'debug'   => 1,
 		] + $group;
 
 		// Call the CiviCRM API.
@@ -530,9 +530,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				$e = new Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -571,9 +571,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				$e = new \Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'message' => __( 'An ID must be present to update a Group.', 'bp-groups-civicrm-sync' ),
-					'group' => $group,
+					'method'    => __METHOD__,
+					'message'   => __( 'An ID must be present to update a Group.', 'bp-groups-civicrm-sync' ),
+					'group'     => $group,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -609,8 +609,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				$e = new \Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'message' => __( 'An ID must be present to delete a Group.', 'bp-groups-civicrm-sync' ),
+					'method'    => __METHOD__,
+					'message'   => __( 'An ID must be present to delete a Group.', 'bp-groups-civicrm-sync' ),
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -620,7 +620,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Build params to delete Group.
 		$params = [
 			'version' => 3,
-			'id' => $group_id,
+			'id'      => $group_id,
 		];
 
 		// Call the CiviCRM API.
@@ -632,9 +632,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				$e = new Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -718,7 +718,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Define params to get the Group data.
 		$params = [
-			'version' => 3,
+			'version'  => 3,
 			'group_id' => $group_id,
 		];
 
@@ -731,9 +731,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				$e = new Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -774,7 +774,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Define params to get the Group data.
 		$params = [
 			'version' => 3,
-			'source' => $source,
+			'source'  => $source,
 		];
 
 		// Get Group.
@@ -786,9 +786,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				$e = new Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -806,10 +806,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				$e = new Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'message' => __( 'There are multiple groups with the same "sync name".', 'bp-groups-civicrm-sync' ),
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'message'   => __( 'There are multiple groups with the same "sync name".', 'bp-groups-civicrm-sync' ),
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -845,7 +845,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		// Define params to get the Group data.
 		$params = [
 			'version' => 3,
-			'title' => $title,
+			'title'   => $title,
 		];
 
 		// Get Group.
@@ -857,9 +857,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				$e = new Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -877,10 +877,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 				$e = new Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'message' => __( 'There are mulitple groups with the same title.', 'bp-groups-civicrm-sync' ),
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'message'   => __( 'There are mulitple groups with the same title.', 'bp-groups-civicrm-sync' ),
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -1036,9 +1036,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Init params with BuddyPress data.
 		$params = [
-			'title' => stripslashes( $bp_group->name ),
+			'title'       => stripslashes( $bp_group->name ),
 			'description' => stripslashes( $bp_group->description ),
-			'is_active' => 1,
+			'is_active'   => 1,
 		];
 
 		// Get name for the CiviCRM Group.
@@ -1116,9 +1116,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Init params with BuddyPress data.
 		$params = [
-			'title' => $title,
+			'title'       => $title,
 			'description' => stripslashes( $bp_group->description ),
-			'is_active' => 1,
+			'is_active'   => 1,
 		];
 
 		// Get the "sync name" for the CiviCRM ACL Group.

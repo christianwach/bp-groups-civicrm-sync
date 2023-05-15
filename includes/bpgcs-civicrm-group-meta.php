@@ -162,10 +162,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 
 		// Define Group.
 		$params = [
-			'name' => __( 'BuddyPress Groups', 'bp-groups-civicrm-sync' ),
-			'title' => __( 'BuddyPress Groups', 'bp-groups-civicrm-sync' ),
+			'name'        => __( 'BuddyPress Groups', 'bp-groups-civicrm-sync' ),
+			'title'       => __( 'BuddyPress Groups', 'bp-groups-civicrm-sync' ),
 			'description' => __( 'Container for all BuddyPress Groups.', 'bp-groups-civicrm-sync' ),
-			'is_active' => 1,
+			'is_active'   => 1,
 		];
 
 		// Set inscrutable Group Type (Access Control).

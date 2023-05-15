@@ -451,10 +451,10 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 		// Init with unlikely per_page value so we get all.
 		$params = [
-			'type' => 'alphabetical',
-			'per_page' => 100000,
+			'type'            => 'alphabetical',
+			'per_page'        => 100000,
 			'populate_extras' => true,
-			'show_hidden' => true,
+			'show_hidden'     => true,
 		];
 
 		// Query with our params.
@@ -514,11 +514,11 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		 */
 		$args = [
 			// Group ID is not passed so that we create a Group.
-			'creator_id' => $creator_id,
-			'name' => $title,
-			'description' => $description,
-			'slug' => groups_check_slug( sanitize_title( esc_attr( $title ) ) ),
-			'status' => 'public',
+			'creator_id'   => $creator_id,
+			'name'         => $title,
+			'description'  => $description,
+			'slug'         => groups_check_slug( sanitize_title( esc_attr( $title ) ) ),
+			'status'       => 'public',
 			'enable_forum' => 0,
 			'date_created' => $time,
 		];
@@ -568,8 +568,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		// Params to get all Group Members.
 		$params = [
 			'exclude_admins_mods' => 0,
-			'per_page' => 1000000,
-			'group_id' => $group_id,
+			'per_page'            => 1000000,
+			'group_id'            => $group_id,
 		];
 
 		// Query Group Members.
@@ -1158,10 +1158,10 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 		// Update Membership of CiviCRM Group.
 		$args = [
-			'action' => 'add',
-			'group_id' => $group_id,
-			'user_id' => $user_id,
-			'status' => $status,
+			'action'    => 'add',
+			'group_id'  => $group_id,
+			'user_id'   => $user_id,
+			'status'    => $status,
 			'is_active' => $is_active,
 		];
 
@@ -1277,10 +1277,10 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 		// Update Membership of CiviCRM Groups.
 		$args = [
-			'action' => 'add',
-			'group_id' => $group_id,
-			'user_id' => $user_id,
-			'status' => $status,
+			'action'    => 'add',
+			'group_id'  => $group_id,
+			'user_id'   => $user_id,
+			'status'    => $status,
 			'is_active' => $is_active,
 		];
 
@@ -1309,10 +1309,10 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 		// Remove Membership of CiviCRM Groups.
 		$args = [
-			'action' => 'delete',
-			'group_id' => $group_id,
-			'user_id' => $user_id,
-			'status' => $status,
+			'action'    => 'delete',
+			'group_id'  => $group_id,
+			'user_id'   => $user_id,
+			'status'    => $status,
 			'is_active' => 0,
 		];
 
@@ -1549,10 +1549,10 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 			$user_args = [
 				'user_login' => $user_name,
-				'user_pass' => $random_password,
+				'user_pass'  => $random_password,
 				'user_email' => $contact['email'],
 				'first_name' => $contact['first_name'],
-				'last_name' => $contact['last_name'],
+				'last_name'  => $contact['last_name'],
 			];
 
 			// Create the User.
@@ -1563,7 +1563,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 				// Store this Contact temporarily.
 				$this->temp_contact = [
-					'civi' => $contact,
+					'civi'    => $contact,
 					'user_id' => $user_id,
 				];
 
@@ -1672,7 +1672,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 		// Build args array.
 		$user_args = [
-			'ID' => $user_id,
+			'ID'         => $user_id,
 			'user_email' => $object_ref->email,
 		];
 

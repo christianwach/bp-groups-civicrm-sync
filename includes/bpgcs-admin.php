@@ -361,8 +361,8 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		// Add a tab - we can add more later.
 		$screen->add_help_tab( [
-			'id' => 'bpgcs-help',
-			'title' => __( 'BP Groups CiviCRM Sync', 'bp-groups-civicrm-sync' ),
+			'id'      => 'bpgcs-help',
+			'title'   => __( 'BP Groups CiviCRM Sync', 'bp-groups-civicrm-sync' ),
 			'content' => $this->admin_help_text(),
 		] );
 
@@ -484,22 +484,22 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		// Init localisation.
 		$localisation = [
-			'total' => __( '{{total}} groups to sync...', 'bp-groups-civicrm-sync' ),
-			'current' => __( 'Processing group "{{name}}"', 'bp-groups-civicrm-sync' ),
+			'total'    => __( '{{total}} groups to sync...', 'bp-groups-civicrm-sync' ),
+			'current'  => __( 'Processing group "{{name}}"', 'bp-groups-civicrm-sync' ),
 			'complete' => __( 'Processing group "{{name}}" complete', 'bp-groups-civicrm-sync' ),
-			'done' => __( 'All done!', 'bp-groups-civicrm-sync' ),
+			'done'     => __( 'All done!', 'bp-groups-civicrm-sync' ),
 		];
 
 		// Init settings.
 		$settings = [
-			'ajax_url' => admin_url( 'admin-ajax.php' ),
+			'ajax_url'     => admin_url( 'admin-ajax.php' ),
 			'total_groups' => groups_get_total_group_count(),
 		];
 
 		// Localisation array.
 		$vars = [
 			'localisation' => $localisation,
-			'settings' => $settings,
+			'settings'     => $settings,
 		];
 
 		// Localise the WordPress way.
@@ -903,11 +903,11 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		}
 
 		$group_params = [
-			'type' => 'alphabetical',
-			'page' => $groups_page,
-			'per_page' => 1,
+			'type'            => 'alphabetical',
+			'page'            => $groups_page,
+			'per_page'        => 1,
 			'populate_extras' => true,
-			'show_hidden' => true,
+			'show_hidden'     => true,
 		];
 
 		// Query with our params.
@@ -954,9 +954,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 				$member_params = [
 					'exclude_admins_mods' => 0,
-					'page' => $members_page,
-					'per_page' => 20,
-					'group_id' => $group_id,
+					'page'                => $members_page,
+					'per_page'            => 20,
+					'group_id'            => $group_id,
 				];
 
 				// Query with our params.

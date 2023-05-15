@@ -180,7 +180,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		// Params to update the Group Contact for the CiviCRM Member Group.
 		$member_group_params = [
 			'contact_id' => $contact_id,
-			'group_id' => $member_group_id,
+			'group_id'   => $member_group_id,
 		];
 
 		// Remove callbacks to prevent recursion.
@@ -231,7 +231,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		// Define params.
 		$acl_group_params = [
 			'contact_id' => $contact_id,
-			'group_id' => $acl_group_id,
+			'group_id'   => $acl_group_id,
 		];
 
 		// Remove callbacks to prevent recursion.
@@ -350,9 +350,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		// Add Contacts to CiviCRM Member Group.
 		foreach ( $contacts as $contact ) {
 			$group_contact = [
-				'group_id' => $member_group_id,
+				'group_id'   => $member_group_id,
 				'contact_id' => $contact['contact_id'],
-				'status' => 'Added',
+				'status'     => 'Added',
 			];
 			$this->membership_create( $group_contact );
 		}
@@ -439,7 +439,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		// Remove Members from CiviCRM ACL Group.
 		foreach ( $contacts as $contact ) {
 			$group_params = [
-				'group_id' => $acl_group_id,
+				'group_id'   => $acl_group_id,
 				'contact_id' => $contact['contact_id'],
 			];
 			$group_contact = $this->membership_delete( $group_params );
@@ -559,10 +559,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 		// Init API params.
 		$params = [
-			'version' => 3,
+			'version'    => 3,
 			'contact_id' => $contact_id,
-			'group_id' => $group_id,
-			'status' => $status,
+			'group_id'   => $group_id,
+			'status'     => $status,
 		];
 
 		// Call CiviCRM API.
@@ -574,9 +574,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 				$e = new \Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -626,9 +626,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 				$e = new \Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}

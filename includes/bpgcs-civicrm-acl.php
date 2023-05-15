@@ -114,8 +114,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 		// Define params to create an "ACL Role".
 		$params = [
 			'description' => $acl_group['source'],
-			'label' => $acl_group['title'],
-			'is_active' => 1,
+			'label'       => $acl_group['title'],
+			'is_active'   => 1,
 		];
 
 		// Create the "ACL Role".
@@ -126,9 +126,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 		// Define params to create an "ACL Entity Role".
 		$params = [
-			'entity_id' => $acl_group['id'],
+			'entity_id'   => $acl_group['id'],
 			'acl_role_id' => $acl_role['value'],
-			'is_active' => 1,
+			'is_active'   => 1,
 		];
 
 		// Create the "ACL Entity Role".
@@ -149,7 +149,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 			'object_id' => $member_group['id'],
 			'entity_id' => $acl_role['value'],
 			'operation' => 'Edit',
-			'name' => $name,
+			'name'      => $name,
 			'is_active' => 1,
 		];
 
@@ -192,8 +192,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 			// Define params to create an "ACL Role".
 			$params = [
 				'description' => $acl_group['source'],
-				'label' => $acl_group['title'],
-				'is_active' => 1,
+				'label'       => $acl_group['title'],
+				'is_active'   => 1,
 			];
 
 			// Create the "ACL Role".
@@ -203,7 +203,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 			// Only the ACL Role "Label" needs to change.
 			$params = [
-				'id' => $existing_acl_role['id'],
+				'id'    => $existing_acl_role['id'],
 				'label' => $acl_group['title'],
 			];
 
@@ -241,9 +241,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 			// Define params to create an "ACL Entity Role".
 			$params = [
-				'entity_id' => $acl_group['id'],
+				'entity_id'   => $acl_group['id'],
 				'acl_role_id' => $acl_role['value'],
-				'is_active' => 1,
+				'is_active'   => 1,
 			];
 
 			// Create the "ACL Entity Role".
@@ -269,9 +269,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 				// Define params to create an "ACL Entity Role".
 				$params = [
-					'entity_id' => $acl_group['id'],
+					'entity_id'   => $acl_group['id'],
 					'acl_role_id' => $acl_role['value'],
-					'is_active' => 1,
+					'is_active'   => 1,
 				];
 
 				// Create the "ACL Entity Role".
@@ -328,7 +328,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 				'object_id' => $member_group['id'],
 				'entity_id' => $acl_role['value'],
 				'operation' => 'Edit',
-				'name' => $name,
+				'name'      => $name,
 				'is_active' => 1,
 			];
 
@@ -339,7 +339,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 			// Only the ACL "Name" needs to change.
 			$params = [
-				'id' => $existing_acl['id'],
+				'id'   => $existing_acl['id'],
 				'name' => $name,
 			];
 
@@ -429,9 +429,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 		// Build params to get ACL Role.
 		$params = [
-			'version' => 3,
+			'version'         => 3,
 			'option_group_id' => $option_group['id'],
-			'description' => $source,
+			'description'     => $source,
 		];
 
 		// Call the CiviCRM API.
@@ -443,9 +443,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 				$e = new Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -494,7 +494,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 		// Build params to create ACL Role.
 		$params = [
-			'version' => 3,
+			'version'         => 3,
 			'option_group_id' => $option_group['id'],
 		] + $acl_role;
 
@@ -507,9 +507,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 				$e = new Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -548,9 +548,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 				$e = new \Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'message' => __( 'An ID must be present to update an ACL Role.', 'bp-groups-civicrm-sync' ),
-					'acl_role' => $acl_role,
+					'method'    => __METHOD__,
+					'message'   => __( 'An ID must be present to update an ACL Role.', 'bp-groups-civicrm-sync' ),
+					'acl_role'  => $acl_role,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -586,8 +586,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 				$e = new \Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'message' => __( 'An ID must be present to delete an ACL Role.', 'bp-groups-civicrm-sync' ),
+					'method'    => __METHOD__,
+					'message'   => __( 'An ID must be present to delete an ACL Role.', 'bp-groups-civicrm-sync' ),
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -597,7 +597,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 		// Build params to delete ACL Role.
 		$params = [
 			'version' => 3,
-			'id' => $acl_role_id,
+			'id'      => $acl_role_id,
 		];
 
 		// Call the CiviCRM API.
@@ -609,9 +609,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 				$e = new Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -664,7 +664,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 			// Build params to get ACL Entity Role.
 			$params = [
-				'limit' => 0,
+				'limit'            => 0,
 				'checkPermissions' => false,
 			];
 			$params['where'] = [
@@ -702,10 +702,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 			// Build array of results.
 			$acl_entity_role_data = [
-				'id' => $dao->id,
-				'acl_role_id' => $dao->acl_role_id,
+				'id'           => $dao->id,
+				'acl_role_id'  => $dao->acl_role_id,
 				'entity_table' => 'civicrm_group',
-				'entity_id' => $dao->entity_id,
+				'entity_id'    => $dao->entity_id,
 			];
 
 		}
@@ -743,7 +743,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 			// Build params to get ACL Entity Role.
 			$params = [
-				'limit' => 0,
+				'limit'            => 0,
 				'checkPermissions' => false,
 			];
 			$params['where'] = [
@@ -779,10 +779,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 				$acl_entity_role_data = [];
 				while ( $dao->fetch() ) {
 					$acl_entity_role_data[] = [
-						'id' => $dao->id,
-						'acl_role_id' => $dao->acl_role_id,
+						'id'           => $dao->id,
+						'acl_role_id'  => $dao->acl_role_id,
 						'entity_table' => 'civicrm_group',
-						'entity_id' => $dao->entity_id,
+						'entity_id'    => $dao->entity_id,
 					];
 				}
 			}
@@ -872,11 +872,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 			// Build array of results.
 			$acl_entity_role_data = [
-				'id' => $dao->id,
-				'acl_role_id' => $acl_entity_role['acl_role_id'],
+				'id'           => $dao->id,
+				'acl_role_id'  => $acl_entity_role['acl_role_id'],
 				'entity_table' => 'civicrm_group',
-				'entity_id' => $acl_entity_role['entity_id'],
-				'is_active' => 1,
+				'entity_id'    => $acl_entity_role['entity_id'],
+				'is_active'    => 1,
 			];
 
 		}
@@ -905,10 +905,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 				$e = new \Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'message' => __( 'An ID must be present to update an ACL Entity Role.', 'bp-groups-civicrm-sync' ),
+					'method'          => __METHOD__,
+					'message'         => __( 'An ID must be present to update an ACL Entity Role.', 'bp-groups-civicrm-sync' ),
 					'acl_entity_role' => $acl_entity_role,
-					'backtrace' => $trace,
+					'backtrace'       => $trace,
 				], true ) );
 			}
 			return false;
@@ -943,8 +943,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 				$e = new \Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'message' => __( 'An ID must be present to delete an ACL Entity Role.', 'bp-groups-civicrm-sync' ),
+					'method'    => __METHOD__,
+					'message'   => __( 'An ID must be present to delete an ACL Entity Role.', 'bp-groups-civicrm-sync' ),
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -954,7 +954,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 		// Build params to delete ACL Entity Role.
 		$params = [
 			'version' => 3,
-			'id' => $acl_entity_role_id,
+			'id'      => $acl_entity_role_id,
 		];
 
 		// Call the CiviCRM API.
@@ -966,9 +966,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 				$e = new Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -1006,11 +1006,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 		// Build params to get ACL.
 		$params = [
-			'version' => 3,
+			'version'      => 3,
 			'object_table' => 'civicrm_saved_search',
-			'object_id' => $member_group_id,
+			'object_id'    => $member_group_id,
 			'entity_table' => 'civicrm_acl_role',
-			'entity_id' => $acl_role_id,
+			'entity_id'    => $acl_role_id,
 		];
 
 		// Call the CiviCRM API.
@@ -1022,9 +1022,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 				$e = new Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -1064,7 +1064,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 		// Build params to create ACL.
 		$params = [
-			'version' => 3,
+			'version'      => 3,
 			'object_table' => 'civicrm_saved_search',
 			'entity_table' => 'civicrm_acl_role',
 		] + $acl;
@@ -1078,9 +1078,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 				$e = new Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -1119,9 +1119,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 				$e = new \Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'message' => __( 'An ID must be present to update an ACL.', 'bp-groups-civicrm-sync' ),
-					'acl' => $acl,
+					'method'    => __METHOD__,
+					'message'   => __( 'An ID must be present to update an ACL.', 'bp-groups-civicrm-sync' ),
+					'acl'       => $acl,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -1157,8 +1157,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 				$e = new \Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'message' => __( 'An ID must be present to delete an ACL.', 'bp-groups-civicrm-sync' ),
+					'method'    => __METHOD__,
+					'message'   => __( 'An ID must be present to delete an ACL.', 'bp-groups-civicrm-sync' ),
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -1168,7 +1168,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 		// Build params to delete ACL.
 		$params = [
 			'version' => 3,
-			'id' => $acl_id,
+			'id'      => $acl_id,
 		];
 
 		// Call the CiviCRM API.
@@ -1180,9 +1180,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 				$e = new Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -1226,7 +1226,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 		// Define query params.
 		$params = [
 			'version' => 3,
-			'name' => $name,
+			'name'    => $name,
 		];
 
 		// Call the CiviCRM API.
@@ -1238,9 +1238,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 				$e = new Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}

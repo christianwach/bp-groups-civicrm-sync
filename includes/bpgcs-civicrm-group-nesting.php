@@ -136,9 +136,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 
 		// Define params to get existing Group Nesting.
 		$params = [
-			'version' => 3,
+			'version'         => 3,
 			'parent_group_id' => $parent_id,
-			'child_group_id' => $group_id,
+			'child_group_id'  => $group_id,
 		];
 
 		// Get existing Group Nesting.
@@ -150,9 +150,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 				$e = new Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -199,8 +199,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 
 		// Define new Group Nesting.
 		$params = [
-			'version' => 3,
-			'child_group_id' => $group_id,
+			'version'         => 3,
+			'child_group_id'  => $group_id,
 			'parent_group_id' => $parent_id,
 		];
 
@@ -213,9 +213,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 				$e = new \Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}
@@ -381,7 +381,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 		// Construct params to delete Group Nesting.
 		$params = [
 			'version' => 3,
-			'id' => $existing['id'],
+			'id'      => $existing['id'],
 		];
 
 		// Call the CiviCRM API.
@@ -393,9 +393,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 				$e = new \Exception();
 				$trace = $e->getTraceAsString();
 				error_log( print_r( [
-					'method' => __METHOD__,
-					'params' => $params,
-					'result' => $result,
+					'method'    => __METHOD__,
+					'params'    => $params,
+					'result'    => $result,
 					'backtrace' => $trace,
 				], true ) );
 			}
