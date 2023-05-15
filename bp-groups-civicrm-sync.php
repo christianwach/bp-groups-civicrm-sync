@@ -9,7 +9,6 @@
  * Author URI: https://haystack.co.uk
  * Text Domain: bp-groups-civicrm-sync
  * Domain Path: /languages
- * Depends: CiviCRM
  *
  * @package BP_Groups_CiviCRM_Sync
  */
