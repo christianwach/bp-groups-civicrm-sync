@@ -557,7 +557,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * @since 0.1
 	 *
 	 * @param string $menu_slug The slug name to refer to this menu by - should be unique for this menu.
-	 * @param bool $echo Whether or not to echo the url - default is true.
+	 * @param bool   $echo Whether or not to echo the url - default is true.
 	 * @return string $url The URL.
 	 */
 	public function network_menu_page_url( $menu_slug, $echo = true ) {
@@ -824,7 +824,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 *
-	 * @param str $setting_name The name of the setting.
+	 * @param str   $setting_name The name of the setting.
 	 * @param mixed $default The default value of the setting.
 	 * @return mixed $setting The value of the setting.
 	 */
@@ -840,7 +840,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 *
-	 * @param str $setting_name The name of the setting.
+	 * @param str   $setting_name The name of the setting.
 	 * @param mixed $value The value for the setting.
 	 */
 	public function setting_set( $setting_name, $value = '' ) {

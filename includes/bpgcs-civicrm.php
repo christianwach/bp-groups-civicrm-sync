@@ -1176,7 +1176,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 *
 	 * @since 0.4
 	 *
-	 * @param str $permission The requested permission.
+	 * @param str  $permission The requested permission.
 	 * @param bool $granted True if permission granted, false otherwise.
 	 */
 	public function permissions_grant( $permission, &$granted ) {

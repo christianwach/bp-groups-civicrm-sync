@@ -330,7 +330,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 	 *
 	 * @since 0.4
 	 *
-	 * @param integer $group_id The numeric ID of the CiviCRM Group.
+	 * @param integer              $group_id The numeric ID of the CiviCRM Group.
 	 * @param array|string|integer $parent_ids The parent CiviCRM Group IDs.
 	 */
 	public function nesting_clear( $group_id, $parent_ids ) {
@@ -414,7 +414,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 	 * @since 0.4 Moved to this class.
 	 *
 	 * @param integer $bp_parent_id The numeric ID of the parent BuddyPress Group.
-	 * @param string $group_type The CiviCRM Group Type - 'member' or 'acl'.
+	 * @param string  $group_type The CiviCRM Group Type - 'member' or 'acl'.
 	 * @return int|bool $civicrm_parent_id The ID of the parent CiviCRM Group, false otherwise.
 	 */
 	public function parent_id_get( $bp_parent_id, $group_type ) {

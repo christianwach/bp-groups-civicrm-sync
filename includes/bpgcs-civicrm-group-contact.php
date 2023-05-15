@@ -270,10 +270,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 	 * @since 0.1
 	 * @since 0.4 Moved to this class and renamed.
 	 *
-	 * @param string $op The type of database operation.
-	 * @param string $object_name The type of object.
+	 * @param string  $op The type of database operation.
+	 * @param string  $object_name The type of object.
 	 * @param integer $group_id The ID of the CiviCRM Group.
-	 * @param array $contact_ids The array of CiviCRM Contact IDs.
+	 * @param array   $contact_ids The array of CiviCRM Contact IDs.
 	 */
 	public function memberships_added( $op, $object_name, $group_id, $contact_ids ) {
 
@@ -371,10 +371,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 	 * @since 0.1
 	 * @since 0.4 Moved to this class and renamed.
 	 *
-	 * @param string $op The type of database operation.
-	 * @param string $object_name The type of object.
+	 * @param string  $op The type of database operation.
+	 * @param string  $object_name The type of object.
 	 * @param integer $group_id The ID of the CiviCRM Group.
-	 * @param array $contact_ids Array of CiviCRM Contact IDs.
+	 * @param array   $contact_ids Array of CiviCRM Contact IDs.
 	 */
 	public function memberships_deleted( $op, $object_name, $group_id, $contact_ids ) {
 
@@ -461,10 +461,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 	 * @since 0.1
 	 * @since 0.4 Moved to this class and renamed.
 	 *
-	 * @param string $op The type of database operation.
-	 * @param string $object_name The type of object.
+	 * @param string  $op The type of database operation.
+	 * @param string  $object_name The type of object.
 	 * @param integer $group_id The ID of the CiviCRM Group.
-	 * @param array $contact_ids Array of CiviCRM Contact IDs.
+	 * @param array   $contact_ids Array of CiviCRM Contact IDs.
 	 */
 	public function memberships_rejoined( $op, $object_name, $group_id, $contact_ids ) {
 
@@ -544,7 +544,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 	 *
 	 * @param integer $group_id The numeric ID of the CiviCRM Group.
 	 * @param integer $contact_id The numeric ID of the CiviCRM Contact.
-	 * @param string $status The status of the CiviCRM Group Contact.
+	 * @param string  $status The status of the CiviCRM Group Contact.
 	 * @return array|bool $group_contact The Group Contact data, false otherwise.
 	 */
 	public function membership_get_by_status( $group_id, $contact_id, $status ) {

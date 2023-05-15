@@ -258,7 +258,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 	 *
 	 * @param integer $contact_id The numeric ID of the CiviCRM Contact.
 	 * @param integer $user_id The numeric ID of the WordPress User.
-	 * @param str $username The WordPress username.
+	 * @param str     $username The WordPress username.
 	 * @param integer $domain_id The CiviCRM Domain ID (defaults to current Domain ID).
 	 * @return array|bool The UFMatch data on success, or false on failure.
 	 */

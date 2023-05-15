@@ -293,7 +293,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @param int    $group_id The numeric ID of the BuddyPress Group.
 	 * @param object $first_member WordPress User object.
 	 * @param object $group The BuddyPress Group object.
 	 */
@@ -414,7 +414,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.4
 	 *
-	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @param int   $group_id The numeric ID of the BuddyPress Group.
 	 * @param array $civicrm_groups The array of Synced CiviCRM Group IDs.
 	 */
 	public function civicrm_groups_set( $group_id, $civicrm_groups ) {
@@ -480,7 +480,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @param string $title The title of the BuddyPress Group.
 	 * @param string $description The description of the BuddyPress Group.
-	 * @param int $creator_id The numeric ID of the WordPress User.
+	 * @param int    $creator_id The numeric ID of the WordPress User.
 	 * @return int|bool $group_id The ID of the new BuddyPress Group, false otherwise.
 	 */
 	public function group_create( $title, $description, $creator_id = null ) {
@@ -593,8 +593,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BuddyPress Group.
-	 * @param int $contacts An array of CiviCRM Contact data.
+	 * @param int  $group_id The numeric ID of the BuddyPress Group.
+	 * @param int  $contacts An array of CiviCRM Contact data.
 	 * @param bool $is_admin Makes this Member a Group Admin.
 	 */
 	public function group_members_create( $group_id, $contacts, $is_admin = 0 ) {
@@ -802,8 +802,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BuddyPress Group.
-	 * @param int $contacts An array of CiviCRM Contact data.
+	 * @param int    $group_id The numeric ID of the BuddyPress Group.
+	 * @param int    $contacts An array of CiviCRM Contact data.
 	 * @param string $status The status to which the Members will be promoted.
 	 */
 	public function group_members_promote( $group_id, $contacts, $status ) {
@@ -872,8 +872,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BuddyPress Group.
-	 * @param int $user_id The numeric ID of the WordPress User.
+	 * @param int  $group_id The numeric ID of the BuddyPress Group.
+	 * @param int  $user_id The numeric ID of the WordPress User.
 	 * @param bool $is_admin Makes this Member a Group Admin.
 	 * @return bool $success True if successful, false if not.
 	 */
@@ -1052,8 +1052,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 *
-	 * @param int $group_id The numeric ID of the BuddyPress Group.
-	 * @param int $user_id The numeric ID of the WordPress User.
+	 * @param int    $group_id The numeric ID of the BuddyPress Group.
+	 * @param int    $user_id The numeric ID of the WordPress User.
 	 * @param string $status The status to which the Member will be promoted.
 	 * @return bool $success True if successful, false if not.
 	 */
@@ -1126,8 +1126,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.2.2
 	 *
-	 * @param int $group_id The numeric ID of the BuddyPress Group.
-	 * @param int $user_id The numeric ID of the WordPress User.
+	 * @param int    $group_id The numeric ID of the BuddyPress Group.
+	 * @param int    $user_id The numeric ID of the WordPress User.
 	 * @param string $status New status being changed to.
 	 */
 	public function member_changing_status( $group_id, $user_id, $status = '' ) {
@@ -1607,10 +1607,10 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.3.1
 	 *
-	 * @param string $op The type of database operation.
-	 * @param string $object_name The type of object.
+	 * @param string  $op The type of database operation.
+	 * @param string  $object_name The type of object.
 	 * @param integer $object_id The ID of the object.
-	 * @param object $object_ref The object.
+	 * @param object  $object_ref The object.
 	 */
 	public function civicrm_email_updated( $op, $object_name, $object_id, $object_ref ) {
 
@@ -1698,7 +1698,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.4
 	 *
-	 * @param str $username The previously-generated WordPress username.
+	 * @param str   $username The previously-generated WordPress username.
 	 * @param array $contact The CiviCRM Contact data.
 	 * @return str $new_username The modified WordPress username.
 	 */

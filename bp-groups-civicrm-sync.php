@@ -336,7 +336,7 @@ register_deactivation_hook( __FILE__, [ bp_groups_civicrm_sync(), 'deactivate' ]
  * @since 0.1
  *
  * @param array $links The existing links array.
- * @param str $file The name of the plugin file.
+ * @param str   $file The name of the plugin file.
  * @return array $links The modified links array.
  */
 function bp_groups_civicrm_sync_plugin_action_links( $links, $file ) {
