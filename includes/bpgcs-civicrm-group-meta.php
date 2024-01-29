@@ -75,10 +75,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 	public function __construct( $parent ) {
 
 		// Store reference to objects.
-		$this->plugin = $parent->plugin;
+		$this->plugin  = $parent->plugin;
 		$this->civicrm = $parent;
-		$this->bp = $parent->bp;
-		$this->admin = $parent->admin;
+		$this->bp      = $parent->bp;
+		$this->admin   = $parent->admin;
 
 		// Boot when CiviCRM object is loaded.
 		add_action( 'bpgcs/civicrm/loaded', [ $this, 'initialise' ] );
@@ -152,7 +152,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 		}
 
 		// Get the ID of the CiviCRM Meta Group.
-		$source = $this->get_source();
+		$source        = $this->get_source();
 		$meta_group_id = $this->civicrm->group_id_find( $source );
 
 		// Return it if it already exists.
@@ -203,7 +203,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 		}
 
 		// Get the ID of the CiviCRM Meta Group.
-		$source = $this->get_source();
+		$source        = $this->get_source();
 		$meta_group_id = $this->civicrm->group_id_find( $source );
 
 		// Return early if it does not exist.
@@ -230,7 +230,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 		}
 
 		// Get the ID of the CiviCRM Meta Group.
-		$source = $this->get_source();
+		$source        = $this->get_source();
 		$meta_group_id = $this->civicrm->group_id_find( $source );
 		if ( false === $meta_group_id ) {
 			return;
@@ -301,7 +301,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 		}
 
 		// Get the ID of the CiviCRM Meta Group.
-		$source = $this->get_source();
+		$source        = $this->get_source();
 		$meta_group_id = $this->civicrm->group_id_find( $source );
 		if ( false === $meta_group_id ) {
 			return;
@@ -339,9 +339,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 			// Check if there are multiple parents.
 			if ( strstr( $group['parents'], ',' ) ) {
 				$group['parents'] = explode( ',', $group['parents'] );
-				array_walk( $group['parents'], function( &$item ) {
-					$item = (int) trim( $item );
-				} );
+				array_walk(
+					$group['parents'],
+					function( &$item ) {
+						$item = (int) trim( $item );
+					}
+				);
 			} else {
 				$group['parents'] = [ (int) $group['parents'] ];
 			}
@@ -361,7 +364,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 			$group['group_type'] = $this->civicrm->group_type_array_get_by_type( $group_type );
 
 			// Remove the container Group ID from parents.
-			$parents = array_diff( $group['parents'], [ (int) $meta_group_id ] );
+			$parents          = array_diff( $group['parents'], [ (int) $meta_group_id ] );
 			$group['parents'] = implode( ',', $parents );
 
 			// Update the Group.

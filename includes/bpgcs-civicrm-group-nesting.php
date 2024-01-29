@@ -66,10 +66,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 	public function __construct( $parent ) {
 
 		// Store reference to objects.
-		$this->plugin = $parent->plugin;
+		$this->plugin  = $parent->plugin;
 		$this->civicrm = $parent;
-		$this->bp = $parent->bp;
-		$this->admin = $parent->admin;
+		$this->bp      = $parent->bp;
+		$this->admin   = $parent->admin;
 
 		// Boot when CiviCRM object is loaded.
 		add_action( 'bpgcs/civicrm/loaded', [ $this, 'initialise' ] );
@@ -146,16 +146,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 
 		// Log and bail if there's an error.
 		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return $group_nesting_data;
 		}
 
@@ -209,16 +208,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 
 		// Log if there's an error.
 		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new \Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return $nesting;
 		}
 
@@ -263,7 +261,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 		if ( ! empty( $sync_groups ) ) {
 			$member_group_id = $sync_groups['member_group_id'];
 		} else {
-			$sync_name = $this->civicrm->member_group_get_sync_name( $bp_group_id );
+			$sync_name       = $this->civicrm->member_group_get_sync_name( $bp_group_id );
 			$member_group_id = $this->civicrm->group_id_find( $sync_name );
 		}
 
@@ -295,7 +293,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 		if ( ! empty( $sync_groups ) ) {
 			$acl_group_id = $sync_groups['acl_group_id'];
 		} else {
-			$sync_name = $this->civicrm->acl_group_get_sync_name( $bp_group_id );
+			$sync_name    = $this->civicrm->acl_group_get_sync_name( $bp_group_id );
 			$acl_group_id = $this->civicrm->group_id_find( $sync_name );
 		}
 
@@ -345,9 +343,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 		}
 
 		// Cast parent IDs as integers.
-		array_walk( $parents, function( &$item ) {
-			$item = (int) $item;
-		} );
+		array_walk(
+			$parents,
+			function( &$item ) {
+				$item = (int) $item;
+			}
+		);
 
 		// Delete them all.
 		foreach ( $parents as $parent ) {
@@ -389,16 +390,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 
 		// Log if there's an error.
 		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new \Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 		}
 
 		// Success.

@@ -66,10 +66,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 	public function __construct( $parent ) {
 
 		// Store reference to objects.
-		$this->plugin = $parent->plugin;
+		$this->plugin  = $parent->plugin;
 		$this->civicrm = $parent;
-		$this->bp = $parent->bp;
-		$this->admin = $parent->admin;
+		$this->bp      = $parent->bp;
+		$this->admin   = $parent->admin;
 
 		// Boot when CiviCRM object is loaded.
 		add_action( 'bpgcs/civicrm/loaded', [ $this, 'initialise' ] );
@@ -173,7 +173,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		if ( ! empty( $sync_groups ) ) {
 			$member_group_id = $sync_groups['member_group_id'];
 		} else {
-			$sync_name = $this->civicrm->member_group_get_sync_name( $args['group_id'] );
+			$sync_name       = $this->civicrm->member_group_get_sync_name( $args['group_id'] );
 			$member_group_id = $this->civicrm->group_id_find( $sync_name );
 		}
 
@@ -191,7 +191,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 			// Add the Contact to the Group.
 			$member_group_params['status'] = $args['is_active'] ? 'Added' : 'Pending';
-			$member_group_contact = $this->membership_create( $member_group_params );
+			$member_group_contact          = $this->membership_create( $member_group_params );
 
 		} else {
 
@@ -224,7 +224,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		if ( ! empty( $sync_groups ) ) {
 			$acl_group_id = $sync_groups['acl_group_id'];
 		} else {
-			$sync_name = $this->civicrm->acl_group_get_sync_name( $args['group_id'] );
+			$sync_name    = $this->civicrm->acl_group_get_sync_name( $args['group_id'] );
 			$acl_group_id = $this->civicrm->group_id_find( $sync_name );
 		}
 
@@ -242,7 +242,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 			// Add to ACL Group.
 			$acl_group_params['status'] = $args['is_active'] ? 'Added' : 'Pending';
-			$acl_group_contact = $this->membership_create( $acl_group_params );
+			$acl_group_contact          = $this->membership_create( $acl_group_params );
 
 		} else {
 
@@ -335,7 +335,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		if ( ! empty( $sync_groups ) ) {
 			$member_group_id = $sync_groups['member_group_id'];
 		} else {
-			$sync_name = $this->civicrm->member_group_get_sync_name( $bp_group_id );
+			$sync_name       = $this->civicrm->member_group_get_sync_name( $bp_group_id );
 			$member_group_id = $this->civicrm->group_id_find( $sync_name );
 		}
 
@@ -424,7 +424,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		if ( ! empty( $sync_groups ) ) {
 			$acl_group_id = $sync_groups['acl_group_id'];
 		} else {
-			$sync_name = $this->civicrm->acl_group_get_sync_name( $bp_group_id );
+			$sync_name    = $this->civicrm->acl_group_get_sync_name( $bp_group_id );
 			$acl_group_id = $this->civicrm->group_id_find( $sync_name );
 		}
 
@@ -438,7 +438,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 		// Remove Members from CiviCRM ACL Group.
 		foreach ( $contacts as $contact ) {
-			$group_params = [
+			$group_params  = [
 				'group_id'   => $acl_group_id,
 				'contact_id' => $contact['contact_id'],
 			];
@@ -525,7 +525,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 			// Skip the rest if we find it.
 			if ( ! empty( $existing ) ) {
-				$group_contact = $existing;
+				$group_contact           = $existing;
 				$group_contact['status'] = $status;
 				break;
 			}
@@ -570,16 +570,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 		// Return early if something went wrong.
 		if ( ! empty( $result['error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new \Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return $group_contact;
 		}
 
@@ -622,16 +621,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 		// Return early if something went wrong.
 		if ( ! empty( $result['error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new \Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return false;
 		}
 

@@ -186,8 +186,8 @@ class BP_Groups_CiviCRM_Sync {
 
 		// Instantiate objects.
 		$this->civicrm = new BP_Groups_CiviCRM_Sync_CiviCRM( $this );
-		$this->bp = new BP_Groups_CiviCRM_Sync_BuddyPress( $this );
-		$this->admin = new BP_Groups_CiviCRM_Sync_Admin( $this );
+		$this->bp      = new BP_Groups_CiviCRM_Sync_BuddyPress( $this );
+		$this->admin   = new BP_Groups_CiviCRM_Sync_Admin( $this );
 
 	}
 
@@ -292,6 +292,55 @@ class BP_Groups_CiviCRM_Sync {
 
 	}
 
+	/**
+	 * Write to the error log.
+	 *
+	 * @since 0.4.4
+	 *
+	 * @param array $data The data to write to the log file.
+	 */
+	public function log_error( $data = [] ) {
+
+		// Skip if not debugging.
+		if ( BP_GROUPS_CIVICRM_SYNC_DEBUG === false ) {
+			return;
+		}
+
+		// Skip if empty.
+		if ( empty( $data ) ) {
+			return;
+		}
+
+		// Format data.
+		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
+		$error = print_r( $data, true );
+
+		// Write to log file.
+		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		error_log( $error );
+
+	}
+
+	/**
+	 * Write a message to the log file.
+	 *
+	 * @since 0.4.4
+	 *
+	 * @param string $message The message to write to the log file.
+	 */
+	public function log_message( $message = '' ) {
+
+		// Skip if not debugging.
+		if ( BP_GROUPS_CIVICRM_SYNC_DEBUG === false ) {
+			return;
+		}
+
+		// Write to log file.
+		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		error_log( $message );
+
+	}
+
 }
 
 /**
@@ -355,7 +404,7 @@ function bp_groups_civicrm_sync_plugin_action_links( $links, $file ) {
 		$links[] = '<a href="' . $link . '">' . esc_html__( 'Settings', 'bp-groups-civicrm-sync' ) . '</a>';
 
 		// Add Paypal link.
-		$paypal = 'https://www.paypal.me/interactivist';
+		$paypal  = 'https://www.paypal.me/interactivist';
 		$links[] = '<a href="' . $paypal . '" target="_blank">' . __( 'Donate!', 'bp-groups-civicrm-sync' ) . '</a>';
 
 	}

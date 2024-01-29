@@ -48,7 +48,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 	public function __construct( $parent ) {
 
 		// Store reference to objects.
-		$this->plugin = $parent->plugin;
+		$this->plugin  = $parent->plugin;
 		$this->civicrm = $parent;
 
 		// Boot when CiviCRM object is loaded.
@@ -439,16 +439,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 		// Log and bail if there's an error.
 		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return $acl_role_data;
 		}
 
@@ -503,16 +502,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 		// Log and bail if there's an error.
 		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return $acl_role_data;
 		}
 
@@ -544,16 +542,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 		// Log and bail if there's no Option Value ID.
 		if ( empty( $acl_role['id'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new \Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'message'   => __( 'An ID must be present to update an ACL Role.', 'bp-groups-civicrm-sync' ),
-					'acl_role'  => $acl_role,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'message'   => __( 'An ID must be present to update an ACL Role.', 'bp-groups-civicrm-sync' ),
+				'acl_role'  => $acl_role,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return false;
 		}
 
@@ -582,15 +579,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 		// Log and bail if there's no ACL Role ID.
 		if ( empty( $acl_role_id ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new \Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'message'   => __( 'An ID must be present to delete an ACL Role.', 'bp-groups-civicrm-sync' ),
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'message'   => __( 'An ID must be present to delete an ACL Role.', 'bp-groups-civicrm-sync' ),
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return false;
 		}
 
@@ -605,16 +601,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 		// Bail if there's an error.
 		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return $success;
 		}
 
@@ -663,7 +658,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 		if ( version_compare( $version, '5.39', '>=' ) ) {
 
 			// Build params to get ACL Entity Role.
-			$params = [
+			$params          = [
 				'limit'            => 0,
 				'checkPermissions' => false,
 			];
@@ -690,9 +685,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 			$dao = new CRM_ACL_DAO_EntityRole();
 
 			// Find by using properties.
-			$dao->acl_role_id = (int) $acl_role_id;
+			$dao->acl_role_id  = (int) $acl_role_id;
 			$dao->entity_table = 'civicrm_group';
-			$dao->entity_id = (int) $acl_group_id;
+			$dao->entity_id    = (int) $acl_group_id;
 			$dao->find( true );
 
 			// Bail if there are no results.
@@ -742,7 +737,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 		if ( version_compare( $version, '5.39', '>=' ) ) {
 
 			// Build params to get ACL Entity Role.
-			$params = [
+			$params          = [
 				'limit'            => 0,
 				'checkPermissions' => false,
 			];
@@ -772,7 +767,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 			// Find by using properties.
 			$dao->entity_table = 'civicrm_group';
-			$dao->entity_id = (int) $acl_group_id;
+			$dao->entity_id    = (int) $acl_group_id;
 
 			// Add the results to the return array.
 			if ( $dao->find() ) {
@@ -828,7 +823,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 		if ( version_compare( $version, '5.39', '>=' ) ) {
 
 			// Build params to create ACL Entity Role.
-			$params = [
+			$params           = [
 				'checkPermissions' => false,
 			];
 			$params['values'] = [
@@ -856,9 +851,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 			// Add properties.
 			$dao->entity_table = 'civicrm_group';
-			$dao->entity_id = $acl_entity_role['entity_id'];
-			$dao->acl_role_id = $acl_entity_role['acl_role_id'];
-			$dao->is_active = true;
+			$dao->entity_id    = $acl_entity_role['entity_id'];
+			$dao->acl_role_id  = $acl_entity_role['acl_role_id'];
+			$dao->is_active    = true;
 
 			// Trigger an update if the ID is known.
 			if ( ! empty( $acl_entity_role['id'] ) ) {
@@ -901,16 +896,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 		// Log and bail if there's no Option Value ID.
 		if ( empty( $acl_entity_role['id'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new \Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'          => __METHOD__,
-					'message'         => __( 'An ID must be present to update an ACL Entity Role.', 'bp-groups-civicrm-sync' ),
-					'acl_entity_role' => $acl_entity_role,
-					'backtrace'       => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'          => __METHOD__,
+				'message'         => __( 'An ID must be present to update an ACL Entity Role.', 'bp-groups-civicrm-sync' ),
+				'acl_entity_role' => $acl_entity_role,
+				'backtrace'       => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return false;
 		}
 
@@ -939,15 +933,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 		// Log and bail if there's no ACL Entity Role ID.
 		if ( empty( $acl_entity_role_id ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new \Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'message'   => __( 'An ID must be present to delete an ACL Entity Role.', 'bp-groups-civicrm-sync' ),
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'message'   => __( 'An ID must be present to delete an ACL Entity Role.', 'bp-groups-civicrm-sync' ),
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return false;
 		}
 
@@ -962,16 +955,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 		// Bail if there's an error.
 		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return $success;
 		}
 
@@ -1018,16 +1010,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 		// Log and bail if there's an error.
 		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return $acl_data;
 		}
 
@@ -1074,16 +1065,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 		// Log and bail if there's an error.
 		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return $acl;
 		}
 
@@ -1115,16 +1105,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 		// Log and bail if there's no Option Value ID.
 		if ( empty( $acl['id'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new \Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'message'   => __( 'An ID must be present to update an ACL.', 'bp-groups-civicrm-sync' ),
-					'acl'       => $acl,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'message'   => __( 'An ID must be present to update an ACL.', 'bp-groups-civicrm-sync' ),
+				'acl'       => $acl,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return false;
 		}
 
@@ -1153,15 +1142,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 		// Log and bail if there's no ACL ID.
 		if ( empty( $acl_id ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new \Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'message'   => __( 'An ID must be present to delete an ACL.', 'bp-groups-civicrm-sync' ),
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'message'   => __( 'An ID must be present to delete an ACL.', 'bp-groups-civicrm-sync' ),
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return false;
 		}
 
@@ -1176,16 +1164,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 		// Bail if there's an error.
 		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return $success;
 		}
 
@@ -1234,16 +1221,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 		// Bail if there's an error.
 		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return $options;
 		}
 

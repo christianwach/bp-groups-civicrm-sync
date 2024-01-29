@@ -123,9 +123,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 * @since 0.1
 	 */
 	public function deactivate() {
-
 		// We delete our options in uninstall.php.
-
 	}
 
 	/**
@@ -136,7 +134,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	public function initialise() {
 
 		// Store references.
-		$this->bp = $this->plugin->bp;
+		$this->bp      = $this->plugin->bp;
 		$this->civicrm = $this->plugin->civicrm;
 
 		// Load plugin version.
@@ -322,7 +320,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// This tweaks the Settings subnav menu to show only one menu item.
 		if ( in_array( $plugin_page, $subpages ) ) {
 			// phpcs:disable WordPress.WP.GlobalVariablesOverride.Prohibited
-			$plugin_page = 'bp_groups_civicrm_sync_parent';
+			$plugin_page  = 'bp_groups_civicrm_sync_parent';
 			$submenu_file = 'bp_groups_civicrm_sync_parent';
 			// phpcs:enable WordPress.WP.GlobalVariablesOverride.Prohibited
 		}
@@ -360,11 +358,13 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		}
 
 		// Add a tab - we can add more later.
-		$screen->add_help_tab( [
+		$args = [
 			'id'      => 'bpgcs-help',
 			'title'   => __( 'BP Groups CiviCRM Sync', 'bp-groups-civicrm-sync' ),
 			'content' => $this->admin_help_text(),
-		] );
+		];
+
+		$screen->add_help_tab( $args );
 
 		// --<
 		return $screen;
@@ -408,12 +408,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		// Get our settings.
 		$parent_group = (int) $this->setting_get( 'parent_group' );
 
-		// Checked by default.
-		$checked = ' checked="checked"';
-		if ( isset( $parent_group ) && 0 === $parent_group ) {
-			$checked = '';
-		}
-
 		// Include template file.
 		include BP_GROUPS_CIVICRM_SYNC_PATH . 'assets/templates/settings.php';
 
@@ -434,9 +428,6 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		// Get admin page URLs.
 		$urls = $this->page_get_urls();
-
-		// Init messages.
-		$messages = '';
 
 		// Show "Organic Group to BuddyPress Sync" if we have Organic Groups.
 		$has_og_groups = $this->civicrm->group_admin->has_og_groups();
@@ -534,13 +525,13 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		if ( $this->plugin->is_network_activated() ) {
 
 			// Get admin page URLs via our adapted method.
-			$this->urls['settings'] = $this->network_menu_page_url( 'bp_groups_civicrm_sync_settings', false );
+			$this->urls['settings']    = $this->network_menu_page_url( 'bp_groups_civicrm_sync_settings', false );
 			$this->urls['manual_sync'] = $this->network_menu_page_url( 'bp_groups_civicrm_sync_manual_sync', false );
 
 		} else {
 
 			// Get admin page URLs.
-			$this->urls['settings'] = menu_page_url( 'bp_groups_civicrm_sync_settings', false );
+			$this->urls['settings']    = menu_page_url( 'bp_groups_civicrm_sync_settings', false );
 			$this->urls['manual_sync'] = menu_page_url( 'bp_groups_civicrm_sync_manual_sync', false );
 
 		}
@@ -578,6 +569,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		$url = esc_url( $url );
 
 		if ( $echo ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo $url;
 		}
 
@@ -756,7 +748,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		check_admin_referer( 'bp_groups_civicrm_sync_manual_sync_action', 'bp_groups_civicrm_sync_nonce' );
 
 		// Init vars.
-		$bp_groups_civicrm_sync_convert = '';
+		$bp_groups_civicrm_sync_convert  = '';
 		$bp_groups_civicrm_sync_bp_check = '';
 
 		// Get variables.

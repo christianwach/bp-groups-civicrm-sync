@@ -11,7 +11,7 @@
 
 	<rule ref="WordPress">
 
-		<!-- I prefer slash-delimited Hooks -->
+		<!-- Allow slash-delimited Hooks -->
 		<exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores" />
 
 		<!-- Allow false for deprecated param -->
@@ -20,28 +20,17 @@
 		<!-- I prefer my control structures -->
 		<exclude name="WordPress.WhiteSpace.ControlStructureSpacing.BlankLineAfterEnd" />
 
-		<!-- Not a fan of equals alignment -->
-		<exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning" />
-
-		<!-- PSR4 -->
+		<!-- Allow unconventional filenames for now -->
 		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
-		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
 
-		<!-- Remove some checks to allow phpcbf to run in bulk mode -->
-		<exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict" />
-		<exclude name="Squiz.Commenting.InlineComment.NoSpaceBefore" />
+		<!-- Allow sample code in comment blocks -->
 		<exclude name="Squiz.PHP.CommentedOutCode.Found" />
-		<exclude name="PSR2.ControlStructures.SwitchDeclaration.BodyOnNextLineCASE" />
-		<exclude name="WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase" />
-		<exclude name="Squiz.Commenting.InlineComment.SpacingAfterAtFunctionEnd" />
-		<exclude name="WordPress.Security.EscapeOutput.OutputNotEscaped" />
 
-		<!-- Remove when error logging has been moved to a function -->
-		<exclude name="WordPress.PHP.DevelopmentFunctions.error_log_error_log" />
-		<exclude name="PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket" />
-		<exclude name="WordPress.PHP.DevelopmentFunctions.error_log_print_r" />
-		<exclude name="PEAR.Functions.FunctionCallSignature.MultipleArguments" />
-		<exclude name="PEAR.Functions.FunctionCallSignature.CloseBracketLine" />
+		<!-- Strict arrays need auditing manually -->
+		<exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict" />
+
+		<!-- Retained for review -->
+		<exclude name="WordPress.Security.EscapeOutput.OutputNotEscaped" />
 
 	</rule>
 
@@ -60,7 +49,7 @@
 	<!-- Nesting levels -->
 	<rule ref="Generic.Metrics.NestingLevel">
 		<properties>
-			<property name="absoluteNestingLevel" value="4" />
+			<property name="absoluteNestingLevel" value="5" />
 		</properties>
 	</rule>
 

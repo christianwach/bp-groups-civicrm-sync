@@ -83,7 +83,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 		// Store references.
 		$this->civicrm = $this->plugin->civicrm;
-		$this->admin = $this->plugin->admin;
+		$this->admin   = $this->plugin->admin;
 
 		// Bootstrap this class.
 		$this->include_files();
@@ -1472,7 +1472,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		}
 
 		// Get BuddyPress Group ID - source is of the form "BP Sync Group :BPID:".
-		$tmp = explode( ':', $group['source'] );
+		$tmp         = explode( ':', $group['source'] );
 		$bp_group_id = (int) $tmp[1];
 
 		// --<
@@ -1531,9 +1531,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		if ( ! $user_id && false === email_exists( $contact['email'] ) ) {
 
 			// Generate a random password.
-			$length = 12;
+			$length                         = 12;
 			$include_standard_special_chars = false;
-			$random_password = wp_generate_password( $length, $include_standard_special_chars );
+			$random_password                = wp_generate_password( $length, $include_standard_special_chars );
 
 			// Remove filters.
 			$this->remove_filters();
@@ -1715,7 +1715,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		}
 
 		// Init flags.
-		$count = 1;
+		$count       = 1;
 		$user_exists = 1;
 
 		do {

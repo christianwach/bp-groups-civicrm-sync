@@ -71,10 +71,10 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_BPGH {
 		}
 
 		// Store reference to objects.
-		$this->plugin = $parent->plugin;
-		$this->bp = $parent;
+		$this->plugin  = $parent->plugin;
+		$this->bp      = $parent;
 		$this->civicrm = $parent->civicrm;
-		$this->admin = $parent->admin;
+		$this->admin   = $parent->admin;
 
 		// Boot when CiviCRM object is loaded.
 		add_action( 'bpgcs/buddypress/loaded', [ $this, 'initialise' ] );
@@ -156,9 +156,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_BPGH {
 	 * @param object $group The BuddyPress Group object.
 	 */
 	public function hierarchy_after_change( $group ) {
-
 		// Nothing for now.
-
 	}
 
 	// -------------------------------------------------------------------------
@@ -271,34 +269,31 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_BPGH {
 		// Get our setting.
 		$hierarchy = (int) $this->setting_get( 'nesting' );
 
-		// Checked by default.
-		$hierarchy_checked = ' checked="checked"';
-		if ( isset( $hierarchy ) && 0 === $hierarchy ) {
-			$hierarchy_checked = '';
-		}
-
-		// Define text.
-		$text = sprintf(
-			/* translators: 1: The opening anchor tag, 2: The closing anchor tag. */
-			__( 'Depending on your use case, select whether you want your CiviCRM Groups to be hierarchically organised in CiviCRM. If you do, then CiviCRM Groups will be nested under one another, mirroring the BuddyPress Group Hierarchy. Again, please refer to %1$sthe documentation%2$s to decide if this is useful to you or not.', 'bp-groups-civicrm-sync' ),
-			'<a href="https://docs.civicrm.org/user/en/latest/organising-your-data/groups-and-tags/">',
-			'</a>'
-		);
-
 		?>
 
 		<hr>
 
 		<h3><?php esc_html_e( 'BuddyPress Group Hierarchy', 'bp-groups-civicrm-sync' ); ?></h3>
 
-		<p><?php echo $text; ?></p>
+		<p>
+			<?php
+
+			echo sprintf(
+				/* translators: 1: The opening anchor tag, 2: The closing anchor tag. */
+				esc_html__( 'Depending on your use case, select whether you want your CiviCRM Groups to be hierarchically organised in CiviCRM. If you do, then CiviCRM Groups will be nested under one another, mirroring the BuddyPress Group Hierarchy. Again, please refer to %1$sthe documentation%2$s to decide if this is useful to you or not.', 'bp-groups-civicrm-sync' ),
+				'<a href="https://docs.civicrm.org/user/en/latest/organising-your-data/groups-and-tags/">',
+				'</a>'
+			);
+
+			?>
+		</p>
 
 		<table class="form-table">
 
 			<tr>
 				<th scope="row"><label class="bp_groups_civicrm_sync_settings_label" for="bp_groups_civicrm_sync_settings_hierarchy"><?php esc_html_e( 'Use Hierarchy', 'bp-groups-civicrm-sync' ); ?></label></th>
 				<td>
-					<input type="checkbox" class="settings-checkbox" name="bp_groups_civicrm_sync_settings_hierarchy" id="bp_groups_civicrm_sync_settings_hierarchy" value="1"<?php echo $hierarchy_checked; ?> />
+					<input type="checkbox" class="settings-checkbox" name="bp_groups_civicrm_sync_settings_hierarchy" id="bp_groups_civicrm_sync_settings_hierarchy" value="1"<?php checked( 0, $hierarchy ); ?> />
 					<label class="bp_groups_civicrm_sync_settings_label" for="bp_groups_civicrm_sync_settings_hierarchy"><?php esc_html_e( 'Nest CiviCRM Groups hierarchically.', 'bp-groups-civicrm-sync' ); ?></label>
 				</td>
 			</tr>

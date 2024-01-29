@@ -18,13 +18,11 @@
 <div class="wrap">
 
 	<h2 class="nav-tab-wrapper">
+		<?php /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>
 		<a href="<?php echo $urls['settings']; ?>" class="nav-tab"><?php esc_html_e( 'Settings', 'bp-groups-civicrm-sync' ); ?></a>
+		<?php /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>
 		<a href="<?php echo $urls['manual_sync']; ?>" class="nav-tab nav-tab-active"><?php esc_html_e( 'Manual Sync', 'bp-groups-civicrm-sync' ); ?></a>
 	</h2>
-
-	<?php if ( ! empty( $messages ) ) : ?>
-		<?php echo $messages; ?>
-	<?php endif; ?>
 
 	<form method="post" id="bp_groups_civicrm_sync_manual_sync_form" action="<?php echo $this->admin_form_url_get(); ?>">
 

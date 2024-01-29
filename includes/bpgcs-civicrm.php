@@ -131,7 +131,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	public function initialise() {
 
 		// Store references.
-		$this->bp = $this->plugin->bp;
+		$this->bp    = $this->plugin->bp;
 		$this->admin = $this->plugin->admin;
 
 		// Bootstrap this class.
@@ -173,12 +173,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	public function setup_objects() {
 
 		// Initialise objects.
-		$this->contact = new BP_Groups_CiviCRM_Sync_CiviCRM_Contact( $this );
-		$this->meta_group = new BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta( $this );
+		$this->contact       = new BP_Groups_CiviCRM_Sync_CiviCRM_Contact( $this );
+		$this->meta_group    = new BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta( $this );
 		$this->group_contact = new BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact( $this );
 		$this->group_nesting = new BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting( $this );
-		$this->group_admin = new BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin( $this );
-		$this->acl = new BP_Groups_CiviCRM_Sync_CiviCRM_ACL( $this );
+		$this->group_admin   = new BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin( $this );
+		$this->acl           = new BP_Groups_CiviCRM_Sync_CiviCRM_ACL( $this );
 
 	}
 
@@ -290,14 +290,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 		if ( ! empty( $result['contact_id'] ) ) {
 
 			// Update Member Group to preserve Group Creator.
-			$member_group_params['id'] = $member_group['id'];
+			$member_group_params['id']         = $member_group['id'];
 			$member_group_params['created_id'] = $result['contact_id'];
 
 			// Update the CiviCRM Member Group.
 			$member_group = $this->group_update( $member_group_params );
 
 			// Update ACL Group to preserve Group Creator.
-			$acl_group_params['id'] = $acl_group['id'];
+			$acl_group_params['id']         = $acl_group['id'];
 			$acl_group_params['created_id'] = $result['contact_id'];
 
 			// Update the CiviCRM ACL Group.
@@ -411,7 +411,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Get the full Group data for deleting the ACL.
 		$member_group = $this->group_get_by_id( $sync_groups['member_group_id'] );
-		$acl_group = $this->group_get_by_id( $sync_groups['acl_group_id'] );
+		$acl_group    = $this->group_get_by_id( $sync_groups['acl_group_id'] );
 
 		// Delete ACL for the CiviCRM Groups.
 		$acl_deleted = $this->acl->delete_for_groups( $acl_group, $member_group );
@@ -463,16 +463,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Bail if there's an error.
 		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return $groups;
 		}
 
@@ -526,16 +525,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Log and bail if there's an error.
 		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return $group_data;
 		}
 
@@ -567,16 +565,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Log and bail if there's no Group ID.
 		if ( empty( $group['id'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new \Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'message'   => __( 'An ID must be present to update a Group.', 'bp-groups-civicrm-sync' ),
-					'group'     => $group,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'message'   => __( 'An ID must be present to update a Group.', 'bp-groups-civicrm-sync' ),
+				'group'     => $group,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return false;
 		}
 
@@ -605,15 +602,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Log and bail if there's no Group ID.
 		if ( empty( $group_id ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new \Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'message'   => __( 'An ID must be present to delete a Group.', 'bp-groups-civicrm-sync' ),
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'message'   => __( 'An ID must be present to delete a Group.', 'bp-groups-civicrm-sync' ),
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return false;
 		}
 
@@ -628,16 +624,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Bail if there's an error.
 		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return $group_data;
 		}
 
@@ -727,16 +722,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Bail if we get any errors.
 		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return $group;
 		}
 
@@ -782,16 +776,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Bail if we get any errors.
 		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return $group;
 		}
 
@@ -802,17 +795,16 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Bail if there are multiple values.
 		if ( count( $result['values'] ) > 1 ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'message'   => __( 'There are multiple groups with the same "sync name".', 'bp-groups-civicrm-sync' ),
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'message'   => __( 'There are multiple groups with the same "sync name".', 'bp-groups-civicrm-sync' ),
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return $group;
 		}
 
@@ -853,16 +845,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Bail if we get any errors.
 		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return $group;
 		}
 
@@ -873,17 +864,16 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Bail if there are multiple values.
 		if ( count( $result['values'] ) > 1 ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'message'   => __( 'There are mulitple groups with the same title.', 'bp-groups-civicrm-sync' ),
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'message'   => __( 'There are mulitple groups with the same title.', 'bp-groups-civicrm-sync' ),
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return $group;
 		}
 

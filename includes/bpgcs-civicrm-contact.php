@@ -66,10 +66,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 	public function __construct( $parent ) {
 
 		// Store reference to objects.
-		$this->plugin = $parent->plugin;
+		$this->plugin  = $parent->plugin;
 		$this->civicrm = $parent;
-		$this->bp = $parent->bp;
-		$this->admin = $parent->admin;
+		$this->bp      = $parent->bp;
+		$this->admin   = $parent->admin;
 
 		// Boot when CiviCRM object is loaded.
 		add_action( 'bpgcs/civicrm/loaded', [ $this, 'initialise' ] );
@@ -149,16 +149,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 
 		// Bail if we get any errors.
 		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return $contacts;
 		}
 
@@ -224,21 +223,20 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 
 		// Log and bail on failure.
 		if ( ! $contact_id ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$error = sprintf(
-					/* translators: %d: The numeric ID of the WordPress User */
-					__( 'No CiviCRM Contact ID could be found for WordPress User ID %d', 'bp-groups-civicrm-sync' ),
-					$user_id
-				);
-				$e = new \Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'error'     => $error,
-					'user'      => $user,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$error = sprintf(
+				/* translators: %d: The numeric ID of the WordPress User */
+				__( 'No CiviCRM Contact ID could be found for WordPress User ID %d', 'bp-groups-civicrm-sync' ),
+				$user_id
+			);
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'error'     => $error,
+				'user'      => $user,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return false;
 		}
 
@@ -292,16 +290,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 
 		// Log and bail on failure.
 		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return false;
 		}
 
@@ -342,16 +339,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 
 		// Bail if we get any errors.
 		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return $contact;
 		}
 

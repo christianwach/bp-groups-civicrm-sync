@@ -66,10 +66,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 	public function __construct( $parent ) {
 
 		// Store reference to objects.
-		$this->plugin = $parent->plugin;
+		$this->plugin  = $parent->plugin;
 		$this->civicrm = $parent;
-		$this->bp = $parent->bp;
-		$this->admin = $parent->admin;
+		$this->bp      = $parent->bp;
+		$this->admin   = $parent->admin;
 
 		// Boot when CiviCRM object is loaded.
 		add_action( 'bpgcs/civicrm/loaded', [ $this, 'initialise' ] );
@@ -105,13 +105,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		// Allow plugins to register php and template directories.
 		add_action( 'civicrm_config', [ $this, 'register_directories' ], 10, 1 );
 
+		/*
 		// Intercept CiviCRM Group create form.
-		// phpcs:ignore Squiz.Commenting.InlineComment.InvalidEndChar
-		//add_action( 'civicrm_buildForm', [ $this, 'form_create_bp_group_options' ], 10, 2 );
+		add_action( 'civicrm_buildForm', [ $this, 'form_create_bp_group_options' ], 10, 2 );
 
 		// Intercept CiviCRM Group create form submission.
-		// phpcs:ignore Squiz.Commenting.InlineComment.InvalidEndChar
-		//add_action( 'civicrm_postProcess', [ $this, 'form_create_bp_group_process' ], 10, 2 );
+		add_action( 'civicrm_postProcess', [ $this, 'form_create_bp_group_process' ], 10, 2 );
+		*/
 
 		// Intercept CiviCRM Drupal Organic Groups edit form.
 		add_action( 'civicrm_buildForm', [ $this, 'form_edit_og_options' ], 10, 2 );
@@ -164,13 +164,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 	 *
 	 * @since 0.1
 	 *
-	 * @param string $formName The CiviCRM form name.
+	 * @param string $form_name The CiviCRM form name.
 	 * @param object $form The CiviCRM form object.
 	 */
-	public function form_create_bp_group_options( $formName, &$form ) {
+	public function form_create_bp_group_options( $form_name, &$form ) {
 
 		// Is this the Group edit form?
-		if ( 'CRM_Group_Form_Edit' !== $formName ) {
+		if ( 'CRM_Group_Form_Edit' !== $form_name ) {
 			return;
 		}
 
@@ -186,21 +186,22 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 
 		// Add text.
 		$form->assign( 'bpgcs_title', __( 'BuddyPress Group Sync', 'bp-groups-civicrm-sync' ) );
-		$form->assign( 'bpgcs_description', sprintf(
-			/* translators: 1: The opening strong tag, 2: The closing strong tag */
-			__( '%1$sNOTE:%2$s If you are going to create a BuddyPress Group, you only need to fill out the "Group Title" field (and optionally the "Group Description" field). The Group Type will be automatically set to "Access Control" and (if a container group has been specified) the Parent Group will be automatically assigned to the container group.', 'bp-groups-civicrm-sync' ),
-			'<strong>',
-			'</strong>'
-		) );
+		$form->assign(
+			'bpgcs_description',
+			sprintf(
+				/* translators: 1: The opening strong tag, 2: The closing strong tag */
+				__( '%1$sNOTE:%2$s If you are going to create a BuddyPress Group, you only need to fill out the "Group Title" field (and optionally the "Group Description" field). The Group Type will be automatically set to "Access Control" and (if a container group has been specified) the Parent Group will be automatically assigned to the container group.', 'bp-groups-civicrm-sync' ),
+				'<strong>',
+				'</strong>'
+			)
+		);
 		$form->assign( 'bpgcs_label', __( 'Create a BuddyPress Group', 'bp-groups-civicrm-sync' ) );
 
 		// Add the field element in the form.
 		$form->add( 'checkbox', 'bpgcs_create_from_new', __( 'Create BuddyPress Group', 'bp-groups-civicrm-sync' ) );
 
 		// Dynamically insert a template block in the page.
-		CRM_Core_Region::instance( 'page-body' )->add( [
-			'template' => 'bp-groups-civicrm-sync-new.tpl',
-		] );
+		CRM_Core_Region::instance( 'page-body' )->add( [ 'template' => 'bp-groups-civicrm-sync-new.tpl' ] );
 
 	}
 
@@ -209,10 +210,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 	 *
 	 * @since 0.1
 	 *
-	 * @param string $formName The CiviCRM form name.
+	 * @param string $form_name The CiviCRM form name.
 	 * @param object $form The CiviCRM form object.
 	 */
-	public function form_create_bp_group_process( $formName, &$form ) {
+	public function form_create_bp_group_process( $form_name, &$form ) {
 
 		// Kick out if not Group edit form.
 		if ( ! ( $form instanceof CRM_Group_Form_Edit ) ) {
@@ -233,8 +234,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		// The Group hasn't been created yet, but the data is there.
 
 		// Get CiviCRM Group.
-		$group = new stdClass();
-		$group->title = $values['title'];
+		$group              = new stdClass();
+		$group->title       = $values['title'];
 		$group->description = $values['description'];
 
 		// Convert to BuddyPress Group.
@@ -324,19 +325,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 
 		// Error check.
 		if ( 1 !== (int) $acl_group['is_error'] ) {
-
-			// Debug.
-			$e = new \Exception();
+			$e     = new \Exception();
 			$trace = $e->getTraceAsString();
-			error_log( print_r( [
+			$log   = [
 				'method'    => __METHOD__,
 				'acl_group' => $acl_group,
 				'backtrace' => $trace,
-			], true ) );
-
-			// Bail.
+			];
+			$this->plugin->log_error( $log );
 			return;
-
 		}
 
 		// Define CiviCRM Group.
@@ -353,19 +350,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 
 		// Error check.
 		if ( 1 === (int) $member_group['is_error'] ) {
-
-			// Debug.
-			$e = new \Exception();
+			$e     = new \Exception();
 			$trace = $e->getTraceAsString();
-			error_log( print_r( [
+			$log   = [
 				'method'       => __METHOD__,
 				'member_group' => $member_group,
 				'backtrace'    => $trace,
-			], true ) );
-
-			// Bail.
+			];
+			$this->plugin->log_error( $log );
 			return;
-
 		}
 
 		// If no parent, maybe assign both CiviCRM Groups to the Meta Group.
@@ -382,13 +375,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 	 *
 	 * @since 0.1
 	 *
-	 * @param string $formName The CiviCRM form name.
+	 * @param string $form_name The CiviCRM form name.
 	 * @param object $form The CiviCRM form object.
 	 */
-	public function form_edit_og_options( $formName, &$form ) {
+	public function form_edit_og_options( $form_name, &$form ) {
 
 		// Is this the Group edit form?
-		if ( 'CRM_Group_Form_Edit' !== $formName ) {
+		if ( 'CRM_Group_Form_Edit' !== $form_name ) {
 			return;
 		}
 
@@ -410,21 +403,22 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 
 		// Add text.
 		$form->assign( 'bpgcs_title', __( 'BuddyPress Group Sync', 'bp-groups-civicrm-sync' ) );
-		$form->assign( 'bpgcs_description', sprintf(
-			/* translators: 1: The opening strong tag, 2: The closing strong tag */
-			__( '%1$sWARNING:%2$s You may wish to make sure your CiviCRM Contacts exist as WordPress Users before creating this group. CiviCRM Contacts that do not have a corresponding WordPress User will have one created for them. You will need to review roles for the new WordPress Users when this process is complete.', 'bp-groups-civicrm-sync' ),
-			'<strong>',
-			'</strong>'
-		) );
+		$form->assign(
+			'bpgcs_description',
+			sprintf(
+				/* translators: 1: The opening strong tag, 2: The closing strong tag */
+				__( '%1$sWARNING:%2$s You may wish to make sure your CiviCRM Contacts exist as WordPress Users before creating this group. CiviCRM Contacts that do not have a corresponding WordPress User will have one created for them. You will need to review roles for the new WordPress Users when this process is complete.', 'bp-groups-civicrm-sync' ),
+				'<strong>',
+				'</strong>'
+			)
+		);
 		$form->assign( 'bpgcs_label', __( 'Convert to BuddyPress Group', 'bp-groups-civicrm-sync' ) );
 
 		// Add the field element in the form.
 		$form->add( 'checkbox', 'bpgcs_create_from_og', __( 'Create BuddyPress Group', 'bp-groups-civicrm-sync' ) );
 
 		// Dynamically insert a template block in the page.
-		CRM_Core_Region::instance( 'page-body' )->add( [
-			'template' => 'bp-groups-civicrm-sync-og.tpl',
-		] );
+		CRM_Core_Region::instance( 'page-body' )->add( [ 'template' => 'bp-groups-civicrm-sync-og.tpl' ] );
 
 	}
 
@@ -433,10 +427,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 	 *
 	 * @since 0.1
 	 *
-	 * @param string $formName The CiviCRM form name.
+	 * @param string $form_name The CiviCRM form name.
 	 * @param object $form The CiviCRM form object.
 	 */
-	public function form_edit_og_process( $formName, &$form ) {
+	public function form_edit_og_process( $form_name, &$form ) {
 
 		// Kick out if not Group edit form.
 		if ( ! ( $form instanceof CRM_Group_Form_Edit ) ) {
@@ -588,19 +582,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 
 		// Error check.
 		if ( 1 === (int) $acl_group['is_error'] ) {
-
-			// Debug.
-			$e = new \Exception();
+			$e     = new \Exception();
 			$trace = $e->getTraceAsString();
-			error_log( print_r( [
+			$log   = [
 				'method'    => __METHOD__,
 				'acl_group' => $acl_group,
 				'backtrace' => $trace,
-			], true ) );
-
-			// Bail.
+			];
+			$this->plugin->log_error( $log );
 			return;
-
 		}
 
 		// Define CiviCRM Group.
@@ -617,19 +607,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 
 		// Error check.
 		if ( 1 === (int) $member_group['is_error'] ) {
-
-			// Debug.
-			$e = new \Exception();
+			$e     = new \Exception();
 			$trace = $e->getTraceAsString();
-			error_log( print_r( [
+			$log   = [
 				'method'       => __METHOD__,
 				'member_group' => $member_group,
 				'backtrace'    => $trace,
-			], true ) );
-
-			// Bail.
+			];
+			$this->plugin->log_error( $log );
 			return;
-
 		}
 
 		// If no parent, maybe assign both CiviCRM Groups to the Meta Group.
@@ -691,16 +677,15 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 
 		// Bail if we get any errors.
 		if ( ! empty( $result['is_error'] ) ) {
-			if ( BP_GROUPS_CIVICRM_SYNC_DEBUG ) {
-				$e = new Exception();
-				$trace = $e->getTraceAsString();
-				error_log( print_r( [
-					'method'    => __METHOD__,
-					'params'    => $params,
-					'result'    => $result,
-					'backtrace' => $trace,
-				], true ) );
-			}
+			$e     = new \Exception();
+			$trace = $e->getTraceAsString();
+			$log   = [
+				'method'    => __METHOD__,
+				'params'    => $params,
+				'result'    => $result,
+				'backtrace' => $trace,
+			];
+			$this->plugin->log_error( $log );
 			return false;
 		}
 
