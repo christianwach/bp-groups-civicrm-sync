@@ -151,6 +151,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 			'operation' => 'Edit',
 			'name'      => $name,
 			'is_active' => 1,
+			'priority' => 0,
 		];
 
 		// Create the "ACL".
@@ -330,6 +331,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 				'operation' => 'Edit',
 				'name'      => $name,
 				'is_active' => 1,
+				'priority' => 0,
 			];
 
 			// Create the "ACL".
@@ -337,10 +339,11 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 		} else {
 
-			// Only the ACL "Name" needs to change.
+			// Only the ACL "Name" and "Priority" need to change.
 			$params = [
 				'id'   => $existing_acl['id'],
 				'name' => $name,
+				'priority' => 0,
 			];
 
 			// Update the "ACL".
