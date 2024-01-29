@@ -409,7 +409,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		$parent_group = (int) $this->setting_get( 'parent_group' );
 
 		// Include template file.
-		include BP_GROUPS_CIVICRM_SYNC_PATH . 'assets/templates/settings.php';
+		include BP_GROUPS_CIVICRM_SYNC_PATH . 'assets/templates/wordpress/page-settings.php';
 
 	}
 
@@ -433,7 +433,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 		$has_og_groups = $this->civicrm->group_admin->has_og_groups();
 
 		// Include template file.
-		include BP_GROUPS_CIVICRM_SYNC_PATH . 'assets/templates/manual-sync.php';
+		include BP_GROUPS_CIVICRM_SYNC_PATH . 'assets/templates/wordpress/page-manual-sync.php';
 
 	}
 
@@ -447,8 +447,8 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		// Enqueue CSS.
 		wp_enqueue_style(
-			'bgcs-manual-sync-style',
-			BP_GROUPS_CIVICRM_SYNC_URL . 'assets/css/bgcs-admin-manual-sync.css',
+			'bpgcs-manual-sync-style',
+			BP_GROUPS_CIVICRM_SYNC_URL . 'assets/css/page-manual-sync.css',
 			null, // Dependencies.
 			BP_GROUPS_CIVICRM_SYNC_VERSION,
 			'all' // Media.
@@ -466,8 +466,8 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		// Enqueue script.
 		wp_enqueue_script(
-			'bgcs-manual-sync-js',
-			BP_GROUPS_CIVICRM_SYNC_URL . 'assets/js/bgcs-admin-manual-sync.js',
+			'bpgcs-manual-sync-js',
+			BP_GROUPS_CIVICRM_SYNC_URL . 'assets/js/page-manual-sync.js',
 			[ 'jquery', 'jquery-ui-core', 'jquery-ui-progressbar' ],
 			BP_GROUPS_CIVICRM_SYNC_VERSION,
 			true
@@ -495,7 +495,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		// Localise the WordPress way.
 		wp_localize_script(
-			'bgcs-manual-sync-js',
+			'bpgcs-manual-sync-js',
 			'BPGCS_Settings',
 			$vars
 		);

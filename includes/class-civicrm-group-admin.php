@@ -142,7 +142,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 	public function register_directories( &$config ) {
 
 		// Define our custom path.
-		$custom_path = BP_GROUPS_CIVICRM_SYNC_PATH . 'assets/civicrm/custom_templates';
+		$custom_path = BP_GROUPS_CIVICRM_SYNC_PATH . 'assets/templates/civicrm/custom_templates';
 
 		// Get template instance.
 		$template = CRM_Core_Smarty::singleton();

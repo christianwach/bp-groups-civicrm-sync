@@ -156,12 +156,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	public function include_files() {
 
 		// Include class files.
-		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/bpgcs-civicrm-contact.php';
-		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/bpgcs-civicrm-group-meta.php';
-		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/bpgcs-civicrm-group-contact.php';
-		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/bpgcs-civicrm-group-nesting.php';
-		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/bpgcs-civicrm-group-admin.php';
-		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/bpgcs-civicrm-acl.php';
+		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/class-civicrm-contact.php';
+		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/class-civicrm-group-meta.php';
+		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/class-civicrm-group-contact.php';
+		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/class-civicrm-group-nesting.php';
+		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/class-civicrm-group-admin.php';
+		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/class-civicrm-acl.php';
 
 	}
 

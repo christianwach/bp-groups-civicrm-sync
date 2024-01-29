@@ -109,7 +109,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	public function include_files() {
 
 		// Include class files.
-		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/bpgcs-buddypress-bpgh.php';
+		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/class-buddypress-bpgh.php';
 
 	}
 
