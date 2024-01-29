@@ -25,7 +25,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 	 *
 	 * @since 0.4
 	 * @access public
-	 * @var object $plugin The plugin object.
+	 * @var BP_Groups_CiviCRM_Sync
 	 */
 	public $plugin;
 
@@ -34,7 +34,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 	 *
 	 * @since 0.4
 	 * @access public
-	 * @var object $civicrm The CiviCRM object.
+	 * @var BP_Groups_CiviCRM_Sync_CiviCRM
 	 */
 	public $civicrm;
 

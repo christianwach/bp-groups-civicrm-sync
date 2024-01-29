@@ -54,7 +54,7 @@ class BP_Groups_CiviCRM_Sync {
 	 * @since 0.1
 	 * @since 0.4 Renamed.
 	 * @access public
-	 * @var object $civi The CiviCRM object.
+	 * @var BP_Groups_CiviCRM_Sync_CiviCRM
 	 */
 	public $civicrm;
 
@@ -63,7 +63,7 @@ class BP_Groups_CiviCRM_Sync {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $bp The BuddyPress object.
+	 * @var BP_Groups_CiviCRM_Sync_BuddyPress
 	 */
 	public $bp;
 
@@ -72,7 +72,7 @@ class BP_Groups_CiviCRM_Sync {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $admin The Admin object.
+	 * @var BP_Groups_CiviCRM_Sync_Admin
 	 */
 	public $admin;
 

@@ -30,7 +30,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $plugin The plugin object.
+	 * @var BP_Groups_CiviCRM_Sync
 	 */
 	public $plugin;
 
@@ -39,7 +39,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $bp The BuddyPress object.
+	 * @var BP_Groups_CiviCRM_Sync_BuddyPress
 	 */
 	public $bp;
 
@@ -48,7 +48,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $admin The Admin object.
+	 * @var BP_Groups_CiviCRM_Sync_Admin
 	 */
 	public $admin;
 
@@ -57,7 +57,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 *
 	 * @since 0.4
 	 * @access public
-	 * @var object $acl The CiviCRM ACL object.
+	 * @var BP_Groups_CiviCRM_Sync_CiviCRM_ACL
 	 */
 	public $acl;
 
@@ -66,7 +66,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 *
 	 * @since 0.4
 	 * @access public
-	 * @var object $contact The CiviCRM Contact object.
+	 * @var BP_Groups_CiviCRM_Sync_CiviCRM_Contact
 	 */
 	public $contact;
 
@@ -75,7 +75,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 *
 	 * @since 0.4
 	 * @access public
-	 * @var object $meta_group The CiviCRM Meta Group object.
+	 * @var BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta
 	 */
 	public $meta_group;
 
@@ -84,7 +84,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 *
 	 * @since 0.4
 	 * @access public
-	 * @var object $group_contact The CiviCRM Group Contact object.
+	 * @var BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact
 	 */
 	public $group_contact;
 
@@ -93,7 +93,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 *
 	 * @since 0.4
 	 * @access public
-	 * @var object $group_nesting The CiviCRM Group Nesting object.
+	 * @var BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting
 	 */
 	public $group_nesting;
 
@@ -102,7 +102,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	 *
 	 * @since 0.4
 	 * @access public
-	 * @var object $group_admin The CiviCRM Group Admin object.
+	 * @var BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin
 	 */
 	public $group_admin;
 

@@ -25,7 +25,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $plugin The plugin object.
+	 * @var BP_Groups_CiviCRM_Sync
 	 */
 	public $plugin;
 
@@ -34,7 +34,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $civicrm The CiviCRM object.
+	 * @var BP_Groups_CiviCRM_Sync_CiviCRM
 	 */
 	public $civicrm;
 
@@ -43,7 +43,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $bp The BuddyPress object.
+	 * @var BP_Groups_CiviCRM_Sync_BuddyPress
 	 */
 	public $bp;
 
@@ -52,7 +52,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var str $settings The Settings page reference.
+	 * @var string
 	 */
 	public $settings_page;
 
@@ -61,7 +61,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var str $sync_page The Manual Sync page reference.
+	 * @var string
 	 */
 	public $sync_page;
 
@@ -70,7 +70,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var str $plugin_version The Plugin version.
+	 * @var string
 	 */
 	public $plugin_version;
 
@@ -79,7 +79,7 @@ class BP_Groups_CiviCRM_Sync_Admin {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var array $settings The Settings array.
+	 * @var array
 	 */
 	public $settings = [];
 

@@ -25,7 +25,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $plugin The plugin object.
+	 * @var BP_Groups_CiviCRM_Sync
 	 */
 	public $plugin;
 
@@ -35,7 +35,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 * @since 0.1
 	 * @since 0.4 Renamed.
 	 * @access public
-	 * @var object $civicrm The CiviCRM object.
+	 * @var BP_Groups_CiviCRM_Sync_CiviCRM
 	 */
 	public $civicrm;
 
@@ -44,16 +44,16 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 	 *
 	 * @since 0.1
 	 * @access public
-	 * @var object $admin The Admin object.
+	 * @var BP_Groups_CiviCRM_Sync_Admin
 	 */
 	public $admin;
 
 	/**
-	 * "BP Group Hierarchy" plugin compatibility.
+	 * "BP Group Hierarchy" plugin compatibility object.
 	 *
 	 * @since 0.4
 	 * @access public
-	 * @var object $bpgh The "BP Group Hierarchy" plugin compatibility object.
+	 * @var BP_Groups_CiviCRM_Sync_BuddyPress_BPGH
 	 */
 	public $bpgh;
 
