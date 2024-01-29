@@ -680,8 +680,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		// Did we ask to enable Parent Group?
 		$settings_parent_group = 0;
-		if ( isset( $_POST['bp_groups_civicrm_sync_settings_parent_group'] ) ) {
-			$settings_parent_group = (int) $_POST['bp_groups_civicrm_sync_settings_parent_group'];
+		$checkbox_id = 'bp_groups_civicrm_sync_settings_parent_group';
+		if ( isset( $_POST[ $checkbox_id ] ) ) {
+			$settings_parent_group = (int) $_POST[ $checkbox_id ];
 		}
 
 		// Sanitise and set option.

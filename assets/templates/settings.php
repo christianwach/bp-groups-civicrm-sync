@@ -60,7 +60,7 @@
 			<tr>
 				<th scope="row"><label class="bp_groups_civicrm_sync_settings_label" for="bp_groups_civicrm_sync_settings_parent_group"><?php esc_html_e( 'Use Parent Group', 'bp-groups-civicrm-sync' ); ?></label></th>
 				<td>
-					<input type="checkbox" class="settings-checkbox" name="bp_groups_civicrm_sync_settings_parent_group" id="bp_groups_civicrm_sync_settings_parent_group" value="1"<?php checked( 0, $parent_group ); ?> />
+					<input type="checkbox" class="settings-checkbox" name="bp_groups_civicrm_sync_settings_parent_group" id="bp_groups_civicrm_sync_settings_parent_group" value="1"<?php checked( 1, $parent_group ); ?> />
 					<label class="bp_groups_civicrm_sync_settings_label" for="bp_groups_civicrm_sync_settings_parent_group"><?php esc_html_e( 'Assign CiviCRM Groups to a "BuddyPress Groups" Parent Group.', 'bp-groups-civicrm-sync' ); ?></label>
 				</td>
 			</tr>
