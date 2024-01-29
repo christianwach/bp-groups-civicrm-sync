@@ -4,7 +4,7 @@ Donate link: https://www.paypal.me/interactivist
 Tags: civicrm, buddypress, user, groups, sync
 Requires at least: 4.9
 Tested up to: 6.4
-Stable tag: 0.4.4
+Stable tag: 0.5.0a
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 

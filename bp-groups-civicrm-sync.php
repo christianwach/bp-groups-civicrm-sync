@@ -5,7 +5,7 @@
  * GitHub Plugin URI: https://github.com/christianwach/bp-groups-civicrm-sync
  * Description: Enables two-way synchronisation between BuddyPress Groups and CiviCRM Groups.
  * Author: Christian Wach
- * Version: 0.4.4
+ * Version: 0.5.0a
  * Author URI: https://haystack.co.uk
  * Text Domain: bp-groups-civicrm-sync
  * Domain Path: /languages
@@ -17,7 +17,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Set our version here.
-define( 'BP_GROUPS_CIVICRM_SYNC_VERSION', '0.4.4' );
+define( 'BP_GROUPS_CIVICRM_SYNC_VERSION', '0.5.0a' );
 
 // Store reference to this file.
 if ( ! defined( 'BP_GROUPS_CIVICRM_SYNC_FILE' ) ) {
