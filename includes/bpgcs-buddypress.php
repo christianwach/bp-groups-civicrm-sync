@@ -141,6 +141,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 		// Catch Groups admin page load.
 		add_action( 'bp_groups_admin_load', [ $this, 'register_hooks_bp_groups_admin' ], 10, 1 );
 
+		// Add a link to the CiviCRM Group.
+		add_action( 'bp_groups_admin_comment_row_actions', [ $this, 'civicrm_group_links_add' ], 10, 3 );
+
 		/**
 		 * Broadcast that our hooks have been registered.
 		 *
@@ -1318,6 +1321,38 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 		// Remove the corresponding CiviCRM Group memberships.
 		$this->civicrm->group_contact->memberships_sync( $args );
+
+	}
+
+	/**
+	 * Adds links to the synced CiviCRM Groups.
+	 *
+	 * @since 0.4.4
+	 *
+	 * @param array $actions Array of actions to be displayed for the column content.
+	 * @param array $item The current group item in the loop.
+	 * @return array $actions Modified array of actions to be displayed for the column content.
+	 */
+	public function civicrm_group_links_add( $actions, $item ) {
+
+		// Construct Member Group URL.
+		$sync_name       = $this->civicrm->member_group_get_sync_name( $item['id'] );
+		$member_group_id = $this->civicrm->group_id_find( $sync_name );
+		$member_url      = $this->civicrm->link_admin_get( 'civicrm/group/edit', 'reset=1&action=update&id=' . $member_group_id );
+
+		// Construct ACL Group URL.
+		$sync_name    = $this->civicrm->acl_group_get_sync_name( $item['id'] );
+		$acl_group_id = $this->civicrm->group_id_find( $sync_name );
+		$acl_url      = $this->civicrm->link_admin_get( 'civicrm/group/edit', 'reset=1&action=update&id=' . $acl_group_id );
+
+		// CiviCRM Member Group.
+		$actions['civicrm_member'] = sprintf( '<a href="%s">%s</a>', esc_url( $member_url ), __( 'CiviCRM Member', 'bp-groups-civicrm-sync' ) );
+
+		// CiviCRM Admin Group.
+		$actions['civicrm_acl'] = sprintf( '<a href="%s">%s</a>', esc_url( $acl_url ), __( 'CiviCRM ACL', 'bp-groups-civicrm-sync' ) );
+
+		// --<
+		return $actions;
 
 	}
 

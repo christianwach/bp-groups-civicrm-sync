@@ -1185,4 +1185,41 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 	}
 
+	// -------------------------------------------------------------------------
+
+	/**
+	 * Gets a CiviCRM admin link.
+	 *
+	 * @since 0.4.4
+	 *
+	 * @param string $path The CiviCRM path.
+	 * @param string $params The CiviCRM parameters.
+	 * @return string $link The URL of the CiviCRM page.
+	 */
+	public function link_admin_get( $path = '', $params = null ) {
+
+		// Init link.
+		$link = '';
+
+		// Init CiviCRM or bail.
+		if ( ! $this->is_initialised() ) {
+			return $link;
+		}
+
+		// Use CiviCRM to construct link.
+		$link = CRM_Utils_System::url(
+			$path, // Path to the resource.
+			$params, // Params to pass to resource.
+			true, // Force an absolute link.
+			null, // Fragment (#anchor) to append.
+			true, // Encode special HTML characters.
+			false, // CMS front end.
+			true // CMS back end.
+		);
+
+		// --<
+		return $link;
+
+	}
+
 }
