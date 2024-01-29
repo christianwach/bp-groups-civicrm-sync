@@ -44,6 +44,10 @@ This plugin is in active development. For feature requests and bug reports (or i
 
 == Changelog ==
 
+= 0.4.4 =
+
+* Tested with latest WordPress
+
 = 0.4.3 =
 
 * Removes a possibly recursive CiviCRM initialisation call
