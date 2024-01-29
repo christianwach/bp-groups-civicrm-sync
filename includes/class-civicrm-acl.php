@@ -999,7 +999,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 		// Build params to get ACL.
 		$params = [
 			'version'      => 3,
-			'object_table' => 'civicrm_saved_search',
+			'object_table' => 'civicrm_group',
 			'object_id'    => $member_group_id,
 			'entity_table' => 'civicrm_acl_role',
 			'entity_id'    => $acl_role_id,
@@ -1056,7 +1056,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 		// Build params to create ACL.
 		$params = [
 			'version'      => 3,
-			'object_table' => 'civicrm_saved_search',
+			'object_table' => 'civicrm_group',
 			'entity_table' => 'civicrm_acl_role',
 		] + $acl;
 
