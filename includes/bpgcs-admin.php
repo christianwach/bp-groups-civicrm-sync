@@ -475,9 +475,9 @@ class BP_Groups_CiviCRM_Sync_Admin {
 
 		// Init localisation.
 		$localisation = [
-			'total'    => __( '{{total}} groups to sync...', 'bp-groups-civicrm-sync' ),
-			'current'  => __( 'Processing group "{{name}}"', 'bp-groups-civicrm-sync' ),
-			'complete' => __( 'Processing group "{{name}}" complete', 'bp-groups-civicrm-sync' ),
+			'total'    => __( '{{total}} Groups to sync...', 'bp-groups-civicrm-sync' ),
+			'current'  => __( 'Processing Group "{{name}}"', 'bp-groups-civicrm-sync' ),
+			'complete' => __( 'Processing Group "{{name}}" complete', 'bp-groups-civicrm-sync' ),
 			'done'     => __( 'All done!', 'bp-groups-civicrm-sync' ),
 		];
 

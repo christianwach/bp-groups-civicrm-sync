@@ -799,7 +799,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			$trace = $e->getTraceAsString();
 			$log   = [
 				'method'    => __METHOD__,
-				'message'   => __( 'There are multiple groups with the same "sync name".', 'bp-groups-civicrm-sync' ),
+				'message'   => __( 'There are multiple Groups with the same "sync name".', 'bp-groups-civicrm-sync' ),
 				'params'    => $params,
 				'result'    => $result,
 				'backtrace' => $trace,
@@ -868,7 +868,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 			$trace = $e->getTraceAsString();
 			$log   = [
 				'method'    => __METHOD__,
-				'message'   => __( 'There are mulitple groups with the same title.', 'bp-groups-civicrm-sync' ),
+				'message'   => __( 'There are mulitple Groups with the same title.', 'bp-groups-civicrm-sync' ),
 				'params'    => $params,
 				'result'    => $result,
 				'backtrace' => $trace,

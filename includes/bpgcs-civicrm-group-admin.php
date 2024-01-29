@@ -190,7 +190,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 			'bpgcs_description',
 			sprintf(
 				/* translators: 1: The opening strong tag, 2: The closing strong tag */
-				__( '%1$sNOTE:%2$s If you are going to create a BuddyPress Group, you only need to fill out the "Group Title" field (and optionally the "Group Description" field). The Group Type will be automatically set to "Access Control" and (if a container group has been specified) the Parent Group will be automatically assigned to the container group.', 'bp-groups-civicrm-sync' ),
+				__( '%1$sNOTE:%2$s If you are going to create a BuddyPress Group, you only need to fill out the "Group Title" field (and optionally the "Group Description" field). The Group Type will be automatically set to "Access Control" and (if a container Group has been specified) the Parent Group will be automatically assigned to the container Group.', 'bp-groups-civicrm-sync' ),
 				'<strong>',
 				'</strong>'
 			)
@@ -407,7 +407,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 			'bpgcs_description',
 			sprintf(
 				/* translators: 1: The opening strong tag, 2: The closing strong tag */
-				__( '%1$sWARNING:%2$s You may wish to make sure your CiviCRM Contacts exist as WordPress Users before creating this group. CiviCRM Contacts that do not have a corresponding WordPress User will have one created for them. You will need to review roles for the new WordPress Users when this process is complete.', 'bp-groups-civicrm-sync' ),
+				__( '%1$sWARNING:%2$s You may wish to make sure your CiviCRM Contacts exist as WordPress Users before creating this Group. CiviCRM Contacts that do not have a corresponding WordPress User will have one created for them. You will need to review roles for the new WordPress Users when this process is complete.', 'bp-groups-civicrm-sync' ),
 				'<strong>',
 				'</strong>'
 			)

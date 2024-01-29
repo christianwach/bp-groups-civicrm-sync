@@ -49,7 +49,7 @@
 
 			<h3><?php esc_html_e( 'Convert Drupal OG Groups in CiviCRM to BuddyPress Groups', 'bp-groups-civicrm-sync' ); ?></h3>
 
-			<p><?php esc_html_e( 'WARNING: this will probably only work when there are a small number of groups. If you have lots of groups, it would be worth writing some kind of chunked update routine. I will upgrade this plugin to do so at some point.', 'bp-groups-civicrm-sync' ); ?></p>
+			<p><?php esc_html_e( 'WARNING: this will probably only work when there are a small number of Groups. If you have lots of Groups, it would be worth writing some kind of chunked update routine. I will upgrade this plugin to do so at some point.', 'bp-groups-civicrm-sync' ); ?></p>
 
 			<table class="form-table">
 

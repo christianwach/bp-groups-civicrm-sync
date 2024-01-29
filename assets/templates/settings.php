@@ -30,7 +30,7 @@
 
 			echo sprintf(
 				/* translators: 1: The opening strong tag, 2: The closing strong tag */
-				esc_html__( '%1$sPlease Note:%2$s it is strongly recommended to choose the following settings before you sync groups. You can change these settings later, but it will require some heavy processing if you have a large number of groups.', 'bp-groups-civicrm-sync' ),
+				esc_html__( '%1$sPlease Note:%2$s it is strongly recommended to choose the following settings before you sync Groups. You can change these settings later, but it will require some heavy processing if you have a large number of Groups.', 'bp-groups-civicrm-sync' ),
 				'<strong>',
 				'</strong>'
 			);
@@ -47,7 +47,7 @@
 
 			echo sprintf(
 				/* translators: 1: The opening anchor tag, 2: The closing anchor tag */
-				esc_html__( 'Depending on your use case, select whether you want your CiviCRM Groups to be assigned to a "BuddyPress Groups" parent group in CiviCRM. If you do, then CiviCRM Groups will be nested under - and inherit permissions from - the "BuddyPress Groups" parent group. Please refer to %1$sthe documentation%2$s to decide if this is useful to you or not.', 'bp-groups-civicrm-sync' ),
+				esc_html__( 'Depending on your use case, select whether you want your CiviCRM Groups to be assigned to a "BuddyPress Groups" Parent Group in CiviCRM. If you do, then CiviCRM Groups will be nested under - and inherit permissions from - the "BuddyPress Groups" Parent Group. Please refer to %1$sthe documentation%2$s to decide if this is useful to you or not.', 'bp-groups-civicrm-sync' ),
 				'<a href="https://docs.civicrm.org/user/en/latest/organising-your-data/groups-and-tags/">',
 				'</a>'
 			);
@@ -61,7 +61,7 @@
 				<th scope="row"><label class="bp_groups_civicrm_sync_settings_label" for="bp_groups_civicrm_sync_settings_parent_group"><?php esc_html_e( 'Use Parent Group', 'bp-groups-civicrm-sync' ); ?></label></th>
 				<td>
 					<input type="checkbox" class="settings-checkbox" name="bp_groups_civicrm_sync_settings_parent_group" id="bp_groups_civicrm_sync_settings_parent_group" value="1"<?php checked( 0, $parent_group ); ?> />
-					<label class="bp_groups_civicrm_sync_settings_label" for="bp_groups_civicrm_sync_settings_parent_group"><?php esc_html_e( 'Assign CiviCRM Groups to a "BuddyPress Groups" parent group.', 'bp-groups-civicrm-sync' ); ?></label>
+					<label class="bp_groups_civicrm_sync_settings_label" for="bp_groups_civicrm_sync_settings_parent_group"><?php esc_html_e( 'Assign CiviCRM Groups to a "BuddyPress Groups" Parent Group.', 'bp-groups-civicrm-sync' ); ?></label>
 				</td>
 			</tr>
 

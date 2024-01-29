@@ -278,7 +278,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 			$this->nesting_clear( $member_group_id, $member_group['parents'] );
 		}
 
-		// Get the ID of the CiviCRM Member Group that is synced to the BuddyPress parent Group.
+		// Get the ID of the CiviCRM Member Group that is synced to the BuddyPress Parent Group.
 		$civicrm_parent_id = $this->parent_id_get( $bp_parent_id, 'member' );
 
 		// Create new nesting.
@@ -310,7 +310,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 			$this->nesting_clear( $acl_group_id, $acl_group['parents'] );
 		}
 
-		// Get the ID of the CiviCRM ACL Group that is synced to the BuddyPress parent Group.
+		// Get the ID of the CiviCRM ACL Group that is synced to the BuddyPress Parent Group.
 		$acl_parent_id = $this->parent_id_get( $bp_parent_id, 'acl' );
 
 		// Create new nesting.
@@ -321,8 +321,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 	/**
 	 * Clears the CiviCRM Group Nestings for a given Group ID.
 	 *
-	 * BuddyPress Groups can only have one parent Group but CiviCRM Groups can
-	 * have multiple parent Groups. Deleting all parent CiviCRM Groups is a
+	 * BuddyPress Groups can only have one Parent Group but CiviCRM Groups can
+	 * have multiple Parent Groups. Deleting all parent CiviCRM Groups is a
 	 * crude way to ensure that our Synced CiviCRM Groups have the same
 	 * hierarchy as their BuddyPress counterparts.
 	 *
