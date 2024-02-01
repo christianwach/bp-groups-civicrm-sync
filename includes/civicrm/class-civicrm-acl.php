@@ -5,7 +5,6 @@
  * Handles functionality related to CiviCRM ACLs.
  *
  * @package BP_Groups_CiviCRM_Sync
- * @since 0.4
  */
 
 // Exit if accessed directly.
@@ -93,7 +92,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 	}
 
-	// -------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------
 
 	/**
 	 * Creates the ACL for an ACL Group's permissions over a Member Group.
@@ -151,7 +150,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 			'operation' => 'Edit',
 			'name'      => $name,
 			'is_active' => 1,
-			'priority' => 0,
+			'priority'  => 0,
 		];
 
 		// Create the "ACL".
@@ -331,7 +330,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 				'operation' => 'Edit',
 				'name'      => $name,
 				'is_active' => 1,
-				'priority' => 0,
+				'priority'  => 0,
 			];
 
 			// Create the "ACL".
@@ -341,8 +340,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 			// Only the ACL "Name" and "Priority" need to change.
 			$params = [
-				'id'   => $existing_acl['id'],
-				'name' => $name,
+				'id'       => $existing_acl['id'],
+				'name'     => $name,
 				'priority' => 0,
 			];
 
@@ -404,7 +403,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 	}
 
-	// -------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------
 
 	/**
 	 * Gets an "ACL Role" for a given "sync name".
@@ -624,7 +623,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 	}
 
-	// -------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------
 
 	/**
 	 * Gets an "ACL Entity Role" for a given ACL Role and Synced ACL Group.
@@ -978,7 +977,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 	}
 
-	// -------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------
 
 	/**
 	 * Gets an "ACL" for a given set of data.
@@ -1187,7 +1186,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 
 	}
 
-	// -------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------
 
 	/**
 	 * Gets a CiviCRM Option Group by name.

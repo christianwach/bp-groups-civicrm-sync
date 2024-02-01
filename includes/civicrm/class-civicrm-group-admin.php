@@ -2,10 +2,12 @@
 /**
  * CiviCRM Group Admin Class.
  *
- * Handles functionality related to CiviCRM Group Admin.
+ * Handles functionality on CiviCRM Group Settings screens and conversion of
+ * CiviCRM Groups into BuddyPress Groups.
+ *
+ * Note: This functionality is not yet implemented.
  *
  * @package BP_Groups_CiviCRM_Sync
- * @since 0.4
  */
 
 // Exit if accessed directly.
@@ -39,24 +41,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 	public $civicrm;
 
 	/**
-	 * BuddyPress object.
-	 *
-	 * @since 0.4
-	 * @access public
-	 * @var BP_Groups_CiviCRM_Sync_BuddyPress
-	 */
-	public $bp;
-
-	/**
-	 * Admin object.
-	 *
-	 * @since 0.4
-	 * @access public
-	 * @var BP_Groups_CiviCRM_Sync_Admin
-	 */
-	public $admin;
-
-	/**
 	 * Constructor.
 	 *
 	 * @since 0.4
@@ -68,8 +52,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		// Store reference to objects.
 		$this->plugin  = $parent->plugin;
 		$this->civicrm = $parent;
-		$this->bp      = $parent->bp;
-		$this->admin   = $parent->admin;
 
 		// Boot when CiviCRM object is loaded.
 		add_action( 'bpgcs/civicrm/loaded', [ $this, 'initialise' ] );
@@ -130,7 +112,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 
 	}
 
-	// -------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------
 
 	/**
 	 * Register directories that CiviCRM searches for php and template files.
@@ -157,7 +139,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 
 	}
 
-	// -------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------
 
 	/**
 	 * Enables a BuddyPress Group to be created when creating a CiviCRM Group.
@@ -244,7 +226,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 	}
 
 	/**
-	 * Create a BuddyPress Group from a CiviCRM Group.
+	 * Creates a BuddyPress Group from a CiviCRM Group.
 	 *
 	 * @since 0.1
 	 *
@@ -253,13 +235,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 	public function civicrm_group_to_bp_group_convert( $group ) {
 
 		// Remove hooks to prevent recursion.
-		$this->bp->unregister_hooks_groups();
+		$this->plugin->bp->group->unregister_hooks_groups();
 
 		// Create the BuddyPress Group.
-		$bp_group_id = $this->bp->group_create( $group->title, $group->description );
+		$bp_group_id = $this->plugin->bp->group->create( $group->title, $group->description );
 
 		// Re-add hooks.
-		$this->bp->register_hooks_groups();
+		$this->plugin->bp->group->register_hooks_groups();
 
 		// Get all Contacts in this Group.
 		$params = [
@@ -277,7 +259,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 			$is_admin = 1;
 
 			// Create Memberships from the CiviCRM Contacts.
-			$this->bp->group_members_create( $bp_group_id, $group_admins['values'], $is_admin );
+			$this->plugin->bp->group_member->members_create( $bp_group_id, $group_admins['values'], $is_admin );
 
 		}
 
@@ -285,7 +267,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		$source = isset( $group->source ) ? $group->source : '';
 
 		// Get the non-ACL CiviCRM Group ID.
-		$civicrm_group_id = $this->civicrm->group_id_find(
+		$civicrm_group_id = $this->civicrm->group->id_find(
 			str_replace( 'OG Sync Group ACL', 'OG Sync Group', $source )
 		);
 
@@ -305,7 +287,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 			$is_admin = 0;
 
 			// Create Memberships from the CiviCRM Contacts.
-			$this->bp->group_members_create( $bp_group_id, $group_members['values'], $is_admin );
+			$this->plugin->bp->group_member->members_create( $bp_group_id, $group_members['values'], $is_admin );
 
 		}
 
@@ -318,7 +300,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		];
 
 		// Get name for the CiviCRM Group.
-		$acl_group_params['source'] = $this->civicrm->acl_group_get_sync_name( $bp_group_id );
+		$acl_group_params['source'] = $this->civicrm->group->acl_group_get_sync_name( $bp_group_id );
 
 		// Use CiviCRM API to create the Group (will update if ID is set).
 		$acl_group = civicrm_api( 'Group', 'create', $acl_group_params );
@@ -343,7 +325,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		];
 
 		// Get name for the CiviCRM Group.
-		$member_group_params['source'] = $this->civicrm->member_group_get_sync_name( $bp_group_id );
+		$member_group_params['source'] = $this->civicrm->group->member_group_get_sync_name( $bp_group_id );
 
 		// Use CiviCRM API to create the Group (will update if ID is set).
 		$member_group = civicrm_api( 'Group', 'create', $member_group_params );
@@ -368,7 +350,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 
 	}
 
-	// -------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------
 
 	/**
 	 * Enable a BuddyPress Group to be created from pre-existing Drupal Organic Groups in CiviCRM.
@@ -469,7 +451,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		}
 
 		// Get all Groups.
-		$groups = $this->civicrm->groups_get_all();
+		$groups = $this->civicrm->group->groups_get_all();
 		if ( empty( $groups ) ) {
 			return;
 		}
@@ -513,13 +495,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		$bp_group_title = array_shift( explode( ': Administrator', $group->title ) );
 
 		// Remove hooks to prevent recursion.
-		$this->bp->unregister_hooks_groups();
+		$this->plugin->bp->group->unregister_hooks_groups();
 
 		// Create the BuddyPress Group.
-		$bp_group_id = $this->bp->group_create( $bp_group_title, $group->description );
+		$bp_group_id = $this->plugin->bp->group->create( $bp_group_title, $group->description );
 
 		// Re-add hooks.
-		$this->bp->register_hooks_groups();
+		$this->plugin->bp->group->register_hooks_groups();
 
 		// Get all Contacts in this Group.
 		$params = [
@@ -537,12 +519,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 			$is_admin = 1;
 
 			// Create Memberships from the CiviCRM Contacts.
-			$this->bp->group_members_create( $bp_group_id, $group_admins['values'], $is_admin );
+			$this->plugin->bp->group_member->members_create( $bp_group_id, $group_admins['values'], $is_admin );
 
 		}
 
 		// Get the non-ACL CiviCRM Group ID.
-		$civicrm_group_id = $this->civicrm->group_id_find(
+		$civicrm_group_id = $this->civicrm->group->id_find(
 			str_replace( 'OG Sync Group ACL', 'OG Sync Group', $source )
 		);
 
@@ -562,7 +544,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 			$is_admin = 0;
 
 			// Create Memberships from the CiviCRM Contacts.
-			$this->bp->group_members_create( $bp_group_id, $group_members['values'], $is_admin );
+			$this->plugin->bp->group_member->members_create( $bp_group_id, $group_members['values'], $is_admin );
 
 		}
 
@@ -575,7 +557,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		];
 
 		// Get name for the CiviCRM Group.
-		$acl_group_params['source'] = $this->civicrm->acl_group_get_sync_name( $bp_group_id );
+		$acl_group_params['source'] = $this->civicrm->group->acl_group_get_sync_name( $bp_group_id );
 
 		// Use CiviCRM API to create the Group (will update if ID is set).
 		$acl_group = civicrm_api( 'Group', 'create', $acl_group_params );
@@ -600,7 +582,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Admin {
 		];
 
 		// Get name for the CiviCRM Group.
-		$member_group_params['source'] = $this->civicrm->member_group_get_sync_name( $bp_group_id );
+		$member_group_params['source'] = $this->civicrm->group->member_group_get_sync_name( $bp_group_id );
 
 		// Use CiviCRM API to create the Group (will update if ID is set).
 		$member_group = civicrm_api( 'Group', 'create', $member_group_params );

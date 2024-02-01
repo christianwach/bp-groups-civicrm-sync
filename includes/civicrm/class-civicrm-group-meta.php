@@ -5,7 +5,6 @@
  * Handles functionality related to the CiviCRM Meta Group.
  *
  * @package BP_Groups_CiviCRM_Sync
- * @since 0.4
  */
 
 // Exit if accessed directly.
@@ -39,24 +38,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 	public $civicrm;
 
 	/**
-	 * BuddyPress object.
-	 *
-	 * @since 0.4
-	 * @access public
-	 * @var BP_Groups_CiviCRM_Sync_BuddyPress
-	 */
-	public $bp;
-
-	/**
-	 * Admin object.
-	 *
-	 * @since 0.4
-	 * @access public
-	 * @var BP_Groups_CiviCRM_Sync_Admin
-	 */
-	public $admin;
-
-	/**
 	 * Meta Group "Sync name" for Group "source" field.
 	 *
 	 * @since 0.4
@@ -77,8 +58,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 		// Store reference to objects.
 		$this->plugin  = $parent->plugin;
 		$this->civicrm = $parent;
-		$this->bp      = $parent->bp;
-		$this->admin   = $parent->admin;
 
 		// Boot when CiviCRM object is loaded.
 		add_action( 'bpgcs/civicrm/loaded', [ $this, 'initialise' ] );
@@ -122,7 +101,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 
 	}
 
-	// -------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------
 
 	/**
 	 * Get source (our unique code) for our Meta Group.
@@ -144,7 +123,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 	 *
 	 * @return int|bool The CiviCRM Group ID, or false on failure.
 	 */
-	public function group_create() {
+	public function create() {
 
 		// Try and initialise CiviCRM.
 		if ( ! $this->civicrm->is_initialised() ) {
@@ -153,7 +132,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 
 		// Get the ID of the CiviCRM Meta Group.
 		$source        = $this->get_source();
-		$meta_group_id = $this->civicrm->group_id_find( $source );
+		$meta_group_id = $this->civicrm->group->id_find( $source );
 
 		// Return it if it already exists.
 		if ( ! empty( $meta_group_id ) ) {
@@ -175,7 +154,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 		$params['source'] = $source;
 
 		// Create the CiviCRM Group.
-		$group = $this->civicrm->group_create( $params );
+		$group = $this->civicrm->group->create( $params );
 
 		// Bail on failure.
 		if ( false === $group ) {
@@ -183,7 +162,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 		}
 
 		// --<
-		return $group['id'];
+		return (int) $group['id'];
 
 	}
 
@@ -195,7 +174,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 	 *
 	 * @return bool True if the CiviCRM Group is deleted, or false on failure.
 	 */
-	public function group_delete() {
+	public function delete() {
 
 		// Try and initialise CiviCRM.
 		if ( ! $this->civicrm->is_initialised() ) {
@@ -204,7 +183,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 
 		// Get the ID of the CiviCRM Meta Group.
 		$source        = $this->get_source();
-		$meta_group_id = $this->civicrm->group_id_find( $source );
+		$meta_group_id = $this->civicrm->group->id_find( $source );
 
 		// Return early if it does not exist.
 		if ( empty( $meta_group_id ) ) {
@@ -212,7 +191,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 		}
 
 		// --<
-		return $this->civicrm->group_delete( $meta_group_id );
+		return $this->civicrm->group->delete( $meta_group_id );
 
 	}
 
@@ -231,13 +210,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 
 		// Get the ID of the CiviCRM Meta Group.
 		$source        = $this->get_source();
-		$meta_group_id = $this->civicrm->group_id_find( $source );
+		$meta_group_id = $this->civicrm->group->id_find( $source );
 		if ( false === $meta_group_id ) {
 			return;
 		}
 
 		// Get all Groups.
-		$groups = $this->civicrm->groups_get_all();
+		$groups = $this->civicrm->group->groups_get_all();
 		if ( empty( $groups ) ) {
 			return;
 		}
@@ -256,7 +235,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 			}
 
 			// Skip if it's not a BuddyPress Sync Group.
-			if ( ! $this->civicrm->has_bp_group( $group ) ) {
+			if ( ! $this->civicrm->group->has_bp_group( $group ) ) {
 				continue;
 			}
 
@@ -266,7 +245,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 			}
 
 			// Get the Group Type string.
-			$group_type = $this->civicrm->group_type_get_by_source( $group['source'] );
+			$group_type = $this->civicrm->group->type_get_by_source( $group['source'] );
 
 			// Set BuddyPress Group to empty to trigger assignment to Meta Group.
 			$bp_parent_id = 0;
@@ -278,10 +257,10 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 			$this->civicrm->group_nesting->nesting_create( $group['id'], $civicrm_parent_id );
 
 			// Preserve CiviCRM Group Type.
-			$group['group_type'] = $this->civicrm->group_type_array_get_by_type( $group_type );
+			$group['group_type'] = $this->civicrm->group->type_array_get_by_type( $group_type );
 
 			// Update the Group.
-			$success = $this->civicrm->group_update( $group );
+			$success = $this->civicrm->group->update( $group );
 
 		}
 
@@ -302,13 +281,13 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 
 		// Get the ID of the CiviCRM Meta Group.
 		$source        = $this->get_source();
-		$meta_group_id = $this->civicrm->group_id_find( $source );
+		$meta_group_id = $this->civicrm->group->id_find( $source );
 		if ( false === $meta_group_id ) {
 			return;
 		}
 
 		// Get all Groups.
-		$groups = $this->civicrm->groups_get_all();
+		$groups = $this->civicrm->group->groups_get_all();
 		if ( empty( $groups ) ) {
 			return;
 		}
@@ -327,7 +306,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 			}
 
 			// Skip if it's not a BuddyPress Sync Group.
-			if ( ! $this->civicrm->has_bp_group( $group ) ) {
+			if ( ! $this->civicrm->group->has_bp_group( $group ) ) {
 				continue;
 			}
 
@@ -358,17 +337,17 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 			$this->civicrm->group_nesting->nesting_delete( $group['id'], $meta_group_id );
 
 			// Get Group Type.
-			$group_type = $this->civicrm->group_type_get_by_source( $group['source'] );
+			$group_type = $this->civicrm->group->type_get_by_source( $group['source'] );
 
 			// Preserve CiviCRM Group Type.
-			$group['group_type'] = $this->civicrm->group_type_array_get_by_type( $group_type );
+			$group['group_type'] = $this->civicrm->group->type_array_get_by_type( $group_type );
 
 			// Remove the container Group ID from parents.
 			$parents          = array_diff( $group['parents'], [ (int) $meta_group_id ] );
 			$group['parents'] = implode( ',', $parents );
 
 			// Update the Group.
-			$success = $this->civicrm->group_update( $group );
+			$success = $this->civicrm->group->update( $group );
 
 		}
 

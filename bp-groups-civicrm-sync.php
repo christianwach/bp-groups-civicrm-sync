@@ -40,7 +40,7 @@ if ( ! defined( 'BP_GROUPS_CIVICRM_SYNC_DEBUG' ) ) {
 }
 
 /**
- * BP Groups CiviCRM Sync Class.
+ * Plugin class.
  *
  * A class that encapsulates plugin functionality.
  *
@@ -83,12 +83,15 @@ class BP_Groups_CiviCRM_Sync {
 	 */
 	public function __construct() {
 
+		// Always include WP-CLI command.
+		require_once BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/wp-cli/wp-cli-bpgcs.php';
+
 		// Init loading process.
 		add_action( 'plugins_loaded', [ $this, 'initialise' ] );
 
 	}
 
-	// -------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------
 
 	/**
 	 * Initialise this plugin.
@@ -171,9 +174,9 @@ class BP_Groups_CiviCRM_Sync {
 	public function include_files() {
 
 		// Load our class files.
-		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/class-civicrm.php';
-		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/class-buddypress.php';
-		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/class-admin.php';
+		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/civicrm/class-civicrm.php';
+		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/buddypress/class-buddypress.php';
+		require BP_GROUPS_CIVICRM_SYNC_PATH . 'includes/admin/class-admin.php';
 
 	}
 
@@ -191,7 +194,7 @@ class BP_Groups_CiviCRM_Sync {
 
 	}
 
-	// -------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------
 
 	/**
 	 * Do stuff on plugin activation.
@@ -270,7 +273,7 @@ class BP_Groups_CiviCRM_Sync {
 
 	}
 
-	// -------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------
 
 	/**
 	 * Load translation files.
@@ -291,6 +294,8 @@ class BP_Groups_CiviCRM_Sync {
 		);
 
 	}
+
+	// -----------------------------------------------------------------------------------
 
 	/**
 	 * Write to the error log.

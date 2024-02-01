@@ -5,7 +5,6 @@
  * Handles uninstall functionality.
  *
  * @package BP_Groups_CiviCRM_Sync
- * @since 0.1
  */
 
 // Exit if accessed directly.

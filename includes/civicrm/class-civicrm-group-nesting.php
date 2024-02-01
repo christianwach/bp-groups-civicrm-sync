@@ -5,7 +5,6 @@
  * Handles functionality related to CiviCRM Group Nesting.
  *
  * @package BP_Groups_CiviCRM_Sync
- * @since 0.4
  */
 
 // Exit if accessed directly.
@@ -39,24 +38,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 	public $civicrm;
 
 	/**
-	 * BuddyPress object.
-	 *
-	 * @since 0.4
-	 * @access public
-	 * @var BP_Groups_CiviCRM_Sync_BuddyPress
-	 */
-	public $bp;
-
-	/**
-	 * Admin object.
-	 *
-	 * @since 0.4
-	 * @access public
-	 * @var BP_Groups_CiviCRM_Sync_Admin
-	 */
-	public $admin;
-
-	/**
 	 * Constructor.
 	 *
 	 * @since 0.4
@@ -68,8 +49,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 		// Store reference to objects.
 		$this->plugin  = $parent->plugin;
 		$this->civicrm = $parent;
-		$this->bp      = $parent->bp;
-		$this->admin   = $parent->admin;
 
 		// Boot when CiviCRM object is loaded.
 		add_action( 'bpgcs/civicrm/loaded', [ $this, 'initialise' ] );
@@ -113,7 +92,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 
 	}
 
-	// -------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------
 
 	/**
 	 * Gets a CiviCRM Group Nesting.
@@ -250,7 +229,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 		}
 
 		// Get the Synced Group IDs from the BuddyPress Group meta.
-		$sync_groups = $this->bp->civicrm_groups_get( $bp_group_id );
+		$sync_groups = $this->civicrm->group->groups_for_bp_group_id_get( $bp_group_id );
 
 		/*
 		 * First handle the nesting of the CiviCRM Member Group.
@@ -261,8 +240,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 		if ( ! empty( $sync_groups ) ) {
 			$member_group_id = $sync_groups['member_group_id'];
 		} else {
-			$sync_name       = $this->civicrm->member_group_get_sync_name( $bp_group_id );
-			$member_group_id = $this->civicrm->group_id_find( $sync_name );
+			$sync_name       = $this->civicrm->group->member_group_get_sync_name( $bp_group_id );
+			$member_group_id = $this->civicrm->group->id_find( $sync_name );
 		}
 
 		// Bail if we don't get an ID for the Member Group.
@@ -271,7 +250,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 		}
 
 		// Get the full Group data.
-		$member_group = $this->civicrm->group_get_by_id( $member_group_id );
+		$member_group = $this->civicrm->group->get_by_id( $member_group_id );
 
 		// Delete all existing parents.
 		if ( ! empty( $member_group['parents'] ) ) {
@@ -293,8 +272,8 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 		if ( ! empty( $sync_groups ) ) {
 			$acl_group_id = $sync_groups['acl_group_id'];
 		} else {
-			$sync_name    = $this->civicrm->acl_group_get_sync_name( $bp_group_id );
-			$acl_group_id = $this->civicrm->group_id_find( $sync_name );
+			$sync_name    = $this->civicrm->group->acl_group_get_sync_name( $bp_group_id );
+			$acl_group_id = $this->civicrm->group->id_find( $sync_name );
 		}
 
 		// Bail if we don't get an ACL Group ID.
@@ -303,7 +282,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 		}
 
 		// Get the full ACL Group data.
-		$acl_group = $this->civicrm->group_get_by_id( $acl_group_id );
+		$acl_group = $this->civicrm->group->get_by_id( $acl_group_id );
 
 		// Delete all existing parents.
 		if ( ! empty( $acl_group['parents'] ) ) {
@@ -426,7 +405,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 		if ( 0 === (int) $bp_parent_id ) {
 
 			// Bail if we're not using a Meta Group.
-			$parent_group = (int) $this->admin->setting_get( 'parent_group' );
+			$parent_group = (int) $this->plugin->admin->setting_get( 'parent_group' );
 			if ( 0 === $parent_group ) {
 				return $civicrm_parent_id;
 			}
@@ -438,9 +417,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 
 			// What kind of Group is this?
 			if ( 'member' === $group_type ) {
-				$sync_name = $this->civicrm->member_group_get_sync_name( $bp_parent_id );
+				$sync_name = $this->civicrm->group->member_group_get_sync_name( $bp_parent_id );
 			} elseif ( 'acl' === $group_type ) {
-				$sync_name = $this->civicrm->acl_group_get_sync_name( $bp_parent_id );
+				$sync_name = $this->civicrm->group->acl_group_get_sync_name( $bp_parent_id );
 			} else {
 				return $civicrm_parent_id;
 			}
@@ -448,7 +427,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Nesting {
 		}
 
 		// Get the ID of the parent CiviCRM Group.
-		$civicrm_parent_id = $this->civicrm->group_id_find( $sync_name );
+		$civicrm_parent_id = $this->civicrm->group->id_find( $sync_name );
 
 		// --<
 		return $civicrm_parent_id;

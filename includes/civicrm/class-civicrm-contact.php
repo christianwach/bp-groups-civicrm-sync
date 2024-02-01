@@ -5,7 +5,6 @@
  * Handles functionality related to CiviCRM Contacts.
  *
  * @package BP_Groups_CiviCRM_Sync
- * @since 0.4
  */
 
 // Exit if accessed directly.
@@ -39,24 +38,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 	public $civicrm;
 
 	/**
-	 * BuddyPress object.
-	 *
-	 * @since 0.4
-	 * @access public
-	 * @var BP_Groups_CiviCRM_Sync_BuddyPress
-	 */
-	public $bp;
-
-	/**
-	 * Admin object.
-	 *
-	 * @since 0.4
-	 * @access public
-	 * @var BP_Groups_CiviCRM_Sync_Admin
-	 */
-	public $admin;
-
-	/**
 	 * Constructor.
 	 *
 	 * @since 0.4
@@ -68,8 +49,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 		// Store reference to objects.
 		$this->plugin  = $parent->plugin;
 		$this->civicrm = $parent;
-		$this->bp      = $parent->bp;
-		$this->admin   = $parent->admin;
 
 		// Boot when CiviCRM object is loaded.
 		add_action( 'bpgcs/civicrm/loaded', [ $this, 'initialise' ] );
@@ -113,7 +92,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 
 	}
 
-	// -------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------
 
 	/**
 	 * Gets the data for multiple CiviCRM Contacts for an array of Contact IDs.
@@ -174,7 +153,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 
 	}
 
-	// -------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------
 
 	/**
 	 * Gets the CiviCRM Contact ID for a given WordPress User ID.
@@ -191,9 +170,6 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 		if ( ! $this->civicrm->is_initialised() ) {
 			return false;
 		}
-
-		// Make sure CiviCRM file is included.
-		require_once 'CRM/Core/BAO/UFMatch.php';
 
 		// Do initial search.
 		$contact_id = CRM_Core_BAO_UFMatch::getContactId( $user_id );
@@ -245,7 +221,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 
 	}
 
-	// -------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------
 
 	/**
 	 * Create a link between a WordPress User and a CiviCRM Contact.
@@ -307,7 +283,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Contact {
 
 	}
 
-	// -------------------------------------------------------------------------
+	// -----------------------------------------------------------------------------------
 
 	/**
 	 * Gets the CiviCRM Contact data for a given ID.
