@@ -38,6 +38,15 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_Group_Member {
 	public $bp;
 
 	/**
+	 * Store for previous Group Status.
+	 *
+	 * @since 0.5.0
+	 * @access private
+	 * @var array
+	 */
+	public $old_status = [];
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 0.5.0
@@ -291,7 +300,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_Group_Member {
 		}
 
 		// Set a flag for use in "past tense" callback.
-		$this->old_status = $status;
+		$this->old_status[ $group_id ][ $user_id ] = $status ;
 
 	}
 
@@ -357,9 +366,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_Group_Member {
 		$status = $this->status_get_for_user( $user_id, $group_id );
 
 		// Check previous Member status.
-		if ( isset( $this->old_status ) && 'ex-admin' === $this->old_status ) {
-			$status = $this->old_status;
-			unset( $this->old_status );
+		if ( ! empty( $this->old_status[ $group_id ][ $user_id ] ) && 'ex-admin' === $this->old_status[ $group_id ][ $user_id ] ) {
+			$status = $this->old_status[ $group_id ][ $user_id ];
+			unset( $this->old_status[ $group_id ][ $user_id ] );
 		}
 
 		// Is this Member active?
