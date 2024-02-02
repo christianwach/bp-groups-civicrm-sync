@@ -54,7 +54,7 @@ class BP_Groups_CiviCRM_Sync_Page_Manual_Sync extends BP_Groups_CiviCRM_Sync_Pag
 	 * @var array
 	 */
 	public $counts = [
-		'bp_groups_count' => 0,
+		'bp_groups_count'      => 0,
 		'civicrm_groups_count' => 0,
 	];
 

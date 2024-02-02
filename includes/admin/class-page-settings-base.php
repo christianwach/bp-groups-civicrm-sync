@@ -706,7 +706,8 @@ abstract class BP_Groups_CiviCRM_Sync_Page_Settings_Base {
 	 *
 	 * @since 0.5.0
 	 *
-	 * @param array $classes An array of postbox classes.
+	 * @param string $screen_id The Screen indentifier.
+	 * @return array $data The array of data to be shared with all metaboxes.
 	 */
 	public function meta_boxes_data( $screen_id ) {
 

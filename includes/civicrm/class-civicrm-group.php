@@ -374,14 +374,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group {
 
 		// Refine query depending of Group Type.
 		switch ( $type ) {
-			case 'member' :
+			case 'member':
 				$source = $this->acl_member . ' :';
 				break;
-			case 'acl' :
+			case 'acl':
 				$source = $this->acl_member;
 				break;
-			case 'both' :
-			default :
+			case 'both':
+			default:
 				$source = $this->source_member;
 				break;
 		}
@@ -435,14 +435,14 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group {
 
 		// Refine query depending of Group Type.
 		switch ( $type ) {
-			case 'member' :
+			case 'member':
 				$source = $this->acl_member . ' :';
 				break;
-			case 'acl' :
+			case 'acl':
 				$source = $this->acl_member;
 				break;
-			case 'both' :
-			default :
+			case 'both':
+			default:
 				$source = $this->source_member;
 				break;
 		}

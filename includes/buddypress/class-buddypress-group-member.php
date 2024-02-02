@@ -300,7 +300,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_Group_Member {
 		}
 
 		// Set a flag for use in "past tense" callback.
-		$this->old_status[ $group_id ][ $user_id ] = $status ;
+		$this->old_status[ $group_id ][ $user_id ] = $status;
 
 	}
 
