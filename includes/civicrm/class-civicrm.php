@@ -90,7 +90,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 	/**
 	 * CiviCRM Group Admin object.
 	 *
-	 * Placeholder.
+	 * Placeholder. File exists but functionality is not implemented.
 	 *
 	 * @since 0.4
 	 * @access public
