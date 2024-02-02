@@ -47,6 +47,18 @@ class BP_Groups_CiviCRM_Sync_Page_Manual_Sync extends BP_Groups_CiviCRM_Sync_Pag
 	public $submit_ids = [];
 
 	/**
+	 * BuddyPress and CiviCRM Group counts.
+	 *
+	 * @since 0.5.0
+	 * @access public
+	 * @var array
+	 */
+	public $counts = [
+		'bp_groups_count' => 0,
+		'civicrm_groups_count' => 0,
+	];
+
+	/**
 	 * Class constructor.
 	 *
 	 * @since 0.5.0
@@ -96,6 +108,12 @@ class BP_Groups_CiviCRM_Sync_Page_Manual_Sync extends BP_Groups_CiviCRM_Sync_Pag
 		// Add some copy to the Page.
 		add_filter( $this->hook_prefix . '/settings/page/form/before', [ $this, 'form_description' ] );
 
+		// Store the BuddyPress and CiviCRM Group counts.
+		add_action( $this->hook_prefix . '/settings/page/admin_menu', [ $this, 'group_counts_get' ], 10, 2 );
+
+		// Filter the data shared between meta boxes.
+		add_filter( $this->hook_prefix . '/settings/page/meta_boxes_data', [ $this, 'meta_boxes_data_add' ], 10, 2 );
+
 	}
 
 	/**
@@ -119,6 +137,24 @@ class BP_Groups_CiviCRM_Sync_Page_Manual_Sync extends BP_Groups_CiviCRM_Sync_Pag
 			'bp_to_civicrm'      => $this->hook_prefix . '_bp_to_civicrm',
 			'bp_to_civicrm_stop' => $this->hook_prefix . '_bp_to_civicrm_stop',
 		];
+
+	}
+
+	/**
+	 * Stores the BuddyPress and CiviCRM Group counts..
+	 *
+	 * @since 0.5.0
+	 *
+	 * @param string $page_handle The handle of the Settings Page.
+	 * @param string $page_slug The slug of the Settings Page.
+	 */
+	public function group_counts_get( $page_handle, $page_slug ) {
+
+		// Add the number of BuddyPress Groups.
+		$this->counts['bp_groups_count'] = $this->plugin->bp->group->total_get();
+
+		// Add the number of synced CiviCRM Groups.
+		$this->counts['civicrm_groups_count'] = $this->plugin->civicrm->group->synced_total_get();
 
 	}
 
@@ -161,6 +197,9 @@ class BP_Groups_CiviCRM_Sync_Page_Manual_Sync extends BP_Groups_CiviCRM_Sync_Pag
 
 		// Get all the Group Contacts in the Synced Groups.
 		$group_contacts = $this->plugin->civicrm->group_contact->contacts_get();
+		if ( ( $group_contacts instanceof CRM_Core_Exception ) ) {
+			$group_contacts = [];
+		}
 
 		// Get the default step count.
 		$batch      = new BP_Groups_CiviCRM_Sync_Admin_Batch( $this->hook_prefix . '_bp_to_civicrm' );
@@ -242,6 +281,24 @@ class BP_Groups_CiviCRM_Sync_Page_Manual_Sync extends BP_Groups_CiviCRM_Sync_Pag
 	}
 
 	/**
+	 * Adds data shared between all meta boxes.
+	 *
+	 * @since 0.5.0
+	 *
+	 * @param array  $data The array of metabox data.
+	 * @param string $screen_id The Settings Page Screen ID.
+	 * @return array $data The modified array of metabox data.
+	 */
+	public function meta_boxes_data_add( $data, $screen_id ) {
+
+		// Add the number of BuddyPress Groups and synced CiviCRM Groups.
+		$data['counts'] = $this->counts;
+
+		return $data;
+
+	}
+
+	/**
 	 * Registers meta boxes.
 	 *
 	 * @since 0.5.0
@@ -261,43 +318,60 @@ class BP_Groups_CiviCRM_Sync_Page_Manual_Sync extends BP_Groups_CiviCRM_Sync_Pag
 			return;
 		}
 
-		// Define a handle for the following metabox.
-		$handle = $this->hook_prefix . '_sync_civicrm_to_bp';
+		// Show metabox when there are BuddyPress Groups.
+		if ( ! empty( $data['counts']['bp_groups_count'] ) ) {
 
-		// Add the metabox.
-		add_meta_box(
-			$handle,
-			__( 'CiviCRM Groups &rarr; BuddyPress Groups', 'bp-groups-civicrm-sync' ),
-			[ $this, 'meta_box_civicrm_to_bp_render' ], // Callback.
-			$screen_id, // Screen ID.
-			'normal', // Column: options are 'normal' and 'side'.
-			'core', // Vertical placement: options are 'core', 'high', 'low'.
-			$data
-		);
+			// Define a handle for the following metabox.
+			$handle = $this->hook_prefix . '_sync_bp_to_civicrm';
 
-		/*
-		// Make this metabox closed by default.
-		add_filter( "postbox_classes_{$screen_id}_{$handle}", [ $this, 'meta_box_closed' ] );
-		*/
+			// Add the metabox.
+			add_meta_box(
+				$handle,
+				__( 'BuddyPress Groups &rarr; CiviCRM Groups', 'bp-groups-civicrm-sync' ),
+				[ $this, 'meta_box_bp_to_civicrm_render' ], // Callback.
+				$screen_id, // Screen ID.
+				'normal', // Column: options are 'normal' and 'side'.
+				'core', // Vertical placement: options are 'core', 'high', 'low'.
+				$data
+			);
 
-		// Define a handle for the following metabox.
-		$handle = $this->hook_prefix . '_sync_bp_to_civicrm';
+			/*
+			// Make this metabox closed by default.
+			add_filter( "postbox_classes_{$screen_id}_{$handle}", [ $this, 'meta_box_closed' ] );
+			*/
 
-		// Add the metabox.
-		add_meta_box(
-			$handle,
-			__( 'BuddyPress Groups &rarr; CiviCRM Groups', 'bp-groups-civicrm-sync' ),
-			[ $this, 'meta_box_bp_to_civicrm_render' ], // Callback.
-			$screen_id, // Screen ID.
-			'side', // Column: options are 'normal' and 'side'.
-			'core', // Vertical placement: options are 'core', 'high', 'low'.
-			$data
-		);
+		}
 
-		/*
-		// Make this metabox closed by default.
-		add_filter( "postbox_classes_{$screen_id}_{$handle}", [ $this, 'meta_box_closed' ] );
-		*/
+		// Show metabox when there are CiviCRM Groups.
+		if ( ! empty( $data['counts']['civicrm_groups_count'] ) ) {
+
+			// Move to side column when there are BuddyPress Groups.
+			if ( ! empty( $data['counts']['bp_groups_count'] ) ) {
+				$column = 'side';
+			} else {
+				$column = 'normal';
+			}
+
+			// Define a handle for the following metabox.
+			$handle = $this->hook_prefix . '_sync_civicrm_to_bp';
+
+			// Add the metabox.
+			add_meta_box(
+				$handle,
+				__( 'CiviCRM Groups &rarr; BuddyPress Groups', 'bp-groups-civicrm-sync' ),
+				[ $this, 'meta_box_civicrm_to_bp_render' ], // Callback.
+				$screen_id, // Screen ID.
+				$column, // Column: options are 'normal' and 'side'.
+				'core', // Vertical placement: options are 'core', 'high', 'low'.
+				$data
+			);
+
+			/*
+			// Make this metabox closed by default.
+			add_filter( "postbox_classes_{$screen_id}_{$handle}", [ $this, 'meta_box_closed' ] );
+			*/
+
+		}
 
 		/**
 		 * Broadcast that the metaboxes have been added.
@@ -406,29 +480,14 @@ class BP_Groups_CiviCRM_Sync_Page_Manual_Sync extends BP_Groups_CiviCRM_Sync_Pag
 	 */
 	public function form_description() {
 
-		// Advice paragraph.
-		echo sprintf(
-			'<p>%s</p>',
-			esc_html__( 'Choose your sync direction depending on whether your CiviCRM Groups or your BuddyPress Groups are the "source of truth".', 'bp-groups-civicrm-sync' )
-		);
+		// Define path to template.
+		$template = $this->path_plugin . $this->path_template . $this->path_help . 'page-manual-sync-help.php';
+		if ( empty( $this->counts['civicrm_groups_count'] ) ) {
+			$template = $this->path_plugin . $this->path_template . $this->path_help . 'page-manual-sync-help-no-civicrm.php';
+		}
 
-		// Procedure paragraph.
-		echo sprintf(
-			'<p>%s</p>',
-			esc_html__( 'The procedure in both directions is as follows:', 'bp-groups-civicrm-sync' )
-		);
-
-		// Procedure list.
-		echo '<ol>';
-		echo sprintf(
-			'<li>%s</li>',
-			esc_html__( 'Group members in the source Group will be added to the target Group if they are missing.', 'bp-groups-civicrm-sync' )
-		);
-		echo sprintf(
-			'<li>%s</li>',
-			esc_html__( 'Group members in the target Group will be deleted if they are no longer members of the source Group.', 'bp-groups-civicrm-sync' )
-		);
-		echo '</ol>';
+		// Use contents of help template.
+		include $template;
 
 	}
 
