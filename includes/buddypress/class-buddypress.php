@@ -192,6 +192,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 		// Get all the Group Contacts in the Synced Groups.
 		$group_contacts = $this->plugin->civicrm->group_contact->contacts_get();
+		if ( ( $group_contacts instanceof CRM_Core_Exception ) ) {
+			$group_contacts = [];
+		}
 		$this->sync_to_civicrm_remove( $group_contacts );
 
 	}
@@ -272,12 +275,18 @@ class BP_Groups_CiviCRM_Sync_BuddyPress {
 
 		// Get the batch of Group Contacts for this step.
 		$civicrm_batch = $this->plugin->civicrm->group_contact->contacts_get( $limit, $offset );
+		if ( ( $civicrm_batch instanceof CRM_Core_Exception ) ) {
+			$civicrm_batch = [];
+		}
 		$this->sync_to_civicrm_remove( $civicrm_batch );
 
 		// Get the next batch of Group Contacts.
 		$batch->stepper->next();
 		$offset        = $batch->stepper->initialise();
 		$civicrm_batch = $this->plugin->civicrm->group_contact->contacts_get( $limit, $offset );
+		if ( ( $civicrm_batch instanceof CRM_Core_Exception ) ) {
+			$civicrm_batch = [];
+		}
 
 		// Move batching onwards.
 		if ( empty( $civicrm_batch ) ) {

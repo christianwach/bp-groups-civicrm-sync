@@ -64,6 +64,9 @@ class BP_Groups_CiviCRM_Sync_CLI_Command_Job extends BP_Groups_CiviCRM_Sync_CLI_
 
 		// Get all CiviCRM Group Contacts in synced Groups.
 		$civicrm_contacts = $plugin->civicrm->group_contact->contacts_get();
+		if ( ( $civicrm_contacts instanceof CRM_Core_Exception ) ) {
+			$civicrm_contacts = [];
+		}
 
 		// Ensure each Group Contact exists in the BuddyPress Group.
 		if ( ! empty( $civicrm_contacts ) ) {
@@ -225,6 +228,9 @@ class BP_Groups_CiviCRM_Sync_CLI_Command_Job extends BP_Groups_CiviCRM_Sync_CLI_
 
 		// Get all the Group Contacts in the Synced Groups.
 		$group_contacts = $plugin->civicrm->group_contact->contacts_get();
+		if ( ( $group_contacts instanceof CRM_Core_Exception ) ) {
+			$group_contacts = [];
+		}
 
 		// Delete each Group Contact where the User no longer exists in the BuddyPress Group.
 		if ( ! empty( $group_contacts ) && is_array( $group_contacts ) ) {

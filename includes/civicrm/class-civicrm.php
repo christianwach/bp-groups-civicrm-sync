@@ -295,6 +295,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Ensure each Group Contact exists in the BuddyPress Group.
 		$civicrm_contacts = $this->group_contact->contacts_get();
+		if ( ( $group_contacts instanceof CRM_Core_Exception ) ) {
+			$group_contacts = [];
+		}
 		$this->sync_to_bp_populate( $civicrm_contacts );
 
 		// Get all the Group Users in the Synced Groups.
@@ -352,12 +355,18 @@ class BP_Groups_CiviCRM_Sync_CiviCRM {
 
 		// Get the batch of Group Contacts for this step.
 		$civicrm_batch = $this->group_contact->contacts_get( $limit, $offset );
+		if ( ( $civicrm_batch instanceof CRM_Core_Exception ) ) {
+			$civicrm_batch = [];
+		}
 		$this->sync_to_bp_populate( $civicrm_batch );
 
 		// Get the next batch of Group Contacts.
 		$batch->stepper->next();
 		$offset        = $batch->stepper->initialise();
 		$civicrm_batch = $this->group_contact->contacts_get( $limit, $offset );
+		if ( ( $civicrm_batch instanceof CRM_Core_Exception ) ) {
+			$civicrm_batch = [];
+		}
 
 		// Move batching onwards.
 		if ( empty( $civicrm_batch ) ) {
