@@ -999,6 +999,8 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_Group_Member {
 	 *
 	 * The following is modified code from the BuddyPress Groupblog plugin.
 	 *
+	 * @see bp_groupblog_upgrade_user()
+	 *
 	 * @since 0.1
 	 * @since 0.5.0 Moved to this class.
 	 *
@@ -1013,60 +1015,16 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_Group_Member {
 			return false;
 		}
 
-		// Access BuddyPress.
-		$bp = buddypress();
-
 		// Init return.
 		$user_group_status = false;
 
-		// Get the current User's Group status.
-		// For efficiency, we try first to look at the current Group object.
-		if ( isset( $bp->groups->current_group->id ) && (int) $group_id === (int) $bp->groups->current_group->id ) {
-
-			// It's tricky to walk through the Admin/Mod lists over and over, so let's format.
-			if ( empty( $bp->groups->current_group->adminlist ) ) {
-				$bp->groups->current_group->adminlist = [];
-				if ( isset( $bp->groups->current_group->admins ) ) {
-					foreach ( (array) $bp->groups->current_group->admins as $admin ) {
-						if ( isset( $admin->user_id ) ) {
-							$bp->groups->current_group->adminlist[] = $admin->user_id;
-						}
-					}
-				}
-			}
-
-			if ( empty( $bp->groups->current_group->modlist ) ) {
-				$bp->groups->current_group->modlist = [];
-				if ( isset( $bp->groups->current_group->mods ) ) {
-					foreach ( (array) $bp->groups->current_group->mods as $mod ) {
-						if ( isset( $mod->user_id ) ) {
-							$bp->groups->current_group->modlist[] = $mod->user_id;
-						}
-					}
-				}
-			}
-
-			if ( in_array( $user_id, $bp->groups->current_group->adminlist ) ) {
-				$user_group_status = 'admin';
-			} elseif ( in_array( $user_id, $bp->groups->current_group->modlist ) ) {
-				$user_group_status = 'mod';
-			} else {
-				// I'm assuming that if a User is passed to this function, they're a Member.
-				// Doing an actual lookup is costly. Try to look for an efficient method.
-				$user_group_status = 'member';
-			}
-
-		}
-
 		// Fall back to BuddyPress functions if not set.
-		if ( false === $user_group_status ) {
-			if ( groups_is_user_admin( $user_id, $group_id ) ) {
-				$user_group_status = 'admin';
-			} elseif ( groups_is_user_mod( $user_id, $group_id ) ) {
-				$user_group_status = 'mod';
-			} elseif ( groups_is_user_member( $user_id, $group_id ) ) {
-				$user_group_status = 'member';
-			}
+		if ( groups_is_user_admin( $user_id, $group_id ) ) {
+			$user_group_status = 'admin';
+		} elseif ( groups_is_user_mod( $user_id, $group_id ) ) {
+			$user_group_status = 'mod';
+		} elseif ( groups_is_user_member( $user_id, $group_id ) ) {
+			$user_group_status = 'member';
 		}
 
 		// Are we promoting or demoting?
