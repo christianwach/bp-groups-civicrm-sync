@@ -11,7 +11,7 @@
 defined( 'ABSPATH' ) || exit;
 
 ?>
-<!-- <?php echo $this->path_template . $this->path_page; ?>page-settings.php -->
+<!-- <?php echo esc_html( $this->path_template . $this->path_page ); ?>page-settings.php -->
 <div class="wrap">
 
 	<h1><?php echo esc_html( $this->plugin_name ); ?></h1>

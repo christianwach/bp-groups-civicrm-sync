@@ -11,7 +11,7 @@
 defined( 'ABSPATH' ) || exit;
 
 ?>
-<!-- <?php echo $this->path_template . $this->path_metabox; ?>metabox-manual-sync.php -->
+<!-- <?php echo esc_html( $this->path_template . $this->path_metabox ); ?>metabox-manual-sync.php -->
 <div class="bpgcs_wrapper">
 
 	<p><?php echo esc_html( $description ); ?></p>

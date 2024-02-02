@@ -11,7 +11,7 @@
 defined( 'ABSPATH' ) || exit;
 
 ?>
-<!-- <?php echo $this->path_template . $this->path_metabox; ?>metabox-settings-submit.php -->
+<!-- <?php echo esc_html( $this->path_template . $this->path_metabox ); ?>metabox-settings-submit.php -->
 <div class="submitbox">
 	<div id="minor-publishing">
 		<div id="misc-publishing-actions">

@@ -11,7 +11,7 @@
 defined( 'ABSPATH' ) || exit;
 
 ?>
-<!-- <?php echo $this->path_template . $this->path_metabox; ?>metabox-settings-general.php -->
+<!-- <?php echo esc_html( $this->path_template . $this->path_metabox ); ?>metabox-settings-general.php -->
 <table class="form-table">
 	<tr>
 		<th scope="row"><label for="<?php echo esc_attr( $this->form_parent_group_id ); ?>"><?php esc_html_e( 'Parent Group', 'bp-groups-civicrm-sync' ); ?></label></th>

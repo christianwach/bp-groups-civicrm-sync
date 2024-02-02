@@ -11,7 +11,7 @@
 defined( 'ABSPATH' ) || exit;
 
 ?>
-<!-- <?php echo $this->path_template . $this->path_metabox; ?>metabox-settings-schedule.php -->
+<!-- <?php echo esc_html( $this->path_template . $this->path_metabox ); ?>metabox-settings-schedule.php -->
 <table class="form-table">
 	<tr>
 		<th scope="row"><label for="<?php echo esc_attr( $this->form_interval_id ); ?>"><?php esc_html_e( 'Schedule Interval', 'bp-groups-civicrm-sync' ); ?></label></th>
