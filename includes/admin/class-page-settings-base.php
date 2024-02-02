@@ -631,8 +631,9 @@ abstract class BP_Groups_CiviCRM_Sync_Page_Settings_Base {
 
 		echo sprintf(
 			'<a href="%1$s" class="%2$s">%3$s</a>',
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			$this->page_url_get(),
-			implode( ' ', $classes ),
+			esc_attr( implode( ' ', $classes ) ),
 			esc_html( $this->page_tab_label )
 		);
 
@@ -659,8 +660,8 @@ abstract class BP_Groups_CiviCRM_Sync_Page_Settings_Base {
 			return;
 		}
 
-		// Init common data.
-		$data = [];
+		// Get common data.
+		$data = $this->meta_boxes_data( $screen_id );
 
 		// Configure page layout.
 		if ( 'settings' === $this->page_layout ) {
@@ -701,6 +702,29 @@ abstract class BP_Groups_CiviCRM_Sync_Page_Settings_Base {
 	abstract public function meta_boxes_register( $screen_id, $data );
 
 	/**
+	 * Gets the array of data to be shared with all metaboxes.
+	 *
+	 * @since 0.5.0
+	 *
+	 * @param array $classes An array of postbox classes.
+	 */
+	public function meta_boxes_data( $screen_id ) {
+
+		/**
+		 * Filters the array of data to be shared with all metaboxes.
+		 *
+		 * @since 0.5.0
+		 *
+		 * @param array $data The empty default array of metabox data.
+		 * @param string $screen_id The Screen indentifier.
+		 */
+		$data = apply_filters( $this->hook_prefix . '/settings/page/meta_boxes_data', [], $screen_id );
+
+		return $data;
+
+	}
+
+	/**
 	 * Loads a metabox as closed by default.
 	 *
 	 * @since 0.5.0
@@ -711,7 +735,7 @@ abstract class BP_Groups_CiviCRM_Sync_Page_Settings_Base {
 
 		// Add closed class.
 		if ( is_array( $classes ) ) {
-			if ( ! in_array( 'closed', $classes ) ) {
+			if ( ! in_array( 'closed', $classes, true ) ) {
 				$classes[] = 'closed';
 			}
 		}
