@@ -614,21 +614,21 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_Group {
 	 */
 	public function links_to_civicrm_add( $actions, $item ) {
 
-		// Construct Member Group URL.
+		// CiviCRM Member Group.
 		$sync_name       = $this->plugin->civicrm->group->member_group_get_sync_name( $item['id'] );
 		$member_group_id = $this->plugin->civicrm->group->id_find( $sync_name );
-		$member_url      = $this->plugin->civicrm->link_admin_get( 'civicrm/group/edit', 'reset=1&action=update&id=' . $member_group_id );
-
-		// Construct ACL Group URL.
-		$sync_name    = $this->plugin->civicrm->group->acl_group_get_sync_name( $item['id'] );
-		$acl_group_id = $this->plugin->civicrm->group->id_find( $sync_name );
-		$acl_url      = $this->plugin->civicrm->link_admin_get( 'civicrm/group/edit', 'reset=1&action=update&id=' . $acl_group_id );
-
-		// CiviCRM Member Group.
-		$actions['civicrm_member'] = sprintf( '<a href="%s">%s</a>', esc_url( $member_url ), __( 'CiviCRM', 'bp-groups-civicrm-sync' ) );
+		if ( ! empty( $member_group_id ) ) {
+			$member_url      = $this->plugin->civicrm->link_admin_get( 'civicrm/group/edit', 'reset=1&action=update&id=' . $member_group_id );
+			$actions['civicrm_member'] = sprintf( '<a href="%s">%s</a>', esc_url( $member_url ), __( 'CiviCRM', 'bp-groups-civicrm-sync' ) );
+		}
 
 		// CiviCRM Admin Group.
-		$actions['civicrm_acl'] = sprintf( '<a href="%s">%s</a>', esc_url( $acl_url ), __( 'ACL', 'bp-groups-civicrm-sync' ) );
+		$sync_name    = $this->plugin->civicrm->group->acl_group_get_sync_name( $item['id'] );
+		$acl_group_id = $this->plugin->civicrm->group->id_find( $sync_name );
+		if ( ! empty( $acl_group_id ) ) {
+			$acl_url      = $this->plugin->civicrm->link_admin_get( 'civicrm/group/edit', 'reset=1&action=update&id=' . $acl_group_id );
+			$actions['civicrm_acl'] = sprintf( '<a href="%s">%s</a>', esc_url( $acl_url ), __( 'ACL', 'bp-groups-civicrm-sync' ) );
+		}
 
 		// --<
 		return $actions;
