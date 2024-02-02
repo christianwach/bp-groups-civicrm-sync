@@ -588,7 +588,7 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_Group {
 		$groups_total = 0;
 
 		// Query the Group ID data.
-		$result = $this->group_ids_query_all();
+		$result = $this->ids_query_all();
 
 		// Use "groups" sub-array.
 		if ( ! empty( $result['total'] ) ) {
