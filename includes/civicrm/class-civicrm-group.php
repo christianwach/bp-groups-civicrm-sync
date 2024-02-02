@@ -350,6 +350,122 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group {
 
 	}
 
+	/**
+	 * Gets all synced CiviCRM Groups of a given type.
+	 *
+	 * @since 0.5.0
+	 *
+	 * @param string $type The type of synced CiviCRM Groups to return. Can be "member", "acl" or "both".
+	 * @return array|CRM_Core_Exception $groups The array of synced CiviCRM Groups, or Exception on failure.
+	 * @throws CRM_Core_Exception The Exception object.
+	 */
+	public function synced_get_all( $type = 'both' ) {
+
+		// Try and init CiviCRM.
+		if ( ! $this->civicrm->is_initialised() ) {
+			try {
+				throw new CRM_Core_Exception( __( 'Could not initialize CiviCRM', 'bp-groups-civicrm-sync' ) );
+			} catch ( CRM_Core_Exception $e ) {
+				return $e;
+			}
+		}
+
+		$group_contacts = [];
+
+		// Refine query depending of Group Type.
+		switch ( $type ) {
+			case 'member' :
+				$source = $this->acl_member . ' :';
+				break;
+			case 'acl' :
+				$source = $this->acl_member;
+				break;
+			case 'both' :
+			default :
+				$source = $this->source_member;
+				break;
+		}
+
+		try {
+
+			// Get the list of synced Groups.
+			$result = \Civi\Api4\Group::get( false )
+				->addSelect( '*' )
+				->addWhere( 'source', 'LIKE', '%' . $source . '%' )
+				->addOrderBy( 'group_id', 'ASC' )
+				->setLimit( 0 )
+				->execute();
+
+		} catch ( CRM_Core_Exception $e ) {
+			return $e;
+		}
+
+		// Bail if there are none.
+		if ( $result->count() === 0 ) {
+			return $group_contacts;
+		}
+
+		// Convert the ArrayObject to a simple array.
+		$group_contacts = array_values( $result->getArrayCopy() );
+
+		// --<
+		return $group_contacts;
+
+	}
+
+	/**
+	 * Counts all synced CiviCRM Groups.
+	 *
+	 * @since 0.5.0
+	 *
+	 * @param string $type The type of synced CiviCRM Groups to count. Can be "member", "acl" or "both".
+	 * @return int $result The number of synced CiviCRM Groups, or numeric 0 on failure.
+	 * @throws CRM_Core_Exception The Exception object.
+	 */
+	public function synced_total_get( $type = 'both' ) {
+
+		// Try and init CiviCRM.
+		if ( ! $this->civicrm->is_initialised() ) {
+			try {
+				throw new CRM_Core_Exception( __( 'Could not initialize CiviCRM', 'bp-groups-civicrm-sync' ) );
+			} catch ( CRM_Core_Exception $e ) {
+				return 0;
+			}
+		}
+
+		// Refine query depending of Group Type.
+		switch ( $type ) {
+			case 'member' :
+				$source = $this->acl_member . ' :';
+				break;
+			case 'acl' :
+				$source = $this->acl_member;
+				break;
+			case 'both' :
+			default :
+				$source = $this->source_member;
+				break;
+		}
+
+		try {
+
+			// Get the list of synced Groups.
+			$result = \Civi\Api4\Group::get( false )
+				->selectRowCount()
+				->addWhere( 'source', 'LIKE', '%' . $source . '%' )
+				->setLimit( 0 )
+				->execute()
+				->count();
+
+		} catch ( CRM_Core_Exception $e ) {
+			return 0;
+		}
+
+		// --<
+		return $result;
+
+	}
+
 	// -----------------------------------------------------------------------------------
 
 	/**
