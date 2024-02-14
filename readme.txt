@@ -44,6 +44,12 @@ This plugin is in active development. For feature requests and bug reports (or i
 
 == Changelog ==
 
+= 0.5.0 =
+
+* Fixes CiviCRM ACL methods after CiviCRM changed underlying data
+* Introduces WP-CLI sync commands
+* Introduces WordPress pseudo-cron sync schedule
+
 = 0.4.4 =
 
 * Tested with latest WordPress
