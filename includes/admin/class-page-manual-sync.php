@@ -269,6 +269,9 @@ class BP_Groups_CiviCRM_Sync_Page_Manual_Sync extends BP_Groups_CiviCRM_Sync_Pag
 
 		// Define path to template.
 		$template = $this->path_plugin . $this->path_template . $this->path_help . 'page-manual-sync-help.php';
+		if ( empty( $this->counts['civicrm_groups_count'] ) ) {
+			$template = $this->path_plugin . $this->path_template . $this->path_help . 'page-manual-sync-help-no-civicrm.php';
+		}
 
 		// Use contents of help template.
 		ob_start();
