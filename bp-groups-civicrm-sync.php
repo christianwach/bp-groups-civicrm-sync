@@ -197,46 +197,6 @@ class BP_Groups_CiviCRM_Sync {
 	// -----------------------------------------------------------------------------------
 
 	/**
-	 * Do stuff on plugin activation.
-	 *
-	 * @since 0.1
-	 */
-	public function activate() {
-
-		// Bail if no CiviCRM init function.
-		if ( ! $this->check_dependencies() ) {
-			return;
-		}
-
-		// Maybe initialise plugin.
-		$this->initialise();
-
-		// Setup plugin admin.
-		$this->admin->activate();
-
-	}
-
-	/**
-	 * Do stuff on plugin deactivation.
-	 *
-	 * @since 0.1
-	 */
-	public function deactivate() {
-
-		// Bail if no CiviCRM init function.
-		if ( ! $this->check_dependencies() ) {
-			return;
-		}
-
-		// Maybe initialise plugin.
-		$this->initialise();
-
-		// Tear down plugin admin.
-		$this->admin->deactivate();
-
-	}
-
-	/**
 	 * Test if this plugin is network activated.
 	 *
 	 * @since 0.4
@@ -372,12 +332,6 @@ function bp_groups_civicrm_sync() {
 
 // Init plugin.
 bp_groups_civicrm_sync();
-
-// Activation.
-register_activation_hook( __FILE__, [ bp_groups_civicrm_sync(), 'activate' ] );
-
-// Deactivation.
-register_deactivation_hook( __FILE__, [ bp_groups_civicrm_sync(), 'deactivate' ] );
 
 /*
  * Uninstall uses the 'uninstall.php' method.
