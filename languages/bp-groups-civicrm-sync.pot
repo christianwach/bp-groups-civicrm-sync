@@ -2,19 +2,20 @@
 # This file is distributed under the same license as the BP Groups CiviCRM Sync plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: BP Groups CiviCRM Sync 0.5.0a\n"
+"Project-Id-Version: BP Groups CiviCRM Sync 0.5.1a\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bp-groups-civicrm-sync\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-02-14T16:54:17+00:00\n"
+"POT-Creation-Date: 2024-04-11T13:53:16+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.9.0\n"
+"X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: bp-groups-civicrm-sync\n"
 
 #. Plugin Name of the plugin
+#: bp-groups-civicrm-sync.php
 #: includes/admin/class-page-manual-sync.php:127
 #: includes/admin/class-page-manual-sync.php:131
 #: includes/admin/class-page-settings.php:125
@@ -23,18 +24,22 @@ msgid "BP Groups CiviCRM Sync"
 msgstr ""
 
 #. Plugin URI of the plugin
+#: bp-groups-civicrm-sync.php
 msgid "https://github.com/christianwach/bp-groups-civicrm-sync"
 msgstr ""
 
 #. Description of the plugin
+#: bp-groups-civicrm-sync.php
 msgid "Enables two-way synchronisation between BuddyPress Groups and CiviCRM Groups."
 msgstr ""
 
 #. Author of the plugin
+#: bp-groups-civicrm-sync.php
 msgid "Christian Wach"
 msgstr ""
 
 #. Author URI of the plugin
+#: bp-groups-civicrm-sync.php
 msgid "https://haystack.co.uk"
 msgstr ""
 
@@ -122,13 +127,13 @@ msgstr ""
 msgid "Settings saved."
 msgstr ""
 
-#: bp-groups-civicrm-sync.php:409
+#: bp-groups-civicrm-sync.php:363
 #: includes/admin/class-page-settings.php:127
 #: includes/admin/class-page-settings.php:130
 msgid "Settings"
 msgstr ""
 
-#: bp-groups-civicrm-sync.php:413
+#: bp-groups-civicrm-sync.php:367
 msgid "Donate!"
 msgstr ""
 
