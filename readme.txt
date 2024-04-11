@@ -44,6 +44,10 @@ This plugin is in active development. For feature requests and bug reports (or i
 
 == Changelog ==
 
+= 0.5.1 =
+
+* Fixes fatal error on activation and deactivation
+
 = 0.5.0 =
 
 * Fixes CiviCRM ACL methods after CiviCRM changed underlying data
