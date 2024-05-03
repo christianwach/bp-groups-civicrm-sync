@@ -702,7 +702,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		$result = civicrm_api( 'GroupContact', 'get', $params );
 
 		// Return early if something went wrong.
-		if ( ! empty( $result['error'] ) ) {
+		if ( ! empty( $result['is_error'] ) && 1 === (int) $result['is_error'] ) {
 			$e     = new \Exception();
 			$trace = $e->getTraceAsString();
 			$log   = [
@@ -753,7 +753,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		$result = civicrm_api( 'GroupContact', 'create', $params );
 
 		// Return early if something went wrong.
-		if ( ! empty( $result['error'] ) ) {
+		if ( ! empty( $result['is_error'] ) && 1 === (int) $result['is_error'] ) {
 			$e     = new \Exception();
 			$trace = $e->getTraceAsString();
 			$log   = [
