@@ -24,11 +24,16 @@ defined( 'ABSPATH' ) || exit;
 				/**
 				 * Filters the "misc publishing actions" section.
 				 *
+				 * Make sure that whatever is returned has been properly escaped.
+				 *
 				 * @since 0.5.0
 				 *
 				 * @param string $misc_pub_section The text for the "misc publishing actions" section.
 				 */
-				echo apply_filters( $this->hook_prefix . '/settings/page/metabox/submit/misc_pub', $misc_pub_section );
+				$misc_pub_section = apply_filters( $this->hook_prefix . '/settings/page/metabox/submit/misc_pub', $misc_pub_section );
+
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo $misc_pub_section;
 
 				?>
 			</div>

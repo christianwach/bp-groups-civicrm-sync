@@ -44,6 +44,7 @@ defined( 'ABSPATH' ) || exit;
 
 	?>
 
+	<?php /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>
 	<form method="post" id="<?php echo esc_attr( $this->form_id ); ?>" action="<?php echo $this->form_submit_url_get(); ?>">
 
 		<?php wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ); ?>
@@ -55,7 +56,7 @@ defined( 'ABSPATH' ) || exit;
 
 		<div id="dashboard-widgets-wrap">
 
-			<div id="dashboard-widgets" class="metabox-holder<?php echo $columns_css; ?>">
+			<div id="dashboard-widgets" class="metabox-holder<?php echo esc_attr( $columns_css ); ?>">
 
 				<div id="postbox-container-1" class="postbox-container">
 					<?php do_meta_boxes( $screen->id, 'normal', '' ); ?>
