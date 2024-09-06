@@ -123,6 +123,7 @@ class BP_Groups_CiviCRM_Sync {
 		// Bootstrap this plugin.
 		$this->include_files();
 		$this->setup_objects();
+		$this->register_hooks();
 
 		/**
 		 * Broadcast that this plugin is loaded.
@@ -197,6 +198,18 @@ class BP_Groups_CiviCRM_Sync {
 		$this->civicrm = new BP_Groups_CiviCRM_Sync_CiviCRM( $this );
 		$this->bp      = new BP_Groups_CiviCRM_Sync_BuddyPress( $this );
 		$this->admin   = new BP_Groups_CiviCRM_Sync_Admin( $this );
+
+	}
+
+	/**
+	 * Registers hooks.
+	 *
+	 * @since 0.5.2
+	 */
+	public function register_hooks() {
+
+		// Add links to settings page.
+		add_filter( 'plugin_action_links', [ $this, 'action_links' ], 10, 2 );
 
 	}
 
@@ -312,6 +325,51 @@ class BP_Groups_CiviCRM_Sync {
 
 	}
 
+	/**
+	 * Adds utility links to settings page.
+	 *
+	 * @since 0.1
+	 * @since 0.5.2 Moved into plugin class.
+	 *
+	 * @param array  $links The existing links array.
+	 * @param string $file The name of the plugin file.
+	 * @return array $links The modified links array.
+	 */
+	public function action_links( $links, $file ) {
+
+		// Bail if not this plugin.
+		if ( plugin_basename( dirname( __FILE__ ) . '/bp-groups-civicrm-sync.php' ) !== $file ) {
+			return $links;
+		}
+
+		// Add links only when CiviCRM is fully installed.
+		if ( ! defined( 'CIVICRM_INSTALLED' ) || ! CIVICRM_INSTALLED ) {
+			return $links;
+		}
+
+		// Bail if CiviCRM plugin is not present.
+		if ( ! function_exists( 'civi_wp' ) ) {
+			return $links;
+		}
+
+		// Bail if BuddyPress plugin is not present.
+		if ( ! function_exists( 'buddypress' ) ) {
+			return $links;
+		}
+
+		// Add settings link if not network activated and not viewing network admin.
+		$link = add_query_arg( [ 'page' => 'bpgcs_settings' ], admin_url( 'admin.php' ) );
+		$links[] = '<a href="' . $link . '">' . esc_html__( 'Settings', 'bp-groups-civicrm-sync' ) . '</a>';
+
+		// Always add Paypal link.
+		$paypal  = 'https://www.paypal.me/interactivist';
+		$links[] = '<a href="' . esc_url( $paypal ) . '" target="_blank">' . __( 'Donate!', 'bp-groups-civicrm-sync' ) . '</a>';
+
+		// --<
+		return $links;
+
+	}
+
 }
 
 /**
@@ -343,42 +401,3 @@ bp_groups_civicrm_sync();
  * Uninstall uses the 'uninstall.php' method.
  * @see https://developer.wordpress.org/reference/functions/register_uninstall_hook/
  */
-
-/**
- * Utility to add link to settings page.
- *
- * @since 0.1
- *
- * @param array $links The existing links array.
- * @param str   $file The name of the plugin file.
- * @return array $links The modified links array.
- */
-function bp_groups_civicrm_sync_plugin_action_links( $links, $file ) {
-
-	// Add settings link.
-	if ( plugin_basename( dirname( __FILE__ ) . '/bp-groups-civicrm-sync.php' === $file ) ) {
-
-		// Is this Network Admin?
-		if ( is_network_admin() ) {
-			$link = add_query_arg( [ 'page' => 'bp_groups_civicrm_sync_parent' ], network_admin_url( 'settings.php' ) );
-		} else {
-			$link = add_query_arg( [ 'page' => 'bp_groups_civicrm_sync_parent' ], admin_url( 'admin.php' ) );
-		}
-
-		// Add settings link.
-		$links[] = '<a href="' . $link . '">' . esc_html__( 'Settings', 'bp-groups-civicrm-sync' ) . '</a>';
-
-		// Add Paypal link.
-		$paypal  = 'https://www.paypal.me/interactivist';
-		$links[] = '<a href="' . $paypal . '" target="_blank">' . __( 'Donate!', 'bp-groups-civicrm-sync' ) . '</a>';
-
-	}
-
-	// --<
-	return $links;
-
-}
-
-// Add filters for the above.
-add_filter( 'network_admin_plugin_action_links', 'bp_groups_civicrm_sync_plugin_action_links', 10, 2 );
-add_filter( 'plugin_action_links', 'bp_groups_civicrm_sync_plugin_action_links', 10, 2 );
