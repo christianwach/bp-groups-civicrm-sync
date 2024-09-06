@@ -359,7 +359,7 @@ class BP_Groups_CiviCRM_Sync {
 
 		// Add settings link if not network activated and not viewing network admin.
 		$link = add_query_arg( [ 'page' => 'bpgcs_settings' ], admin_url( 'admin.php' ) );
-		$links[] = '<a href="' . $link . '">' . esc_html__( 'Settings', 'bp-groups-civicrm-sync' ) . '</a>';
+		$links[] = '<a href="' . esc_url( $link ) . '">' . esc_html__( 'Settings', 'bp-groups-civicrm-sync' ) . '</a>';
 
 		// Always add Paypal link.
 		$paypal  = 'https://www.paypal.me/interactivist';
