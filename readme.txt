@@ -44,6 +44,10 @@ This plugin is in active development. For feature requests and bug reports (or i
 
 == Changelog ==
 
+= 0.5.2 =
+
+* Fixes CiviCRM API error check
+
 = 0.5.1 =
 
 * Fixes fatal error on activation and deactivation
