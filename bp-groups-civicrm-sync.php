@@ -1,14 +1,20 @@
 <?php
 /**
- * Plugin Name: BP Groups CiviCRM Sync
- * Plugin URI: https://github.com/christianwach/bp-groups-civicrm-sync
+ * BP Groups CiviCRM Sync
+ *
+ * Plugin Name:       BP Groups CiviCRM Sync
+ * Description:       Enables two-way synchronisation between BuddyPress Groups and CiviCRM Groups.
+ * Version:           0.5.2a
+ * Plugin URI:        https://github.com/christianwach/bp-groups-civicrm-sync
  * GitHub Plugin URI: https://github.com/christianwach/bp-groups-civicrm-sync
- * Description: Enables two-way synchronisation between BuddyPress Groups and CiviCRM Groups.
- * Author: Christian Wach
- * Version: 0.5.2a
- * Author URI: https://haystack.co.uk
- * Text Domain: bp-groups-civicrm-sync
- * Domain Path: /languages
+ * Author:            Christian Wach
+ * Author URI:        https://haystack.co.uk
+ * Requires at least: 4.9
+ * Requires PHP:      7.4
+ * License:           GPLv2 or later
+ * License URI:       https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * Text Domain:       bp-groups-civicrm-sync
+ * Domain Path:       /languages
  *
  * @package BP_Groups_CiviCRM_Sync
  */
