@@ -266,6 +266,7 @@ class BP_Groups_CiviCRM_Sync {
 	public function enable_translation() {
 
 		// Load translations if there are any.
+		// phpcs:ignore WordPress.WP.DeprecatedParameters.Load_plugin_textdomainParam2Found
 		load_plugin_textdomain(
 			'bp-groups-civicrm-sync', // Unique name.
 			false, // Deprecated argument.

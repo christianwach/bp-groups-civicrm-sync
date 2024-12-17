@@ -14,9 +14,6 @@
 		<!-- Allow slash-delimited hook names. -->
 		<exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores" />
 
-		<!-- Allow false for deprecated param. -->
-		<exclude name="WordPress.WP.DeprecatedParameters.Load_plugin_textdomainParam2Found" />
-
 		<!-- I prefer my control structures. -->
 		<exclude name="WordPress.WhiteSpace.ControlStructureSpacing.BlankLineAfterEnd" />
 
@@ -38,7 +35,7 @@
 		</properties>
 	</rule>
 
-	<!-- Allow short array syntax -->
+	<!-- Enforce short array syntax. -->
 	<rule ref="Generic.Arrays.DisallowShortArraySyntax.Found">
 		<severity>0</severity>
 	</rule>
