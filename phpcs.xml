@@ -24,9 +24,6 @@
 		<exclude name="Squiz.PHP.CommentedOutCode.Found" />
 		<exclude name="Squiz.Commenting.BlockComment.HasEmptyLineBefore" />
 
-		<!-- Allow non-strict array checks. -->
-		<exclude name="WordPress.PHP.StrictInArray.MissingTrueStrict" />
-
 	</rule>
 
 	<rule ref="WordPress.WP.I18n">

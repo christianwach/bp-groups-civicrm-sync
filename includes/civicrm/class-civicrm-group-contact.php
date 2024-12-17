@@ -341,7 +341,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		 * We also need to account for AJAX "Leave Group" requests that cannot be checked
 		 * prior to the Group membership being deleted.
 		 */
-		if ( ! in_array( $args['status'], [ 'admin', 'ex-admin' ] ) ) {
+		if ( ! in_array( $args['status'], [ 'admin', 'ex-admin' ], true ) ) {
 			return $result;
 		}
 

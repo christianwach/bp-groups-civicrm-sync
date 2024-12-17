@@ -241,7 +241,7 @@ class BP_Groups_CiviCRM_Sync_CLI_Command_Job extends BP_Groups_CiviCRM_Sync_CLI_
 				$bp_group_id = $plugin->civicrm->group->id_get_by_source( $group_contact['group.source'] );
 
 				// Show feedback each time Group changes.
-				if ( ! in_array( $bp_group_id, $bp_group_ids ) ) {
+				if ( ! in_array( (int) $bp_group_id, $bp_group_ids, true ) ) {
 
 					// Try the pseudo-cache for the BuddyPress Group.
 					$bp_group_data = $this->cache_check_for_bp_group( $bp_group_id );
@@ -249,7 +249,7 @@ class BP_Groups_CiviCRM_Sync_CLI_Command_Job extends BP_Groups_CiviCRM_Sync_CLI_
 					WP_CLI::log( '' );
 					WP_CLI::log( sprintf( WP_CLI::colorize( '%gDeleting Contacts not in BuddyPress Group%n %Y%s%n %y(ID: %d)%n' ), $bp_group_data['title'], $bp_group_id ) );
 
-					$bp_group_ids[] = $bp_group_id;
+					$bp_group_ids[] = (int) $bp_group_id;
 
 				}
 

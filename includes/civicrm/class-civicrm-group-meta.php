@@ -329,7 +329,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Meta {
 			}
 
 			// Skip if the parent is not the container Group.
-			if ( ! in_array( (int) $meta_group_id, $group['parents'] ) ) {
+			if ( ! in_array( (int) $meta_group_id, $group['parents'], true ) ) {
 				continue;
 			}
 

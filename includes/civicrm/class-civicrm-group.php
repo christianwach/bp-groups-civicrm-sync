@@ -1347,7 +1347,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group {
 		];
 
 		// Allow the relevant ones.
-		if ( in_array( strtolower( $permission ), $permissions ) ) {
+		if ( in_array( strtolower( $permission ), $permissions, true ) ) {
 			$granted = 1;
 		}
 
