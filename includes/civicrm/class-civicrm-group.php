@@ -178,7 +178,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group {
 			return false;
 		}
 
-		// Maybe assing to Meta Group.
+		// Maybe assign to Meta Group.
 		$this->civicrm->group_nesting->nesting_update( $bp_group->id );
 
 		// Add the creator to the Groups.
