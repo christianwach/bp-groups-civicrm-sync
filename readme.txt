@@ -25,7 +25,7 @@ This plugin works in a similar way to the [Drupal *Organic Groups CiviCRM* modul
 
 ### Requirements
 
-This plugin requires a minimum of *WordPress 4.9*, *BuddyPress 1.8* and *CiviCRM 5.19*. Having the latest version of each plugin active is, of course, highly recommended.
+This plugin requires a minimum of *WordPress 4.9*, *BuddyPress 2.3* and *CiviCRM 5.19*. Having the latest version of each plugin active is, of course, highly recommended.
 
 ### Plugin Development
 
