@@ -336,8 +336,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		// Restore callbacks.
 		$this->register_hooks();
 
-		// Skip ACL Group unless we have a Group Admin or a Group Admin is being demoted.
-		if ( ! in_array( $args['status'], [ 'admin', 'ex-admin' ] ) ) {
+		/*
+		 * Skip ACL Group unless we have a Group Admin or a Group Admin is being demoted.
+		 * We also need to account for AJAX "Leave Group" requests that cannot be checked
+		 * prior to the Group membership being deleted.
+		 */
+		if ( ! in_array( $args['status'], [ 'admin', 'ex-admin', 'leave-via-ajax' ] ) ) {
 			return $result;
 		}
 

@@ -1045,6 +1045,20 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_Group_Member {
 
 			}
 
+		} elseif ( bp_is_post_request() ) {
+
+			/*
+			 * When leaving a group from the Group Directory, AJAX is used and the
+			 * action variables above are not set. In this instance, we should also
+			 * remove the Contact from the ACL Group if they are a member.
+			 *
+			 * @see bp_legacy_theme_ajax_joinleave_group()
+			 * @see groups_action_leave_group()
+			 */
+			if ( current_action() === 'groups_leave_group' ) {
+				$user_group_status = 'leave-via-ajax';
+			}
+
 		}
 
 		// --<
