@@ -38,13 +38,13 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_Group_Member {
 	public $bp;
 
 	/**
-	 * Store for previous Group Status.
+	 * Store for bridging data between pre and post callbacks.
 	 *
-	 * @since 0.5.0
+	 * @since 0.5.3
 	 * @access private
 	 * @var array
 	 */
-	public $old_status = [];
+	public $bridging_array = [];
 
 	/**
 	 * Constructor.
@@ -93,9 +93,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_Group_Member {
 		// Register Group Membership hooks.
 		$this->register_hooks_group_members();
 
-		// Catch Groups admin page load.
-		add_action( 'bp_groups_admin_load', [ $this, 'register_hooks_bp_groups_admin' ], 10, 1 );
-
 	}
 
 	/**
@@ -120,24 +117,17 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_Group_Member {
 	 */
 	public function register_hooks_group_members() {
 
-		// User joins or leaves Group.
-		add_action( 'groups_join_group', [ $this, 'member_just_joined_group' ], 5, 2 );
-		add_action( 'groups_leave_group', [ $this, 'civicrm_group_membership_delete' ], 5, 2 );
+		// Before and after a Group Membership is saved.
+		add_action( 'groups_member_before_save', [ $this, 'member_save_pre' ], 9 );
+		add_action( 'groups_member_after_save', [ $this, 'member_save_post' ], 9 );
 
-		// User's Group Membership was removed.
-		add_action( 'groups_removed_member', [ $this, 'member_removed_from_group' ], 10, 2 );
+		// Before and after a Group Membership is removed.
+		add_action( 'groups_member_before_remove', [ $this, 'member_remove_pre' ], 9 );
+		add_action( 'groups_member_after_remove', [ $this, 'member_remove_post' ], 9 );
 
-		// Group Membership status is being reduced.
-		add_action( 'groups_demote_member', [ $this, 'member_reduce_status' ], 10, 2 );
-		add_action( 'groups_ban_member', [ $this, 'member_reduce_status' ], 10, 2 );
-
-		// Group Membership modified.
-		add_action( 'groups_promoted_member', [ $this, 'member_changed_status' ], 10, 2 );
-		add_action( 'groups_demoted_member', [ $this, 'member_changed_status' ], 10, 2 );
-		add_action( 'groups_unbanned_member', [ $this, 'member_changed_status' ], 10, 2 );
-		add_action( 'groups_banned_member', [ $this, 'member_changed_status' ], 10, 2 );
-		add_action( 'groups_membership_accepted', [ $this, 'member_changed_status' ], 10, 2 );
-		add_action( 'groups_accept_invite', [ $this, 'member_changed_status' ], 10, 2 );
+		// Before and after a Group Membership is deleted.
+		add_action( 'bp_groups_member_before_delete', [ $this, 'member_delete_pre' ], 9, 2 );
+		add_action( 'bp_groups_member_after_delete', [ $this, 'member_delete_post' ], 9, 2 );
 
 	}
 
@@ -150,114 +140,76 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_Group_Member {
 	public function unregister_hooks_group_members() {
 
 		// Remove callbacks.
-		remove_action( 'groups_join_group', [ $this, 'member_just_joined_group' ], 5 );
-		remove_action( 'groups_leave_group', [ $this, 'civicrm_group_membership_delete' ], 5 );
-		remove_action( 'groups_removed_member', [ $this, 'member_removed_from_group' ], 10 );
-		remove_action( 'groups_demote_member', [ $this, 'member_reduce_status' ], 10 );
-		remove_action( 'groups_ban_member', [ $this, 'member_reduce_status' ], 10 );
-		remove_action( 'groups_promoted_member', [ $this, 'member_changed_status' ], 10 );
-		remove_action( 'groups_demoted_member', [ $this, 'member_changed_status' ], 10 );
-		remove_action( 'groups_unbanned_member', [ $this, 'member_changed_status' ], 10 );
-		remove_action( 'groups_banned_member', [ $this, 'member_changed_status' ], 10 );
-		remove_action( 'groups_membership_accepted', [ $this, 'member_changed_status' ], 10 );
-		remove_action( 'groups_accept_invite', [ $this, 'member_changed_status' ], 10 );
-
-	}
-
-	/**
-	 * Adds hooks when the Groups admin page is loaded.
-	 *
-	 * None of the "past tense" actions fire on the Groups admin page, so we
-	 * have to hook into the "present tense" actions and figure out what's going
-	 * on at that point.
-	 *
-	 * @since 0.2.2
-	 * @since 0.5.0 Moved to this class.
-	 *
-	 * @param string $doaction Current $_GET action being performed in admin screen.
-	 */
-	public function register_hooks_bp_groups_admin( $doaction ) {
-
-		// Only add hooks if saving data.
-		if ( $doaction && 'save' === $doaction ) {
-
-			// Group Membership hooks: Group Membership status is being modified.
-			add_action( 'groups_promote_member', [ $this, 'member_changing_status' ], 10, 3 );
-			add_action( 'groups_demote_member', [ $this, 'member_changing_status' ], 10, 2 );
-			add_action( 'groups_unban_member', [ $this, 'member_changing_status' ], 10, 2 );
-			add_action( 'groups_ban_member', [ $this, 'member_changing_status' ], 10, 2 );
-
-			// User is being removed from Group.
-			add_action( 'groups_remove_member', [ $this, 'civicrm_group_membership_delete' ], 10, 2 );
-
-		}
+		remove_action( 'groups_member_before_save', [ $this, 'member_save_pre' ], 9 );
+		remove_action( 'groups_member_after_save', [ $this, 'member_save_post' ], 9 );
+		remove_action( 'groups_member_before_remove', [ $this, 'member_remove_pre' ], 9 );
+		remove_action( 'groups_member_after_remove', [ $this, 'member_remove_post' ], 9 );
+		remove_action( 'bp_groups_member_before_delete', [ $this, 'member_delete_pre' ], 9 );
+		remove_action( 'bp_groups_member_after_delete', [ $this, 'member_delete_post' ], 9 );
 
 	}
 
 	// -----------------------------------------------------------------------------------
 
 	/**
-	 * Called when User joins Group.
+	 * Called before a Group Membership is saved.
 	 *
-	 * @since 0.1
-	 * @since 0.5.0 Moved to this class.
+	 * @since 0.5.3
 	 *
-	 * @param int $group_id The numeric ID of the BuddyPress Group.
-	 * @param int $user_id The numeric ID of the WordPress User.
+	 * @param BP_Groups_Member $member The BP Groups Member instance.
 	 */
-	public function member_just_joined_group( $group_id, $user_id ) {
+	public function member_save_pre( $member ) {
 
-		// Call update method.
-		$this->civicrm_group_membership_update( $user_id, $group_id );
+		// Sanity check.
+		if ( ! ( $member instanceof BP_Groups_Member ) ) {
+			return;
+		}
+
+		// Get the previous Group Membership.
+		$previous_member = new BP_Groups_Member( $member->user_id, $member->group_id );
+
+		// Add Group Membership object to the bridging array.
+		$this->bridging_array['save'][ $member->group_id ][ $member->user_id ] = $previous_member;
 
 	}
 
 	/**
-	 * Called when User's Group status is about to change.
+	 * Called after a Group Membership is saved.
 	 *
-	 * Parameter order ($group_id, $user_id) is the opposite of the "past tense"
-	 * hooks. Compare, for example, 'groups_promoted_member'.
+	 * @since 0.5.3
 	 *
-	 * @see $this->register_hooks_bp_groups_admin()
-	 *
-	 * @since 0.2.2
-	 * @since 0.5.0 Moved to this class.
-	 *
-	 * @param int    $group_id The numeric ID of the BuddyPress Group.
-	 * @param int    $user_id The numeric ID of the WordPress User.
-	 * @param string $status New status being changed to.
+	 * @param BP_Groups_Member $member The BP Groups Member instance.
 	 */
-	public function member_changing_status( $group_id, $user_id, $status = '' ) {
+	public function member_save_post( BP_Groups_Member $member ) {
 
-		// If we have no status, check if User is Group Admin.
-		if ( empty( $status ) ) {
-			$status = groups_is_user_admin( $user_id, $group_id ) ? 'admin' : '';
-		}
-
-		/*
-		 * Group Admins cannot be banned.
-		 * @see BP_Groups_Member::ban()
-		 */
-		if ( 'admin' === $status && current_action() === 'groups_ban_member' ) {
+		// Bail if we do not have an entry in the bridging array.
+		if ( empty( $this->bridging_array['save'][ $member->group_id ][ $member->user_id ] ) ) {
 			return;
 		}
 
-		// If a Group Admin is being demoted, set special status.
-		if ( 'admin' === $status && current_action() === 'groups_demote_member' ) {
-			$status = 'ex-admin';
-		}
+		// Okay, let's get it.
+		$previous = $this->bridging_array['save'][ $member->group_id ][ $member->user_id ];
+		unset( $this->bridging_array['save'][ $member->group_id ][ $member->user_id ] );
 
 		// Is this User being banned?
 		$is_active = 1;
-		if ( current_action() === 'groups_ban_member' ) {
+		if ( 0 === (int) $previous->is_banned && 1 === (int) $member->is_banned ) {
 			$is_active = 0;
+		}
+
+		// Our "status" is simply to distinguish between admins and others.
+		$status = ( 1 === (int) $member->is_admin ) ? 'admin' : '';
+
+		// If a Group Admin is being demoted, set special status.
+		if ( '' === $status && 1 === $previous->is_admin ) {
+			$status = 'ex-admin';
 		}
 
 		// Update Membership of CiviCRM Group.
 		$args = [
 			'action'    => 'add',
-			'group_id'  => $group_id,
-			'user_id'   => $user_id,
+			'group_id'  => $member->group_id,
+			'user_id'   => $member->user_id,
 			'status'    => $status,
 			'is_active' => $is_active,
 		];
@@ -268,78 +220,113 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_Group_Member {
 	}
 
 	/**
-	 * Called when User's Group status is being reduced.
+	 * Called before a Group Membership is removed.
 	 *
-	 * @since 0.4
-	 * @since 0.5.0 Moved to this class.
+	 * @since 0.5.3
 	 *
-	 * @param int $group_id The numeric ID of the BuddyPress Group.
-	 * @param int $user_id The numeric ID of the WordPress User.
+	 * @param BP_Groups_Member $member The BP Groups Member instance.
 	 */
-	public function member_reduce_status( $group_id, $user_id ) {
+	public function member_remove_pre( BP_Groups_Member $member ) {
 
-		// Bail if not on front-end.
-		if ( is_admin() ) {
+		// Sanity check.
+		if ( ! ( $member instanceof BP_Groups_Member ) ) {
 			return;
 		}
 
-		// Check if User is Group Admin.
-		$status = groups_is_user_admin( $user_id, $group_id ) ? 'admin' : '';
+		// Get the previous Group Membership.
+		$previous_member = new BP_Groups_Member( $member->user_id, $member->group_id );
 
-		/*
-		 * Group Admins cannot be banned.
-		 * @see BP_Groups_Member::ban()
-		 */
-		if ( 'admin' === $status && current_action() === 'groups_ban_member' ) {
-			return;
-		}
-
-		// If a Group Admin is being demoted, set special status.
-		if ( 'admin' === $status && current_action() === 'groups_demote_member' ) {
-			$status = 'ex-admin';
-		}
-
-		// Set a flag for use in "past tense" callback.
-		$this->old_status[ $group_id ][ $user_id ] = $status;
+		// Add Group Membership object to the bridging array.
+		$this->bridging_array['remove'][ $member->group_id ][ $member->user_id ] = $previous_member;
 
 	}
 
 	/**
-	 * Called when User's Group status has changed.
+	 * Called after a Group Membership is removed.
 	 *
-	 * Parameter order ($user_id, $group_id) is reversed for these "past tense"
-	 * hooks. Compare, for example, 'groups_join_group', 'groups_promote_member'
-	 * and other "present tense" hooks.
+	 * @since 0.5.3
 	 *
-	 * @since 0.1
-	 * @since 0.5.0 Moved to this class.
-	 *
-	 * @param int $user_id The numeric ID of the WordPress User.
-	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 * @param BP_Groups_Member $member The BP Groups Member instance.
 	 */
-	public function member_changed_status( $user_id, $group_id ) {
+	public function member_remove_post( BP_Groups_Member $member ) {
 
-		// Call update method.
-		$this->civicrm_group_membership_update( $user_id, $group_id );
+		// Bail if we do not have an entry in the bridging array.
+		if ( empty( $this->bridging_array['remove'][ $member->group_id ][ $member->user_id ] ) ) {
+			return;
+		}
+
+		// Okay, let's get it.
+		$previous = $this->bridging_array['remove'][ $member->group_id ][ $member->user_id ];
+		unset( $this->bridging_array['remove'][ $member->group_id ][ $member->user_id ] );
+
+		// Our "status" is simply to distinguish between admins and others.
+		$status = ( 1 === (int) $member->is_admin ) ? 'admin' : '';
+
+		// Update Membership of CiviCRM Group.
+		$args = [
+			'action'    => 'delete',
+			'group_id'  => $member->group_id,
+			'user_id'   => $member->user_id,
+			'status'    => $status,
+			'is_active' => 0,
+		];
+
+		// Update the corresponding CiviCRM Group memberships.
+		$this->plugin->civicrm->group_contact->memberships_sync( $args );
 
 	}
 
 	/**
-	 * Called when a User has been removed from a Group.
+	 * Called before a Group Membership is deleted.
 	 *
-	 * Parameter order ($user_id, $group_id) is reversed for this "past tense"
-	 * hook. Compare, for example, 'groups_join_group'.
-	 *
-	 * @since 0.2.2
-	 * @since 0.5.0 Moved to this class.
+	 * @since 0.5.3
 	 *
 	 * @param int $user_id The numeric ID of the WordPress User.
 	 * @param int $group_id The numeric ID of the BuddyPress Group.
 	 */
-	public function member_removed_from_group( $user_id, $group_id ) {
+	public function member_delete_pre( $user_id, $group_id ) {
 
-		// Call delete method.
-		$this->civicrm_group_membership_delete( $group_id, $user_id );
+		// Get the previous Group Membership.
+		$previous_member = new BP_Groups_Member( $user_id, $group_id );
+
+		// Add Group Membership object to the bridging array.
+		$this->bridging_array['delete'][ $group_id ][ $user_id ] = $previous_member;
+
+	}
+
+	/**
+	 * Called after a Group Membership is deleted.
+	 *
+	 * @since 0.5.3
+	 *
+	 * @param int $user_id The numeric ID of the WordPress User.
+	 * @param int $group_id The numeric ID of the BuddyPress Group.
+	 */
+	public function member_delete_post( $user_id, $group_id ) {
+
+		// Bail if we do not have an entry in the bridging array.
+		if ( empty( $this->bridging_array['delete'][ $group_id ][ $user_id ] ) ) {
+			return;
+		}
+
+		// Okay, let's get it.
+		$previous = $this->bridging_array['delete'][ $group_id ][ $user_id ];
+		unset( $this->bridging_array['delete'][ $group_id ][ $user_id ] );
+
+		// Our "status" is simply to distinguish between admins and others.
+		$status = ( 1 === (int) $previous->is_admin ) ? 'admin' : '';
+
+		// Update Membership of CiviCRM Group.
+		$args = [
+			'action'    => 'delete',
+			'group_id'  => $group_id,
+			'user_id'   => $user_id,
+			'status'    => $status,
+			'is_active' => 0,
+		];
+
+		// Update the corresponding CiviCRM Group memberships.
+		$this->plugin->civicrm->group_contact->memberships_sync( $args );
 
 	}
 
@@ -363,12 +350,13 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_Group_Member {
 		}
 
 		// Get current Member status.
-		$status = $this->status_get_for_user( $user_id, $group_id );
-
-		// Check previous Member status.
-		if ( ! empty( $this->old_status[ $group_id ][ $user_id ] ) && 'ex-admin' === $this->old_status[ $group_id ][ $user_id ] ) {
-			$status = $this->old_status[ $group_id ][ $user_id ];
-			unset( $this->old_status[ $group_id ][ $user_id ] );
+		$status = false;
+		if ( groups_is_user_admin( $user_id, $group_id ) ) {
+			$status = 'admin';
+		} elseif ( groups_is_user_mod( $user_id, $group_id ) ) {
+			$status = 'mod';
+		} elseif ( groups_is_user_member( $user_id, $group_id ) ) {
+			$status = 'member';
 		}
 
 		// Is this Member active?
@@ -387,43 +375,6 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_Group_Member {
 		];
 
 		// Update the corresponding CiviCRM Group memberships.
-		$result = $this->plugin->civicrm->group_contact->memberships_sync( $args );
-
-		// --<
-		return $result;
-
-	}
-
-	/**
-	 * Inform CiviCRM of Membership status change.
-	 *
-	 * @since 0.1
-	 * @since 0.5.0 Moved to this class.
-	 *
-	 * @param int $group_id The numeric ID of the BuddyPress Group.
-	 * @param int $user_id The numeric ID of the WordPress User.
-	 * @return array|bool $result The result of the update, or false on failure.
-	 */
-	public function civicrm_group_membership_delete( $group_id, $user_id ) {
-
-		// Bail if sync should not happen for this Group.
-		if ( ! $this->bp->group->should_be_synced( $group_id ) ) {
-			return;
-		}
-
-		// Get current User status.
-		$status = $this->status_get_for_user( $user_id, $group_id );
-
-		// Remove Membership of CiviCRM Groups.
-		$args = [
-			'action'    => 'delete',
-			'group_id'  => $group_id,
-			'user_id'   => $user_id,
-			'status'    => $status,
-			'is_active' => 0,
-		];
-
-		// Remove the corresponding CiviCRM Group memberships.
 		$result = $this->plugin->civicrm->group_contact->memberships_sync( $args );
 
 		// --<
@@ -804,13 +755,13 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_Group_Member {
 		}
 
 		// Unhook our action to prevent BuddyPress->CiviCRM sync.
-		remove_action( 'groups_join_group', [ $this, 'member_just_joined_group' ], 5 );
+		$this->unregister_hooks_group_members();
 
 		// Use BuddyPress function.
 		$success = groups_join_group( $group_id, $user_id );
 
 		// Re-hook our action to enable BuddyPress->CiviCRM sync.
-		add_action( 'groups_join_group', [ $this, 'member_just_joined_group' ], 5, 2 );
+		$this->register_hooks_group_members();
 
 		/*
 		// Set up Member.
@@ -880,8 +831,14 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_Group_Member {
 		 */
 		do_action( 'groups_remove_member', $group_id, $user_id );
 
+		// Unhook our action to prevent BuddyPress->CiviCRM sync.
+		$this->unregister_hooks_group_members();
+
 		// Remove Member.
 		$success = $member->remove();
+
+		// Re-hook our action to enable BuddyPress->CiviCRM sync.
+		$this->register_hooks_group_members();
 
 		// --<
 		return $success;
@@ -931,8 +888,14 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_Group_Member {
 		 */
 		do_action( 'groups_demote_member', $group_id, $user_id );
 
+		// Unhook our action to prevent BuddyPress->CiviCRM sync.
+		$this->unregister_hooks_group_members();
+
 		// Demote them.
 		$success = $member->demote();
+
+		// Re-hook our action to enable BuddyPress->CiviCRM sync.
+		$this->register_hooks_group_members();
 
 		// --<
 		return $success;
@@ -984,85 +947,17 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_Group_Member {
 		 */
 		do_action( 'groups_promote_member', $group_id, $user_id, $status );
 
+		// Unhook our action to prevent BuddyPress->CiviCRM sync.
+		$this->unregister_hooks_group_members();
+
 		// Promote them.
 		$success = $member->promote( $status );
 
+		// Re-hook our action to enable BuddyPress->CiviCRM sync.
+		$this->register_hooks_group_members();
+
 		// --<
 		return $success;
-
-	}
-
-	// -----------------------------------------------------------------------------------
-
-	/**
-	 * Get BuddyPress Group Membership status for a User.
-	 *
-	 * The following is modified code from the BuddyPress Groupblog plugin.
-	 *
-	 * @see bp_groupblog_upgrade_user()
-	 *
-	 * @since 0.1
-	 * @since 0.5.0 Moved to this class.
-	 *
-	 * @param int $user_id The numeric ID of the WordPress User.
-	 * @param int $group_id The numeric ID of the BuddyPress Group.
-	 * @return string $user_group_status The Membership status for a User.
-	 */
-	public function status_get_for_user( $user_id, $group_id ) {
-
-		// Check BuddyPress config.
-		if ( ! $this->bp->is_configured() ) {
-			return false;
-		}
-
-		// Init return.
-		$user_group_status = false;
-
-		// Fall back to BuddyPress functions if not set.
-		if ( groups_is_user_admin( $user_id, $group_id ) ) {
-			$user_group_status = 'admin';
-		} elseif ( groups_is_user_mod( $user_id, $group_id ) ) {
-			$user_group_status = 'mod';
-		} elseif ( groups_is_user_member( $user_id, $group_id ) ) {
-			$user_group_status = 'member';
-		}
-
-		// Are we promoting or demoting?
-		if ( bp_action_variable( 1 ) && bp_action_variable( 2 ) ) {
-
-			// Change User status based on promotion / demotion.
-			switch ( bp_action_variable( 1 ) ) {
-
-				case 'promote':
-					$user_group_status = bp_action_variable( 2 );
-					break;
-
-				case 'demote':
-				case 'ban':
-				case 'unban':
-					$user_group_status = 'member';
-					break;
-
-			}
-
-		} elseif ( bp_is_post_request() ) {
-
-			/*
-			 * When leaving a group from the Group Directory, AJAX is used and the
-			 * action variables above are not set. In this instance, we should also
-			 * remove the Contact from the ACL Group if they are a member.
-			 *
-			 * @see bp_legacy_theme_ajax_joinleave_group()
-			 * @see groups_action_leave_group()
-			 */
-			if ( current_action() === 'groups_leave_group' ) {
-				$user_group_status = 'leave-via-ajax';
-			}
-
-		}
-
-		// --<
-		return $user_group_status;
 
 	}
 
