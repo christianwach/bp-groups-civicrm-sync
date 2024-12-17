@@ -16,7 +16,7 @@
  * Text Domain:       bp-groups-civicrm-sync
  * Domain Path:       /languages
  *
- * @package Transition_Resources
+ * @package BP_Groups_CiviCRM_Sync
  * @link    https://github.com/christianwach/bp-groups-civicrm-sync
  * @license GPL v2 or later
  *
