@@ -44,6 +44,11 @@ This plugin is in active development. For feature requests and bug reports (or i
 
 == Changelog ==
 
+= 0.5.3 =
+
+* Reworks BuddyPress Group Member logic to use before and after SQL hooks
+* Accounts for Group Admins leaving via the Groups Directory button
+
 = 0.5.2 =
 
 * Fixes CiviCRM API error check
