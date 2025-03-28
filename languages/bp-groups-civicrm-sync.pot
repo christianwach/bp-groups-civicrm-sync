@@ -1,17 +1,17 @@
-# Copyright (C) 2024 Christian Wach
+# Copyright (C) 2025 Christian Wach
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: BP Groups CiviCRM Sync 0.5.2a\n"
+"Project-Id-Version: BP Groups CiviCRM Sync 0.5.3a\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bp-groups-civicrm-sync\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-09-06T15:08:45+00:00\n"
+"POT-Creation-Date: 2025-03-28T12:56:32+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.10.0\n"
+"X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: bp-groups-civicrm-sync\n"
 
 #. Plugin Name of the plugin
@@ -127,13 +127,13 @@ msgstr ""
 msgid "Settings saved."
 msgstr ""
 
-#: bp-groups-civicrm-sync.php:362
+#: bp-groups-civicrm-sync.php:375
 #: includes/admin/class-page-settings.php:127
 #: includes/admin/class-page-settings.php:130
 msgid "Settings"
 msgstr ""
 
-#: bp-groups-civicrm-sync.php:366
+#: bp-groups-civicrm-sync.php:379
 msgid "Donate!"
 msgstr ""
 
@@ -350,8 +350,8 @@ msgid "Convert to BuddyPress Group"
 msgstr ""
 
 #: includes/civicrm/class-civicrm-group-contact.php:122
-#: includes/civicrm/class-civicrm-group-contact.php:840
-#: includes/civicrm/class-civicrm-group-contact.php:894
+#: includes/civicrm/class-civicrm-group-contact.php:844
+#: includes/civicrm/class-civicrm-group-contact.php:898
 #: includes/civicrm/class-civicrm-group.php:367
 #: includes/civicrm/class-civicrm-group.php:430
 msgid "Could not initialize CiviCRM"
