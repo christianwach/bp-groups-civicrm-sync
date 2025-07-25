@@ -799,19 +799,19 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 	 * @since 0.4 Moved to this class and renamed.
 	 *
 	 * @param array $group_contact The array of CiviCRM Group Contact data.
-	 * @return array|bool $result The array of CiviCRM API data, true if no membership exists, or false on failure.
+	 * @return array $result The array of CiviCRM API data, or an empty array on failure.
 	 */
 	public function membership_delete( $group_contact ) {
 
 		// Skip if there is no existing Membership at all.
 		$existing = $this->membership_exists( $group_contact['group_id'], $group_contact['contact_id'] );
 		if ( false === $existing ) {
-			return true;
+			return [];
 		}
 
 		// Skip if there is already a "Removed" Membership.
 		if ( 'Removed' === $existing['status'] ) {
-			return $existing;
+			return $existing ?: [];
 		}
 
 		// Build params to "remove" a Group Contact.
@@ -820,7 +820,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 		] + $group_contact;
 
 		// We're only updating the status of the Group Contact.
-		return $this->membership_create( $params );
+		return $this->membership_create( $params ) ?: [];
 
 	}
 
