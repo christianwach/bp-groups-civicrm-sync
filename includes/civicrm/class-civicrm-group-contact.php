@@ -324,6 +324,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 			// Remove this Group membership.
 			$member_group_contact = $this->membership_delete( $member_group_params );
+			if ( is_bool( $member_group_contact ) ) {
+				$member_group_contact = [];
+			}
 
 		}
 
@@ -382,6 +385,9 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 			// Remove this Group membership.
 			$acl_group_contact = $this->membership_delete( $acl_group_params );
+			if ( is_bool( $acl_group_contact ) ) {
+				$acl_group_contact = [];
+			}
 
 		}
 
@@ -579,7 +585,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 				'group_id'   => $acl_group_id,
 				'contact_id' => $contact['contact_id'],
 			];
-			$group_contact = $this->membership_delete( $group_params );
+			$this->membership_delete( $group_params );
 		}
 
 		// Restore callbacks.
