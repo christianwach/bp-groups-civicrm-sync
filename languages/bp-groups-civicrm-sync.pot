@@ -2,16 +2,16 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: BP Groups CiviCRM Sync 0.5.3a\n"
+"Project-Id-Version: BP Groups CiviCRM Sync 0.5.4a\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bp-groups-civicrm-sync\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-03-28T12:56:32+00:00\n"
+"POT-Creation-Date: 2025-07-28T13:30:26+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.11.0\n"
+"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: bp-groups-civicrm-sync\n"
 
 #. Plugin Name of the plugin
@@ -73,11 +73,13 @@ msgstr ""
 
 #. translators: 1: The opening anchor tag, 2: The closing anchor tag
 #: assets/templates/wordpress/settings/metaboxes/metabox-settings-general.php:25
+#, php-format
 msgid "Depending on your use case, select whether you want your CiviCRM Groups to be assigned to a \"BuddyPress Groups\" Parent Group in CiviCRM. If you do, then CiviCRM Groups will be nested under - and inherit permissions from - the \"BuddyPress Groups\" Parent Group. Please refer to %1$sthe documentation%2$s to decide if this is useful to you or not."
 msgstr ""
 
 #. translators: 1: The opening strong tag, 2: The closing strong tag
 #: assets/templates/wordpress/settings/metaboxes/metabox-settings-general.php:37
+#, php-format
 msgid "%1$sPlease Note:%2$s it is strongly recommended to decide how you want this set before you sync Groups. You can change this setting later, but it will require some heavy processing if you have a large number of Groups."
 msgstr ""
 
@@ -263,32 +265,38 @@ msgstr ""
 
 #. translators: 1: The ID of the Contact, 2: The ID of the User.
 #: includes/buddypress/class-buddypress.php:354
+#, php-format
 msgid "Failed to sync User (Contact ID: %1$d) (User ID: %2$d)"
 msgstr ""
 
 #. translators: 1: The ID of the Contact, 2: The ID of the User.
 #: includes/buddypress/class-buddypress.php:363
+#, php-format
 msgid "Added User to Member Group (Contact ID: %1$d) (User ID: %2$d)"
 msgstr ""
 
 #. translators: 1: The ID of the Contact, 2: The ID of the User.
 #: includes/buddypress/class-buddypress.php:372
+#, php-format
 msgid "Added User to ACL Group (Contact ID: %1$d) (User ID: %2$d)"
 msgstr ""
 
 #. translators: 1: The ID of the Contact, 2: The ID of the User.
 #: includes/buddypress/class-buddypress.php:411
+#, php-format
 msgid "Removed Contact (Contact ID: %1$d) (User ID: %2$d)"
 msgstr ""
 
 #. translators: 1: The ID of the Contact, 2: The ID of the User.
 #: includes/buddypress/class-buddypress.php:416
+#, php-format
 msgid "Failed to remove Contact (Contact ID: %1$d) (User ID: %2$d)"
 msgstr ""
 
 #. translators: %s: The name of the Member Group as shown in the description of the ACL
 #: includes/civicrm/class-civicrm-acl.php:142
 #: includes/civicrm/class-civicrm-acl.php:319
+#, php-format
 msgid "Edit Contacts in Group: %s"
 msgstr ""
 
@@ -318,6 +326,7 @@ msgstr ""
 
 #. translators: %d: The numeric ID of the WordPress User
 #: includes/civicrm/class-civicrm-contact.php:204
+#, php-format
 msgid "No CiviCRM Contact ID could be found for WordPress User ID %d"
 msgstr ""
 
@@ -328,6 +337,7 @@ msgstr ""
 
 #. translators: 1: The opening strong tag, 2: The closing strong tag
 #: includes/civicrm/class-civicrm-group-admin.php:175
+#, php-format
 msgid "%1$sNOTE:%2$s If you are going to create a BuddyPress Group, you only need to fill out the \"Group Title\" field (and optionally the \"Group Description\" field). The Group Type will be automatically set to \"Access Control\" and (if a container Group has been specified) the Parent Group will be automatically assigned to the container Group."
 msgstr ""
 
@@ -342,6 +352,7 @@ msgstr ""
 
 #. translators: 1: The opening strong tag, 2: The closing strong tag
 #: includes/civicrm/class-civicrm-group-admin.php:392
+#, php-format
 msgid "%1$sWARNING:%2$s You may wish to make sure your CiviCRM Contacts exist as WordPress Users before creating this Group. CiviCRM Contacts that do not have a corresponding WordPress User will have one created for them. You will need to review roles for the new WordPress Users when this process is complete."
 msgstr ""
 
@@ -350,8 +361,8 @@ msgid "Convert to BuddyPress Group"
 msgstr ""
 
 #: includes/civicrm/class-civicrm-group-contact.php:122
-#: includes/civicrm/class-civicrm-group-contact.php:844
-#: includes/civicrm/class-civicrm-group-contact.php:898
+#: includes/civicrm/class-civicrm-group-contact.php:850
+#: includes/civicrm/class-civicrm-group-contact.php:904
 #: includes/civicrm/class-civicrm-group.php:367
 #: includes/civicrm/class-civicrm-group.php:430
 msgid "Could not initialize CiviCRM"
@@ -384,6 +395,7 @@ msgstr ""
 
 #. translators: %s: The name of the BuddyPress Group
 #: includes/civicrm/class-civicrm-group.php:1105
+#, php-format
 msgid "%s: Administrator"
 msgstr ""
 
@@ -393,20 +405,24 @@ msgstr ""
 
 #. translators: 1: The ID of the BuddyPress Group, 2: The ID of the Contact, 3: The ID of the User.
 #: includes/civicrm/class-civicrm.php:467
+#, php-format
 msgid "Failed to sync User to BuddyPress Group (ID: %1$d) (Contact ID: %2$d) (User ID: %3$d)"
 msgstr ""
 
 #. translators: 1: The ID of the BuddyPress Group, 2: The ID of the Contact, 3: The ID of the User.
 #: includes/civicrm/class-civicrm.php:478
+#, php-format
 msgid "Added User to BuddyPress Group (ID: %1$d) (Contact ID: %2$d) (User ID: %3$d)"
 msgstr ""
 
 #. translators: 1: The ID of the Contact, 2: The ID of the User.
 #: includes/civicrm/class-civicrm.php:534
+#, php-format
 msgid "Removed User (Contact ID: %1$d) (User ID: %2$d)"
 msgstr ""
 
 #. translators: 1: The ID of the Contact, 2: The ID of the User.
 #: includes/civicrm/class-civicrm.php:539
+#, php-format
 msgid "Failed to remove User (Contact ID: %1$d) (User ID: %2$d)"
 msgstr ""
