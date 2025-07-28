@@ -44,6 +44,10 @@ This plugin is in active development. For feature requests and bug reports (or i
 
 == Changelog ==
 
+= 0.5.4 =
+
+* Fixes PHP warning
+
 = 0.5.3 =
 
 * Reworks BuddyPress Group Member logic to use before and after SQL hooks
