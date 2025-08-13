@@ -373,6 +373,16 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_ACL {
 		// Init return.
 		$success = false;
 
+		// Init local vars.
+		$acl_deleted             = false;
+		$acl_entity_role_deleted = false;
+		$acl_role_deleted        = false;
+
+		// Bail if there is no ACL Group data.
+		if ( empty( $acl_group ) ) {
+			return $success;
+		}
+
 		// First get the existing "ACL Role".
 		$acl_role = $this->acl_role_get( $acl_group['source'] );
 
