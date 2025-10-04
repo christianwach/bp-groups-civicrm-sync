@@ -324,10 +324,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 			// Remove this Group membership.
 			$member_group_contact = $this->membership_delete( $member_group_params );
-			if ( is_bool( $member_group_contact ) ) {
-				$member_group_contact = [];
-			}
 
+		}
+
+		// Make sure we have an array.
+		if ( is_bool( $member_group_contact ) ) {
+			$member_group_contact = [];
 		}
 
 		// Add Member Group ID.
@@ -385,10 +387,12 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 			// Remove this Group membership.
 			$acl_group_contact = $this->membership_delete( $acl_group_params );
-			if ( is_bool( $acl_group_contact ) ) {
-				$acl_group_contact = [];
-			}
 
+		}
+
+		// Make sure we have an array.
+		if ( is_bool( $acl_group_contact ) ) {
+			$acl_group_contact = [];
 		}
 
 		// Add ACL Group ID.
