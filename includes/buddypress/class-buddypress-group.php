@@ -463,6 +463,9 @@ class BP_Groups_CiviCRM_Sync_BuddyPress_Group {
 		// Get the Group if an integer is passed.
 		if ( is_int( $group ) ) {
 			$group = $this->plugin->civicrm->group->get_by_id( $group );
+			if ( empty( $group ) ) {
+				return false;
+			}
 		}
 
 		// Get the ID from Group "source".
