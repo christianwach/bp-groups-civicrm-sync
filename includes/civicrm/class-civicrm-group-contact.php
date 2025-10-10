@@ -585,7 +585,7 @@ class BP_Groups_CiviCRM_Sync_CiviCRM_Group_Contact {
 
 		// Remove Members from CiviCRM ACL Group.
 		foreach ( $contacts as $contact ) {
-			$group_params  = [
+			$group_params = [
 				'group_id'   => $acl_group_id,
 				'contact_id' => $contact['contact_id'],
 			];
